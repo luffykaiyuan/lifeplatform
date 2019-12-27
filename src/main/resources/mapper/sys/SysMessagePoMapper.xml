@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luffykaiyuan.lifeplatform.dao.sys.SysMessagePoMapper">
+  <resultMap id="BaseResultMap" type="com.luffykaiyuan.lifeplatform.po.sys.SysMessagePo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="sys_id" jdbcType="VARCHAR" property="sysId" />
+    <result column="sys_name" jdbcType="VARCHAR" property="sysName" />
+    <result column="announce_title" jdbcType="VARCHAR" property="announceTitle" />
+    <result column="announce_content" jdbcType="VARCHAR" property="announceContent" />
+    <result column="announce_time" jdbcType="VARCHAR" property="announceTime" />
+    <result column="add_time" jdbcType="VARCHAR" property="addTime" />
+    <result column="delete_status" jdbcType="VARCHAR" property="deleteStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sys_id, sys_name, announce_title, announce_content, announce_time, add_time, 
+    delete_status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_message
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_message
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysMessagePo">
+    insert into sys_message (id, sys_id, sys_name, 
+      announce_title, announce_content, announce_time, 
+      add_time, delete_status)
+    values (#{id,jdbcType=VARCHAR}, #{sysId,jdbcType=VARCHAR}, #{sysName,jdbcType=VARCHAR}, 
+      #{announceTitle,jdbcType=VARCHAR}, #{announceContent,jdbcType=VARCHAR}, #{announceTime,jdbcType=VARCHAR}, 
+      #{addTime,jdbcType=VARCHAR}, #{deleteStatus,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysMessagePo">
+    insert into sys_message
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sysId != null">
+        sys_id,
+      </if>
+      <if test="sysName != null">
+        sys_name,
+      </if>
+      <if test="announceTitle != null">
+        announce_title,
+      </if>
+      <if test="announceContent != null">
+        announce_content,
+      </if>
+      <if test="announceTime != null">
+        announce_time,
+      </if>
+      <if test="addTime != null">
+        add_time,
+      </if>
+      <if test="deleteStatus != null">
+        delete_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="sysId != null">
+        #{sysId,jdbcType=VARCHAR},
+      </if>
+      <if test="sysName != null">
+        #{sysName,jdbcType=VARCHAR},
+      </if>
+      <if test="announceTitle != null">
+        #{announceTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="announceContent != null">
+        #{announceContent,jdbcType=VARCHAR},
+      </if>
+      <if test="announceTime != null">
+        #{announceTime,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        #{addTime,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteStatus != null">
+        #{deleteStatus,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysMessagePo">
+    update sys_message
+    <set>
+      <if test="sysId != null">
+        sys_id = #{sysId,jdbcType=VARCHAR},
+      </if>
+      <if test="sysName != null">
+        sys_name = #{sysName,jdbcType=VARCHAR},
+      </if>
+      <if test="announceTitle != null">
+        announce_title = #{announceTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="announceContent != null">
+        announce_content = #{announceContent,jdbcType=VARCHAR},
+      </if>
+      <if test="announceTime != null">
+        announce_time = #{announceTime,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        add_time = #{addTime,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysMessagePo">
+    update sys_message
+    set sys_id = #{sysId,jdbcType=VARCHAR},
+      sys_name = #{sysName,jdbcType=VARCHAR},
+      announce_title = #{announceTitle,jdbcType=VARCHAR},
+      announce_content = #{announceContent,jdbcType=VARCHAR},
+      announce_time = #{announceTime,jdbcType=VARCHAR},
+      add_time = #{addTime,jdbcType=VARCHAR},
+      delete_status = #{deleteStatus,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,29 @@
+server:
+  servlet:
+    context-path: /lifeplatform
+  port: 8088
+
+spring:
+  mvc:
+    view:
+      suffix: /,/front
+      prefix: .html
+  #关闭缓存
+  thymeleaf:
+    cache: false
+  #热部署配置
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+      additional-exclude: static
+  datasource:
+    url: jdbc:mysql://localhost:3306/lifeplatform?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+
+#mybatis的扫描配置
+mybatis:
+  type-aliases-package: com.luffykaiyuan.lifeplatform.dao
+  mapper-locations: classpath:mapper/*.xml, classpath:mapper/sys/*.xml, classpath:mapper/user/*.xml
