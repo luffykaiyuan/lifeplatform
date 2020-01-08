@@ -20,9 +20,11 @@ public class TaskInfoService {
     public String insertTask(TaskInfoPo taskInfoPo, HttpSession session){
         String id = (String)session.getAttribute("id");
         String nickName = (String) session.getAttribute("nickName");
+        String userName = (String) session.getAttribute("userName");
         taskInfoPo.setAddTime(GetNowDate.getStringDate());
         taskInfoPo.setStartId(id);
         taskInfoPo.setStartName(nickName);
+        taskInfoPo.setStartMail(userName);
         taskInfoPo.setId(UUIDUtils.getUUID(32));
         int resule = taskInfoPoMapper.insertTask(taskInfoPo);
         if (resule > 0){

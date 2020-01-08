@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="./css/front/taskListStyle.css">
+    <link rel="stylesheet" href="./css/operateStyle.css"/>
     <!-- import Vue before Element -->
     <script src="./js/jquery.js"></script>
     <script src="./js/vue.js"></script>
@@ -24,12 +25,12 @@
                 </div>
             </el-col>
             <el-col :span="2">
-                <div class="grid-content bg-purple-light" v-if="sureLogin">
+                <div class="grid-content bg-purple-light" v-if="!userName">
                     <el-button icon="el-icon-user-solid" circle></el-button>
                     <span style="font-size: 14px;">请登录</span>
                 </div>
                 <div class="grid-content bg-purple-light" v-else>
-                    <span style="font-size: 14px;">欢迎您,XXX</span>
+                    <span style="font-size: 14px;">欢迎您,{{userName}}</span>
                 </div>
             </el-col>
         </el-col>
@@ -43,16 +44,15 @@
                         default-active="2"
                         class="el-menu-vertical-demo"
                         :default-openeds="['1']"
-                        @open="handleOpen"
-                        @close="handleClose">
+                        @select="handleSelect">
                     <el-submenu index="1">
                         <template slot="title">
                             <i class="el-icon-s-order"></i>
                             <span>任务信息</span>
                         </template>
-                        <el-menu-item index="1-1">任务广场</el-menu-item>
-                        <el-menu-item index="1-2">接收任务</el-menu-item>
-                        <el-menu-item index="1-3">完成任务</el-menu-item>
+                        <el-menu-item index="taskSquare">任务广场</el-menu-item>
+                        <el-menu-item index="taskReceive">接收任务</el-menu-item>
+                        <el-menu-item index="taskFinish">完成任务</el-menu-item>
                     </el-submenu>
                     <el-submenu index="2">
                         <template slot="title">
@@ -61,7 +61,7 @@
                         </template>
                         <el-menu-item index="2-1">选项4</el-menu-item>
                         <el-menu-item index="2-2">选项5</el-menu-item>
-                        <el-menu-item index="2-3">选项6</el-menu-item>
+                        <el-menu-item index="moreInfo">完善信息</el-menu-item>
                     </el-submenu>
                 </el-menu>
             </div>
@@ -82,15 +82,17 @@
         <el-col :span="20">
             <el-divider></el-divider>
             <el-table :data="taskData" border style="width: 100%">
-                <el-table-column fixed prop="startName" label="发起人姓名"></el-table-column>
+                <el-table-column fixed prop="startName" label="发起人昵称"></el-table-column>
                 <el-table-column prop="taskTitle" label="任务标题"></el-table-column>
-                <el-table-column prop="taskType" label="任务类别"></el-table-column>
-                <el-table-column prop="taskPlace" label="任务地址"></el-table-column>
+                <el-table-column prop="taskType" label="任务类别" :formatter="formatterType"></el-table-column>
+                <el-table-column prop="taskPlace" label="任务地址" :formatter="formatterPlace"></el-table-column>
                 <el-table-column prop="taskTime" label="发布时间"></el-table-column>
-                <el-table-column fixed="right" label="操作">
+                <el-table-column prop="endName" label="接收人昵称" v-if="taskKind != 'taskSquare'"></el-table-column>
+                <el-table-column label="操作" :width="operateWidth">
                     <template slot-scope="scope">
-                        <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                        <el-button type="text" size="small">编辑</el-button>
+                        <span class="el-icon-view lookStyle" @click="lookTask(scope.row)">查看</span>
+                        <span class="el-icon-edit editStyle" v-if="taskKind != 'taskFinish'">接收任务</span>
+                        <span class="el-icon-delete-solid deleteStyle" v-if="taskKind == 'taskReceive'">取消接受</span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -111,8 +113,9 @@
             </el-form-item>
             <el-form-item label="任务类型" prop="taskType">
                 <el-select v-model="taskForm.taskType" placeholder="请选择任务类型">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
+                    <el-option label="跑腿任务" value="1"></el-option>
+                    <el-option label="学习任务" value="2"></el-option>
+                    <el-option label="志愿任务" value="3"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="任务地区" prop="taskPlace">
@@ -135,6 +138,48 @@
         <span slot="footer" class="dialog-footer">
             <el-button @click="insertTaskVisible = false">取 消</el-button>
             <el-button type="primary" @click="insertTask">确 定</el-button>
+        </span>
+    </el-dialog>
+    <el-dialog :visible.sync="receiveTaskVisible" width="80%">
+        <span style="font-size: 20px;font-weight: normal; color: rgba(52,148,243,1)">▌</span>接收任务
+        <el-divider></el-divider>
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span>任务信息</span>
+            </div>
+            <el-row>
+                <el-col :span="2" :offset="1">任务类型</el-col>
+                <el-col :span="5">任务类型内容</el-col>
+                <el-col :span="2" :offset="1">任务地址</el-col>
+                <el-col :span="5">任务地址内容</el-col>
+                <el-col :span="2" :offset="1">截止时间</el-col>
+                <el-col :span="5">截止时间内容</el-col>
+            </el-row>
+        </el-card>
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span>发布人信息</span>
+            </div>
+            <el-row>
+                <el-col :span="2" :offset="1">电话</el-col>
+                <el-col :span="5">电话内容</el-col>
+                <el-col :span="2" :offset="1">微信号</el-col>
+                <el-col :span="5">微信内容</el-col>
+                <el-col :span="2" :offset="1">QQ号码</el-col>
+                <el-col :span="5">QQ号码内容</el-col>
+            </el-row>
+        </el-card>
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span>任务详情</span>
+            </div>
+            <el-row>
+                <el-col :span="24" :offset="1">任务内容</el-col>
+            </el-row>
+        </el-card>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="receiveTaskVisible = false">取 消</el-button>
+            <el-button type="primary">接受任务</el-button>
         </span>
     </el-dialog>
 </div>

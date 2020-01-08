@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.luffykaiyuan.lifeplatform.po.TaskInfoPo">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="start_id" jdbcType="VARCHAR" property="startId" />
+    <result column="start_mail" jdbcType="VARCHAR" property="startMail" />
     <result column="start_name" jdbcType="VARCHAR" property="startName" />
     <result column="task_title" jdbcType="VARCHAR" property="taskTitle" />
     <result column="task_type" jdbcType="VARCHAR" property="taskType" />
@@ -11,13 +12,14 @@
     <result column="task_time" jdbcType="VARCHAR" property="taskTime" />
     <result column="task_content" jdbcType="VARCHAR" property="taskContent" />
     <result column="end_id" jdbcType="VARCHAR" property="endId" />
+    <result column="end_mail" jdbcType="VARCHAR" property="endMail" />
     <result column="end_name" jdbcType="VARCHAR" property="endName" />
     <result column="add_time" jdbcType="VARCHAR" property="addTime" />
     <result column="delete_status" jdbcType="VARCHAR" property="deleteStatus" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, start_id, start_name, task_title, task_type, task_place, task_time, task_content, end_id,
-    end_name, add_time, delete_status
+    id, start_id, start_mail, start_name, task_title, task_type, task_place, task_time, task_content, end_id,
+    end_mail, end_name, add_time, delete_status
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -33,6 +35,7 @@
     where task_type = #{taskType,jdbcType=VARCHAR}
     order by task_time desc
   </select>
+
   <select id="selectAllWaitTask" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -40,6 +43,7 @@
     where delete_status = '0'
     order by task_time desc
   </select>
+
   <select id="selectAllReceiveTask" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -47,6 +51,7 @@
     where delete_status = '1' and (end_id = #{endId,jdbcType=VARCHAR})
     order by task_time desc
   </select>
+
   <select id="selectAllFinishTask" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -54,18 +59,20 @@
     where delete_status = '2' and (end_id = #{endId,jdbcType=VARCHAR})
     order by task_time desc
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from task_info
     where id = #{id,jdbcType=VARCHAR}
   </delete>
+
   <insert id="insert" parameterType="com.luffykaiyuan.lifeplatform.po.TaskInfoPo">
-    insert into task_info (id, start_id, start_name, task_title,
+    insert into task_info (id, start_id, start_mail, start_name, task_title,
       task_type, task_place, task_time, 
-      task_content, end_id, end_name, 
+      task_content, end_id, end_mail, end_name,
       add_time, delete_status)
-    values (#{id,jdbcType=VARCHAR}, #{startId,jdbcType=VARCHAR}, #{startName,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=VARCHAR}, #{startId,jdbcType=VARCHAR}, #{startMail,jdbcType=VARCHAR},  #{startName,jdbcType=VARCHAR},
       #{taskTitle,jdbcType=VARCHAR}, #{taskType,jdbcType=VARCHAR}, #{taskPlace,jdbcType=VARCHAR},
-      #{taskTime,jdbcType=VARCHAR}, #{taskContent,jdbcType=VARCHAR}, #{endId,jdbcType=VARCHAR},
+      #{taskTime,jdbcType=VARCHAR}, #{taskContent,jdbcType=VARCHAR}, #{endId,jdbcType=VARCHAR}, #{endMail,jdbcType=VARCHAR},
       #{endName,jdbcType=VARCHAR}, #{addTime,jdbcType=VARCHAR}, #{deleteStatus,jdbcType=VARCHAR})
   </insert>
   <insert id="insertTask" parameterType="com.luffykaiyuan.lifeplatform.po.TaskInfoPo">
@@ -76,6 +83,9 @@
       </if>
       <if test="startId != null">
         start_id,
+      </if>
+      <if test="startMail != null">
+        start_mail,
       </if>
       <if test="startName != null">
         start_name,
@@ -98,6 +108,9 @@
       <if test="endId != null">
         end_id,
       </if>
+      <if test="endMail != null">
+        end_mail,
+      </if>
       <if test="endName != null">
         end_name,
       </if>
@@ -114,6 +127,9 @@
       </if>
       <if test="startId != null">
         #{startId,jdbcType=VARCHAR},
+      </if>
+      <if test="startMail != null">
+        #{startMail,jdbcType=VARCHAR},
       </if>
       <if test="startName != null">
         #{startName,jdbcType=VARCHAR},
@@ -136,6 +152,9 @@
       <if test="endId != null">
         #{endId,jdbcType=VARCHAR},
       </if>
+      <if test="endMail != null">
+        #{endMail,jdbcType=VARCHAR},
+      </if>
       <if test="endName != null">
         #{endName,jdbcType=VARCHAR},
       </if>
@@ -152,6 +171,9 @@
     <set>
       <if test="startId != null">
         start_id = #{startId,jdbcType=VARCHAR},
+      </if>
+      <if test="startMail != null">
+        start_mail = #{startMail,jdbcType=VARCHAR},
       </if>
       <if test="startName != null">
         start_name = #{startName,jdbcType=VARCHAR},
@@ -174,6 +196,9 @@
       <if test="endId != null">
         end_id = #{endId,jdbcType=VARCHAR},
       </if>
+      <if test="endMail != null">
+        end_mail = #{endMail,jdbcType=VARCHAR},
+      </if>
       <if test="endName != null">
         end_name = #{endName,jdbcType=VARCHAR},
       </if>
@@ -189,6 +214,7 @@
   <update id="updateByPrimaryKey" parameterType="com.luffykaiyuan.lifeplatform.po.TaskInfoPo">
     update task_info
     set start_id = #{startId,jdbcType=VARCHAR},
+      start_mail = #{startMail,jdbcType=VARCHAR},
       start_name = #{startName,jdbcType=VARCHAR},
       task_title = #{taskTitle,jdbcType=VARCHAR},
       task_type = #{taskType,jdbcType=VARCHAR},
@@ -196,6 +222,7 @@
       task_time = #{taskTime,jdbcType=VARCHAR},
       task_content = #{taskContent,jdbcType=VARCHAR},
       end_id = #{endId,jdbcType=VARCHAR},
+      end_mail = #{endMail,jdbcType=VARCHAR},
       end_name = #{endName,jdbcType=VARCHAR},
       add_time = #{addTime,jdbcType=VARCHAR},
       delete_status = #{deleteStatus,jdbcType=VARCHAR}

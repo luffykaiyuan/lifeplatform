@@ -1,0 +1,9 @@
+[v-cloak]{
+    display: none;
+}
+.el-row {
+    margin-bottom: 8px;
+}
+.el-col {
+    border-radius: 4px;
+}

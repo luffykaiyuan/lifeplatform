@@ -3,8 +3,12 @@ var vue1 = new Vue({
     data: function () {
         return {
             contextPath:'',
+            userName:'',
+            taskKind: '',
             urls:{
-                initTask: '/taskInfo/selectAllTask',
+                initTaskSquare: '/taskInfo/selectAllWaitTask',
+
+
                 insertTask: '/taskInfo/insertTask',
             },
             sureLogin: true,
@@ -12,18 +16,19 @@ var vue1 = new Vue({
                 value: '所有',
                 label: '所有'
             }, {
-                value: '跑腿任务',
+                value: '1',
                 label: '跑腿任务'
             }, {
-                value: '学习任务',
+                value: '2',
                 label: '学习任务'
             }, {
-                value: '志愿任务',
+                value: '3',
                 label: '志愿任务'
             }],
             value: '',
             taskData: [],
             insertTaskVisible: false,
+            receiveTaskVisible: false,
             taskForm: {
                 taskTitle: '',
                 taskType: '',
@@ -49,7 +54,8 @@ var vue1 = new Vue({
                     { required: true, message: '请输入任务内容', trigger: 'blur' },
                     { max: 2000, message: '长度在 2000 个字符', trigger: 'blur' }
                 ],
-            }
+            },
+            operateWidth: 200
         }
     },
     created: function () {
@@ -57,16 +63,47 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
+        this.userName = sessionStorage.getItem("userName");
+        var flag = this.GetRequest().flag;
+        console.log(this.GetRequest().flag);
+        if(flag){
+            this.handleSelect(flag);
+        }
         this.refreshTask();
     },
     filters: {},
     mounted: function () {
     },
     methods: {
+        //获取url中"?"符后的字串
+        GetRequest() {
+            var url = location.search;
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                strs = str.split("&");
+                for (var i = 0; i < strs.length; i++) {
+                    theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                }
+            }
+            return theRequest;
+        },
         //打开任务发布的弹窗
         openInsertTask(){
             var self = this;
-            self.insertTaskVisible = true;
+            if (!this.userName){
+                self.$confirm('您还未登录，是否跳转到登录界面?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    window.location.href = this.contextPath + "/login";
+                }).catch(() => {
+                    return;
+                });
+            }else{
+                self.insertTaskVisible = true;
+            }
         },
         //新增任务
         insertTask(){
@@ -90,24 +127,48 @@ var vue1 = new Vue({
                 }
             });
         },
+        //查看任务
+        lookTask(row){
+            this.receiveTaskVisible = true;
+        },
         //刷新数据
         refreshTask(){
             var self = this;
-            var url = self.contextPath + self.urls.initTask;
+            var url = self.contextPath + self.urls.initTaskSquare;
             axios.get(url)
                 .then(function (res) {
                     self.taskData = res.data;
                 })
         },
-        handleOpen(key, keyPath) {
-            console.log(key, keyPath);
+        // 切换表单
+        handleSelect(key) {
+            this.taskKind = key;
+            if (key === 'taskSquare'){
+                this.operateWidth = 200;
+            }else if (key === 'taskReceive'){
+                this.operateWidth = 300;
+            }else if (key === 'taskFinish'){
+                this.operateWidth = 100;
+            }else if (key === 'moreInfo'){
+                window.location.href = this.contextPath + "/userInfo?flag=moreInfo";
+            }
         },
-        handleClose(key, keyPath) {
-            console.log(key, keyPath);
+        //格式化数据
+        formatterPlace(row){
+            if (row.taskPlace === '1'){
+                return "成都东软学院";
+            }
+            return "未知";
         },
-        handleClick(row) {
-            console.log(row);
-        }
+        formatterType(row){
+            for (var i = 0; i < this.taskSelect.length; i++){
+                if (this.taskSelect[i].value === row.taskType){
+                    return this.taskSelect[i].label;
+                }
+            }
+            return "未知";
+        },
+
     },
     watch: {}
 });

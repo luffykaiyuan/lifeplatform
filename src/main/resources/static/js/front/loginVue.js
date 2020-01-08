@@ -99,6 +99,7 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
+        sessionStorage.clear();
     },
     filters: {},
     mounted: function () {
@@ -124,6 +125,7 @@ var vue1 = new Vue({
                     axios.post(url, self.loginForm)
                         .then(function (res) {
                             if ('登录成功！' === res.data){
+                                sessionStorage.setItem("userName", self.loginForm.userName);
                                 location.href="taskList";
                             }else{
                                 self.loginDisabled = false;

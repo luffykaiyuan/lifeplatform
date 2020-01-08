@@ -1,0 +1,23 @@
+.lookStyle{
+    cursor:pointer;
+    color: #33B78E;
+    margin-left: 5px
+}
+
+.editStyle{
+    cursor:pointer;
+    color: #0081E0;
+    margin-left: 5px
+}
+
+.deleteStyle{
+    cursor:pointer;
+    color: #DB1C1C;
+    margin-left: 5px
+}
+.warningStyle{
+    cursor:pointer;
+    color: #ebb563;
+    margin-left: 5px;
+}
+

@@ -16,6 +16,11 @@ public class EntryController {
         return "front/taskList";
     }
 
+    @RequestMapping("/userInfo")
+    public String entryUserInfo(){
+        return "front/userInfo";
+    }
+
     @RequestMapping("/login")
     public String entryLogin(){
         return "front/login";
