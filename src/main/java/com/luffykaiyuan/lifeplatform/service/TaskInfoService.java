@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class TaskInfoService {
@@ -24,7 +23,7 @@ public class TaskInfoService {
         taskInfoPo.setAddTime(GetNowDate.getStringDate());
         taskInfoPo.setStartId(id);
         taskInfoPo.setStartName(nickName);
-        taskInfoPo.setStartMail(userName);
+        taskInfoPo.setStartUsername(userName);
         taskInfoPo.setId(UUIDUtils.getUUID(32));
         int resule = taskInfoPoMapper.insertTask(taskInfoPo);
         if (resule > 0){
@@ -37,6 +36,33 @@ public class TaskInfoService {
         return taskInfoPoMapper.updateTask(taskInfoPo);
     }
 
+    public int receiveTask(String id, HttpSession session){
+        TaskInfoPo taskInfoPo = new TaskInfoPo();
+        taskInfoPo.setId(id);
+        taskInfoPo.setDeleteStatus("1");
+        taskInfoPo.setEndId((String)session.getAttribute("id"));
+        taskInfoPo.setEndUsername((String)session.getAttribute("userName"));
+        taskInfoPo.setEndName((String)session.getAttribute("nickName"));
+        return taskInfoPoMapper.updateTask(taskInfoPo);
+    }
+
+    public int notReceive(String id){
+        TaskInfoPo taskInfoPo = new TaskInfoPo();
+        taskInfoPo.setId(id);
+        taskInfoPo.setDeleteStatus("0");
+        taskInfoPo.setEndId(" ");
+        taskInfoPo.setEndUsername(" ");
+        taskInfoPo.setEndName(" ");
+        return taskInfoPoMapper.updateTask(taskInfoPo);
+    }
+
+    public int finishTask(String id){
+        TaskInfoPo taskInfoPo = new TaskInfoPo();
+        taskInfoPo.setId(id);
+        taskInfoPo.setDeleteStatus("2");
+        return taskInfoPoMapper.updateTask(taskInfoPo);
+    }
+
     public List<TaskInfoPo> selectByTaskType(String taskType){
         return taskInfoPoMapper.selectByTaskType(taskType);
     }
@@ -45,11 +71,11 @@ public class TaskInfoService {
         return taskInfoPoMapper.selectAllWaitTask();
     }
 
-    public List<TaskInfoPo> selectAllReceiveTask(String endId){
-        return taskInfoPoMapper.selectAllReceiveTask(endId);
+    public List<TaskInfoPo> selectAllReceiveTask(String endUsername){
+        return taskInfoPoMapper.selectAllReceiveTask(endUsername);
     }
 
-    public List<TaskInfoPo> selectAllFinishTask(String endId){
-        return taskInfoPoMapper.selectAllFinishTask(endId);
+    public List<TaskInfoPo> selectAllFinishTask(String endUsername){
+        return taskInfoPoMapper.selectAllFinishTask(endUsername);
     }
 }

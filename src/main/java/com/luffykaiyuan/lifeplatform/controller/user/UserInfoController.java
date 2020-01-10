@@ -19,7 +19,6 @@ public class UserInfoController {
 
     @GetMapping("/selectUserInfo")
     public UserInfo selectUserInfo(@RequestParam("loginId") String loginId){
-        System.out.println("1111111111111111");
         return userInfoService.selectUserInfo(loginId);
     }
 }

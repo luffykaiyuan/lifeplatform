@@ -40,6 +40,42 @@ public class TaskInfoController {
         return taskInfoService.updateTask(taskInfoPo);
     }
 
+    /** 
+    * @Description: 接受任务 
+    * @Param: [id, session] 
+    * @return: int 
+    * @Author: 陈开源
+    * @Date: 2020/1/10 
+    */
+    @GetMapping("/receiveTask")
+    public int receiveTask(@RequestParam("id") String id, HttpSession session){
+        return taskInfoService.receiveTask(id, session);
+    }
+
+    /** 
+    * @Description: 取消接收的任务 
+    * @Param: [id] 
+    * @return: int 
+    * @Author: 陈开源
+    * @Date: 2020/1/10 
+    */
+    @GetMapping("/notReceive")
+    public int notReceive(@RequestParam("id") String id){
+        return taskInfoService.notReceive(id);
+    }
+    
+    /** 
+    * @Description: 完成任务 
+    * @Param: [id] 
+    * @return: int 
+    * @Author: 陈开源
+    * @Date: 2020/1/10 
+    */
+    @GetMapping("/finishTask")
+    public int finishTask(@RequestParam("id") String id){
+        return taskInfoService.finishTask(id);
+    }
+
     /**
     * @Description:  通过任务类型查询任务
     * @Param: [taskType]
@@ -66,25 +102,25 @@ public class TaskInfoController {
 
     /**
     * @Description:  查询个人接收的所有任务
-    * @Param: [endId]
+    * @Param: [endUsername]
     * @return: java.util.List<com.luffykaiyuan.lifeplatform.po.TaskInfoPo>
     * @Author: 陈开源
     * @Date: 2019/11/22
     */
     @GetMapping("/selectAllReceiveTask")
-    public List<TaskInfoPo> selectAllReceiveTask(@RequestParam("endId") String endId){
-        return taskInfoService.selectAllReceiveTask(endId);
+    public List<TaskInfoPo> selectAllReceiveTask(@RequestParam("endUsername") String endUsername){
+        return taskInfoService.selectAllReceiveTask(endUsername);
     }
 
     /**
     * @Description: 查询个人完成的所有任务
-    * @Param: [endId]
+    * @Param: [endUsername]
     * @return: java.util.List<com.luffykaiyuan.lifeplatform.po.TaskInfoPo>
     * @Author: 陈开源
     * @Date: 2019/11/22
     */
     @GetMapping("/selectAllFinishTask")
-    public List<TaskInfoPo> selectAllFinishTask(@RequestParam("endId") String endId){
-        return taskInfoService.selectAllFinishTask(endId);
+    public List<TaskInfoPo> selectAllFinishTask(@RequestParam("endUsername") String endUsername){
+        return taskInfoService.selectAllFinishTask(endUsername);
     }
 }

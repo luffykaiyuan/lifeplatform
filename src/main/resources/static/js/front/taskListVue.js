@@ -7,9 +7,14 @@ var vue1 = new Vue({
             taskKind: '',
             urls:{
                 initTaskSquare: '/taskInfo/selectAllWaitTask',
+                initTaskReceive: '/taskInfo/selectAllReceiveTask',
+                initTaskFinish: '/taskInfo/selectAllFinishTask',
                 initUser: '/userInfo/selectUserInfo',
 
                 insertTask: '/taskInfo/insertTask',
+                receiveTask: '/taskInfo/receiveTask',
+                finishTask: '/taskInfo/finishTask',
+                notReceive: '/taskInfo/notReceive',
             },
             sureLogin: true,
             taskSelect: [{
@@ -37,7 +42,14 @@ var vue1 = new Vue({
                 taskContent: '',
             },
             lookInfo:{
-
+                id: '',
+                taskType: '',
+                taskPlace: '',
+                taskTime: '',
+                phone: '',
+                qqNumber: '',
+                wechatNumber: '',
+                taskContent: '',
             },
             taskFormRules: {
                 taskTitle: [
@@ -68,11 +80,11 @@ var vue1 = new Vue({
         this.contextPath = contextPath;
         this.userName = sessionStorage.getItem("userName");
         var flag = this.GetRequest().flag;
-        console.log(this.GetRequest().flag);
         if(flag){
             this.handleSelect(flag);
+        }else{
+            this.handleSelect("taskSquare");
         }
-        this.refreshTask();
     },
     filters: {},
     mounted: function () {
@@ -117,7 +129,7 @@ var vue1 = new Vue({
                     axios.post(url, self.taskForm,)
                         .then(function (res) {
                             self.insertTaskVisible = false;
-                            self.refreshTask();
+                            self.refreshTask(self.urls.initTaskSquare);
                             self.$message({
                                 showClose: true,
                                 message: '发布成功！',
@@ -134,17 +146,92 @@ var vue1 = new Vue({
         lookTask(row){
             this.receiveTaskVisible = true;
             var self = this;
-            console.log(row);
-            var url = self.contextPath + self.urls.initUserInfo + "?loginId=" + row.userName;
+            self.lookInfo.taskType = self.formatterType(row);
+            self.lookInfo.taskPlace = row.taskPlace;
+            self.lookInfo.id = row.id;
+            self.lookInfo.taskTime = row.taskTime;
+            self.lookInfo.taskContent = row.taskContent;
+            self.lookInfo.taskContent = row.taskContent;
+            var url = self.contextPath + self.urls.initUser + "?loginId=" + row.startUsername;
             axios.get(url)
                 .then(function (res) {
-                    console.log(res);
+                    self.lookInfo.phone = res.data.phone;
+                    self.lookInfo.qqNumber = res.data.qqNumber;
+                    self.lookInfo.wechatNumber = res.data.wechatNumber;
                 })
         },
-        //刷新数据
-        refreshTask(){
+        //接收任务
+        receiveTask(){
             var self = this;
-            var url = self.contextPath + self.urls.initTaskSquare;
+            var url = self.contextPath + self.urls.receiveTask + "?id=" + self.lookInfo.id;
+            axios.get(url)
+                .then(function (res) {
+                    self.receiveTaskVisible = false;
+                    self.$message({
+                        showClose: true,
+                        message: '接收成功，请尽快与发布人联系并完成任务！',
+                        type: 'success'
+                    });
+                    self.refreshTask(self.urls.initTaskSquare);
+                })
+        },
+        notReceive(row){
+            var self = this;
+            var url = self.contextPath + self.urls.notReceive + "?id=" + row.id;
+            self.$confirm('确定要取消任务?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                axios.get(url)
+                    .then(function (res) {
+                        self.receiveTaskVisible = false;
+                        self.$message({
+                            showClose: true,
+                            message: '已取消！',
+                            type: 'success'
+                        });
+                        var lastUrl = self.urls.initTaskReceive + "?endUsername=" + self.userName;
+                        self.refreshTask(lastUrl);
+                    })
+            }).catch(() => {
+                self.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+        },
+        //完成任务
+        finishTask(){
+            var self = this;
+            var url = self.contextPath + self.urls.finishTask + "?id=" + self.lookInfo.id;
+            self.$confirm('确定任务是否完成?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                axios.get(url)
+                    .then(function (res) {
+                        self.receiveTaskVisible = false;
+                        self.$message({
+                            showClose: true,
+                            message: '已成功完成任务！',
+                            type: 'success'
+                        });
+                        var lastUrl = self.urls.initTaskReceive + "?endUsername=" + self.userName;
+                        self.refreshTask(lastUrl);
+                    })
+            }).catch(() => {
+                self.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+        },
+        //刷新数据
+        refreshTask(lastUrl){
+            var self = this;
+            var url = self.contextPath + lastUrl;
             axios.get(url)
                 .then(function (res) {
                     self.taskData = res.data;
@@ -154,10 +241,15 @@ var vue1 = new Vue({
         handleSelect(key) {
             this.taskKind = key;
             if (key === 'taskSquare'){
-                this.operateWidth = 200;
+                this.refreshTask(this.urls.initTaskSquare);
+                this.operateWidth = 100;
             }else if (key === 'taskReceive'){
+                var lastUrl = this.urls.initTaskReceive + "?endUsername=" + this.userName;
+                this.refreshTask(lastUrl);
                 this.operateWidth = 300;
             }else if (key === 'taskFinish'){
+                var lastUrl = this.urls.initTaskFinish + "?endUsername=" + this.userName;
+                this.refreshTask(lastUrl);
                 this.operateWidth = 100;
             }else if (key === 'moreInfo'){
                 window.location.href = this.contextPath + "/userInfo?flag=moreInfo";

@@ -5,7 +5,7 @@ public class TaskInfoPo {
 
     private String startId;
 
-    private String startMail;
+    private String startUsername;
 
     private String startName;
 
@@ -21,7 +21,7 @@ public class TaskInfoPo {
 
     private String endId;
 
-    private String endMail;
+    private String endUsername;
 
     private String endName;
 
@@ -45,12 +45,12 @@ public class TaskInfoPo {
         this.startId = startId == null ? null : startId.trim();
     }
 
-    public void setStartMail(String startMail) {
-        this.startMail = startMail;
+    public void setStartUsername(String startUsername) {
+        this.startUsername = startUsername;
     }
 
-    public String getStartMail() {
-        return startMail;
+    public String getStartUsername() {
+        return startUsername;
     }
 
     public String getStartName() {
@@ -109,12 +109,12 @@ public class TaskInfoPo {
         this.endId = endId == null ? null : endId.trim();
     }
 
-    public void setEndMail(String endMail) {
-        this.endMail = endMail;
+    public void setEndUsername(String endUsername) {
+        this.endUsername = endUsername;
     }
 
-    public String getEndMail() {
-        return endMail;
+    public String getEndUsername() {
+        return endUsername;
     }
 
     public String getEndName() {

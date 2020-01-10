@@ -10,25 +10,19 @@ import java.util.List;
 @Mapper
 public interface TaskInfoPoMapper {
 
-    int insertTask(TaskInfoPo record);
+    int insertTask(TaskInfoPo taskInfoPo);
 
-    int updateTask(TaskInfoPo record);
+    int updateTask(TaskInfoPo taskInfoPo);
 
     List<TaskInfoPo> selectByTaskType(String taskType);
 
     List<TaskInfoPo> selectAllWaitTask();
 
-    List<TaskInfoPo> selectAllReceiveTask(String endId);
+    List<TaskInfoPo> selectAllReceiveTask(String endUsername);
 
-    List<TaskInfoPo> selectAllFinishTask(String endId);
+    List<TaskInfoPo> selectAllFinishTask(String endUsername);
 
     //以下为自动生成代码
 
-    int deleteByPrimaryKey(String id);
-
-    int insert(TaskInfoPo record);
-
     TaskInfoPo selectByPrimaryKey(String id);
-
-    int updateByPrimaryKey(TaskInfoPo record);
 }
