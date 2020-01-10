@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @RequestMapping("/user")
-@Controller
+@RestController
 public class LoginInfoController {
     
     @Autowired
@@ -23,7 +23,6 @@ public class LoginInfoController {
     * @Date: 2019/11/22 
     */
     @PostMapping("/insertLoginInfo")
-    @ResponseBody
     public String insertLoginInfo(@RequestBody LoginInfoPo loginInfoPo){
         loginInfoService.insertLoginInfo(loginInfoPo);
         return "success";
@@ -37,7 +36,6 @@ public class LoginInfoController {
     * @Date: 2019/11/22 
     */
     @PostMapping("/doLogin")
-    @ResponseBody
     public String selectByUserName(@RequestBody LoginInfoPo loginInfoPo, HttpSession session){
         return loginInfoService.selectByUserName(loginInfoPo, session);
     }
@@ -50,7 +48,6 @@ public class LoginInfoController {
     * @Date: 2019/12/27
     */
     @GetMapping("/confirmUser")
-    @ResponseBody
     public boolean confirmUser(@RequestParam("userName") String userName){
         return loginInfoService.confirmUser(userName);
     }
@@ -63,7 +60,6 @@ public class LoginInfoController {
     * @Date: 2019/11/22 
     */
     @RequestMapping("/updateLoginInfo")
-    @ResponseBody
     public String updateLoginInfo(@RequestBody LoginInfoPo loginInfoPo){
         loginInfoService.updateLoginInfo(loginInfoPo);
         return "success";

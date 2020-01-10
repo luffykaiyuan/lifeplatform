@@ -5,16 +5,14 @@ var vue1 = new Vue({
             contextPath:'',
             userName:'',
             urls:{
+                initUserInfo: '/userInfo/selectUserInfo',
+                updateUserInfo: '/userInfo/updateUserInfo'
             },
-            form: {
-                name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: false,
-                type: [],
-                resource: '',
-                desc: ''
+            userForm: {
+                phone: '',
+                wechatNumber: '',
+                qqNumber: '',
+                userGender: '',
             }
         }
     },
@@ -24,7 +22,17 @@ var vue1 = new Vue({
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
         this.userName = sessionStorage.getItem("userName");
-        console.log(this.GetRequest().flag);
+        if (!this.userName){
+            window.location.href = this.contextPath + "/login";
+        }else {
+            var self = this;
+            var url = self.contextPath + self.urls.initUserInfo + "?loginId=" + self.userName;
+            axios.get(url)
+                .then(function (res) {
+                    console.log(res);
+                    self.userForm = res.data;
+                })
+        }
     },
     filters: {},
     mounted: function () {
@@ -44,7 +52,16 @@ var vue1 = new Vue({
             return theRequest;
         },
         onSubmit() {
-            console.log('submit!');
+            var self = this;
+            var url = self.contextPath + self.urls.updateUserInfo;
+            axios.post(url, self.userForm)
+                .then(function (res) {
+                    self.$message({
+                        showClose: true,
+                        message: '修改成功！',
+                        type: 'success'
+                    });
+                })
         },
         // 切换表单
         handleSelect(key, keyPath) {

@@ -1,7 +1,9 @@
 package com.luffykaiyuan.lifeplatform.service.user;
 
 import com.luffykaiyuan.lifeplatform.dao.user.LoginInfoPoMapper;
+import com.luffykaiyuan.lifeplatform.dao.user.UserInfoMapper;
 import com.luffykaiyuan.lifeplatform.po.user.LoginInfoPo;
+import com.luffykaiyuan.lifeplatform.po.user.UserInfo;
 import com.luffykaiyuan.lifeplatform.util.GetNowDate;
 import com.luffykaiyuan.lifeplatform.util.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,17 @@ public class LoginInfoService {
     @Autowired
     LoginInfoPoMapper loginInfoPoMapper;
 
+    @Autowired
+    UserInfoMapper userInfoMapper;
+
     public int insertLoginInfo(LoginInfoPo loginInfoPo){
         loginInfoPo.setId(UUIDUtils.getUUID(32));
         loginInfoPo.setAddTime(GetNowDate.getStringDate());
+        UserInfo userInfo = new UserInfo();
+        userInfo.setId(UUIDUtils.getUUID(32));
+        userInfo.setLoginId(loginInfoPo.getUserName());
+        userInfo.setAddTime(GetNowDate.getStringDate());
+        userInfoMapper.insertUserInfo(userInfo);
         return loginInfoPoMapper.insertLoginInfo(loginInfoPo);
     }
 

@@ -14,25 +14,14 @@
   <sql id="Base_Column_List">
     id, login_id, user_gender, phone, qq_number, wechat_number, add_time, delete_status
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectUserInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from user_info
-    where id = #{id,jdbcType=VARCHAR}
+    where login_id = #{loginId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from user_info
-    where id = #{id,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.luffykaiyuan.lifeplatform.po.user.UserInfo">
-    insert into user_info (id, login_id, user_gender, 
-      phone, qq_number, wechat_number, 
-      add_time, delete_status)
-    values (#{id,jdbcType=VARCHAR}, #{loginId,jdbcType=VARCHAR}, #{userGender,jdbcType=VARCHAR}, 
-      #{phone,jdbcType=VARCHAR}, #{qqNumber,jdbcType=VARCHAR}, #{wechatNumber,jdbcType=VARCHAR}, 
-      #{addTime,jdbcType=VARCHAR}, #{deleteStatus,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.luffykaiyuan.lifeplatform.po.user.UserInfo">
+
+  <insert id="insertUserInfo" parameterType="com.luffykaiyuan.lifeplatform.po.user.UserInfo">
     insert into user_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -87,12 +76,10 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.luffykaiyuan.lifeplatform.po.user.UserInfo">
+
+  <update id="updateUserInfo" parameterType="com.luffykaiyuan.lifeplatform.po.user.UserInfo">
     update user_info
     <set>
-      <if test="loginId != null">
-        login_id = #{loginId,jdbcType=VARCHAR},
-      </if>
       <if test="userGender != null">
         user_gender = #{userGender,jdbcType=VARCHAR},
       </if>
@@ -105,24 +92,10 @@
       <if test="wechatNumber != null">
         wechat_number = #{wechatNumber,jdbcType=VARCHAR},
       </if>
-      <if test="addTime != null">
-        add_time = #{addTime,jdbcType=VARCHAR},
-      </if>
       <if test="deleteStatus != null">
         delete_status = #{deleteStatus,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.luffykaiyuan.lifeplatform.po.user.UserInfo">
-    update user_info
-    set login_id = #{loginId,jdbcType=VARCHAR},
-      user_gender = #{userGender,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR},
-      qq_number = #{qqNumber,jdbcType=VARCHAR},
-      wechat_number = #{wechatNumber,jdbcType=VARCHAR},
-      add_time = #{addTime,jdbcType=VARCHAR},
-      delete_status = #{deleteStatus,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

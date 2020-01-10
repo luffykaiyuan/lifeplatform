@@ -1,17 +1,17 @@
 package com.luffykaiyuan.lifeplatform.dao.user;
 
 import com.luffykaiyuan.lifeplatform.po.user.UserInfo;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
+@Mapper
+@Repository
 public interface UserInfoMapper {
-    int deleteByPrimaryKey(String id);
 
-    int insert(UserInfo record);
+    int insertUserInfo(UserInfo userInfo);
 
-    int insertSelective(UserInfo record);
+    int updateUserInfo(UserInfo userInfo);
 
-    UserInfo selectByPrimaryKey(String id);
+    UserInfo selectUserInfo(String loginId);
 
-    int updateByPrimaryKeySelective(UserInfo record);
-
-    int updateByPrimaryKey(UserInfo record);
 }

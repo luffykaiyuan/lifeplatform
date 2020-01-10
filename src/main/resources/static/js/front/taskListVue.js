@@ -7,7 +7,7 @@ var vue1 = new Vue({
             taskKind: '',
             urls:{
                 initTaskSquare: '/taskInfo/selectAllWaitTask',
-
+                initUser: '/userInfo/selectUserInfo',
 
                 insertTask: '/taskInfo/insertTask',
             },
@@ -35,6 +35,9 @@ var vue1 = new Vue({
                 taskPlace: '',
                 taskTime: '',
                 taskContent: '',
+            },
+            lookInfo:{
+
             },
             taskFormRules: {
                 taskTitle: [
@@ -130,6 +133,13 @@ var vue1 = new Vue({
         //查看任务
         lookTask(row){
             this.receiveTaskVisible = true;
+            var self = this;
+            console.log(row);
+            var url = self.contextPath + self.urls.initUserInfo + "?loginId=" + row.userName;
+            axios.get(url)
+                .then(function (res) {
+                    console.log(res);
+                })
         },
         //刷新数据
         refreshTask(){
