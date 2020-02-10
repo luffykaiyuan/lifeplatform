@@ -6,7 +6,7 @@ server:
 spring:
   mvc:
     view:
-      suffix: /,/front
+      suffix: /,/front,/app
       prefix: .html
   #关闭缓存
   thymeleaf:

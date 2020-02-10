@@ -1,6 +1,8 @@
 package com.luffykaiyuan.lifeplatform.controller.user;
 
+import com.luffykaiyuan.lifeplatform.po.sys.SysInfoPo;
 import com.luffykaiyuan.lifeplatform.po.user.LoginInfoPo;
+import com.luffykaiyuan.lifeplatform.service.sys.SysInfoService;
 import com.luffykaiyuan.lifeplatform.service.user.LoginInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +17,9 @@ public class LoginInfoController {
     @Autowired
     LoginInfoService loginInfoService;
 
-    /** 
+    @Autowired
+    SysInfoService sysInfoService;
+    /**
     * @Description: 用户注册 
     * @Param: [loginInfoPo] 
     * @return: java.lang.String 
@@ -63,5 +67,17 @@ public class LoginInfoController {
     public String updateLoginInfo(@RequestBody LoginInfoPo loginInfoPo){
         loginInfoService.updateLoginInfo(loginInfoPo);
         return "success";
+    }
+
+    /** 
+    * @Description: 管理员账号登录 
+    * @Param: [sysInfoPo, session] 
+    * @return: java.lang.String 
+    * @Author: 陈开源
+    * @Date: 2020/2/10 
+    */
+    @PostMapping("/adminLogin")
+    public String adminLogin(@RequestBody SysInfoPo sysInfoPo, HttpSession session){
+        return sysInfoService.confirmAdmin(sysInfoPo, session);
     }
 }

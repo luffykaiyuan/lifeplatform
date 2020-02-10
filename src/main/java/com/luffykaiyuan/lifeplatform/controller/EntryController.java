@@ -8,7 +8,7 @@ public class EntryController {
 
     @RequestMapping("/index")
     public String entryIndex(){
-        return "front/index";
+        return "app/index";
     }
 
     @RequestMapping("/taskList")
@@ -24,5 +24,10 @@ public class EntryController {
     @RequestMapping("/login")
     public String entryLogin(){
         return "front/login";
+    }
+
+    @RequestMapping("/adminLogin")
+    public String entryAdminLogin(){
+        return "app/adminLogin";
     }
 }

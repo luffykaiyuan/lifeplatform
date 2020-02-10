@@ -13,16 +13,13 @@
   <sql id="Base_Column_List">
     id, user_name, password, sys_name, sys_rank, add_time, delete_status
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="confirmAdmin" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysInfoPo" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from sys_info
-    where id = #{id,jdbcType=VARCHAR}
+    where user_name = #{userName,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from sys_info
-    where id = #{id,jdbcType=VARCHAR}
-  </delete>
+
   <insert id="insert" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysInfoPo">
     insert into sys_info (id, user_name, password, 
       sys_name, sys_rank, add_time, 
