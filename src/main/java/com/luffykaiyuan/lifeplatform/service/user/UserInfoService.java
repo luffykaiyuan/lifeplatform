@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Service
 public class UserInfoService {
@@ -21,5 +22,9 @@ public class UserInfoService {
 
     public UserInfo selectUserInfo(String loginId){
         return userInfoMapper.selectUserInfo(loginId);
+    }
+
+    public List<UserInfo> selectAllUser(){
+        return userInfoMapper.selectAllUser();
     }
 }

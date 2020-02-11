@@ -16,6 +16,18 @@ public class TaskInfoController {
     @Autowired
     TaskInfoService taskInfoService;
 
+    /** 
+    * @Description: 查询所有任务 
+    * @Param: [] 
+    * @return: java.util.List<com.luffykaiyuan.lifeplatform.po.TaskInfoPo> 
+    * @Author: 陈开源
+    * @Date: 2020/2/11 
+    */
+    @GetMapping("/selectAllTask")
+    public List<TaskInfoPo> selectAllTask(){
+        return taskInfoService.selectAllTask();
+    }
+    
     /**
     * @Description:  新增一个任务
     * @Param: [taskInfoPo]

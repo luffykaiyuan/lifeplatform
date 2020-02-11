@@ -4,6 +4,8 @@ import com.luffykaiyuan.lifeplatform.po.user.UserInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Mapper
 @Repository
 public interface UserInfoMapper {
@@ -14,4 +16,5 @@ public interface UserInfoMapper {
 
     UserInfo selectUserInfo(String loginId);
 
+    List<UserInfo> selectAllUser();
 }

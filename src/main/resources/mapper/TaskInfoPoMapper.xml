@@ -44,6 +44,13 @@
     order by task_time desc
   </select>
 
+  <select id="selectAllTask" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from task_info
+    order by task_time desc
+  </select>
+
   <select id="selectAllReceiveTask" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

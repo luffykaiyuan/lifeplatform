@@ -21,6 +21,12 @@
     where login_id = #{loginId,jdbcType=VARCHAR}
   </select>
 
+  <select id="selectAllUser" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_info
+  </select>
+
   <insert id="insertUserInfo" parameterType="com.luffykaiyuan.lifeplatform.po.user.UserInfo">
     insert into user_info
     <trim prefix="(" suffix=")" suffixOverrides=",">

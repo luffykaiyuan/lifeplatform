@@ -71,6 +71,10 @@ public class TaskInfoService {
         return taskInfoPoMapper.selectAllWaitTask();
     }
 
+    public List<TaskInfoPo> selectAllTask(){
+        return taskInfoPoMapper.selectAllTask();
+    }
+
     public List<TaskInfoPo> selectAllReceiveTask(String endUsername){
         return taskInfoPoMapper.selectAllReceiveTask(endUsername);
     }

@@ -18,6 +18,8 @@ public interface TaskInfoPoMapper {
 
     List<TaskInfoPo> selectAllWaitTask();
 
+    List<TaskInfoPo> selectAllTask();
+
     List<TaskInfoPo> selectAllReceiveTask(String endUsername);
 
     List<TaskInfoPo> selectAllFinishTask(String endUsername);

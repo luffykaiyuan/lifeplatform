@@ -5,6 +5,8 @@ import com.luffykaiyuan.lifeplatform.service.user.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/userInfo")
 @RestController
 public class UserInfoController {
@@ -20,5 +22,10 @@ public class UserInfoController {
     @GetMapping("/selectUserInfo")
     public UserInfo selectUserInfo(@RequestParam("loginId") String loginId){
         return userInfoService.selectUserInfo(loginId);
+    }
+
+    @GetMapping("/selectAllUser")
+    public List<UserInfo> selectAllUser(){
+        return userInfoService.selectAllUser();
     }
 }

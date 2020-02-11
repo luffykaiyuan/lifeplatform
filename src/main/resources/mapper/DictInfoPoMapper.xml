@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luffykaiyuan.lifeplatform.dao.DictInfoPoMapper">
+  <resultMap id="BaseResultMap" type="com.luffykaiyuan.lifeplatform.po.DictInfoPo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="dict_name" jdbcType="VARCHAR" property="dictName" />
+    <result column="dict_type" jdbcType="VARCHAR" property="dictType" />
+    <result column="dict_order" jdbcType="INTEGER" property="dictOrder" />
+    <result column="add_user" jdbcType="VARCHAR" property="addUser" />
+    <result column="add_time" jdbcType="VARCHAR" property="addTime" />
+    <result column="delete_status" jdbcType="VARCHAR" property="deleteStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, dict_name, dict_type, dict_order, add_user, add_time, delete_status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from dict_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from dict_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.luffykaiyuan.lifeplatform.po.DictInfoPo">
+    insert into dict_info (id, dict_name, dict_type, 
+      dict_order, add_user, add_time, 
+      delete_status)
+    values (#{id,jdbcType=INTEGER}, #{dictName,jdbcType=VARCHAR}, #{dictType,jdbcType=VARCHAR}, 
+      #{dictOrder,jdbcType=INTEGER}, #{addUser,jdbcType=VARCHAR}, #{addTime,jdbcType=VARCHAR}, 
+      #{deleteStatus,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.luffykaiyuan.lifeplatform.po.DictInfoPo">
+    insert into dict_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dictName != null">
+        dict_name,
+      </if>
+      <if test="dictType != null">
+        dict_type,
+      </if>
+      <if test="dictOrder != null">
+        dict_order,
+      </if>
+      <if test="addUser != null">
+        add_user,
+      </if>
+      <if test="addTime != null">
+        add_time,
+      </if>
+      <if test="deleteStatus != null">
+        delete_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dictName != null">
+        #{dictName,jdbcType=VARCHAR},
+      </if>
+      <if test="dictType != null">
+        #{dictType,jdbcType=VARCHAR},
+      </if>
+      <if test="dictOrder != null">
+        #{dictOrder,jdbcType=INTEGER},
+      </if>
+      <if test="addUser != null">
+        #{addUser,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        #{addTime,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteStatus != null">
+        #{deleteStatus,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.luffykaiyuan.lifeplatform.po.DictInfoPo">
+    update dict_info
+    <set>
+      <if test="dictName != null">
+        dict_name = #{dictName,jdbcType=VARCHAR},
+      </if>
+      <if test="dictType != null">
+        dict_type = #{dictType,jdbcType=VARCHAR},
+      </if>
+      <if test="dictOrder != null">
+        dict_order = #{dictOrder,jdbcType=INTEGER},
+      </if>
+      <if test="addUser != null">
+        add_user = #{addUser,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        add_time = #{addTime,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.luffykaiyuan.lifeplatform.po.DictInfoPo">
+    update dict_info
+    set dict_name = #{dictName,jdbcType=VARCHAR},
+      dict_type = #{dictType,jdbcType=VARCHAR},
+      dict_order = #{dictOrder,jdbcType=INTEGER},
+      add_user = #{addUser,jdbcType=VARCHAR},
+      add_time = #{addTime,jdbcType=VARCHAR},
+      delete_status = #{deleteStatus,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
