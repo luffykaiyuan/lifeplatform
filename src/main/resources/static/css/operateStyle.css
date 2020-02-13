@@ -1,3 +1,7 @@
+[v-cloak]{
+    display: none;
+}
+
 .lookStyle{
     cursor:pointer;
     color: #33B78E;

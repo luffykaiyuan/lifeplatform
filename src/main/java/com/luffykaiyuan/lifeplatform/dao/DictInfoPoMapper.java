@@ -1,17 +1,21 @@
 package com.luffykaiyuan.lifeplatform.dao;
 
 import com.luffykaiyuan.lifeplatform.po.DictInfoPo;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Mapper
+@Repository
 public interface DictInfoPoMapper {
-    int deleteByPrimaryKey(Integer id);
 
-    int insert(DictInfoPo record);
+    int addDict(DictInfoPo dictInfoPo);
 
-    int insertSelective(DictInfoPo record);
+    List<DictInfoPo> selectDictPlace();
 
-    DictInfoPo selectByPrimaryKey(Integer id);
+    List<DictInfoPo> selectDictType();
 
-    int updateByPrimaryKeySelective(DictInfoPo record);
+    int updateDict(DictInfoPo dictInfoPo);
 
-    int updateByPrimaryKey(DictInfoPo record);
 }

@@ -25,18 +25,6 @@
     where user_name = #{userName,jdbcType=VARCHAR}
   </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from login_info
-    where id = #{id,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.luffykaiyuan.lifeplatform.po.user.LoginInfoPo">
-    insert into login_info (id, user_name, password, 
-      nick_name, add_time, delete_status
-      )
-    values (#{id,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
-      #{nickName,jdbcType=VARCHAR}, #{addTime,jdbcType=VARCHAR}, #{deleteStatus,jdbcType=VARCHAR}
-      )
-  </insert>
   <insert id="insertLoginInfo" parameterType="com.luffykaiyuan.lifeplatform.po.user.LoginInfoPo">
     insert into login_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -99,15 +87,6 @@
         delete_status = #{deleteStatus,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.luffykaiyuan.lifeplatform.po.user.LoginInfoPo">
-    update login_info
-    set user_name = #{userName,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      nick_name = #{nickName,jdbcType=VARCHAR},
-      add_time = #{addTime,jdbcType=VARCHAR},
-      delete_status = #{deleteStatus,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

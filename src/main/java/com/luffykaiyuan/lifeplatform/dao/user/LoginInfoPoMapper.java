@@ -15,11 +15,4 @@ public interface LoginInfoPoMapper {
     String confirmUser(String userName);
 
     int updateLoginInfo(LoginInfoPo loginInfoPo);
-
-    //以下为自动生成代码
-    int deleteByPrimaryKey(Integer id);
-
-    int insert(LoginInfoPo record);
-
-    int updateByPrimaryKey(LoginInfoPo record);
 }

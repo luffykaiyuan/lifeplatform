@@ -3,7 +3,6 @@ package com.luffykaiyuan.lifeplatform.controller;
 import com.luffykaiyuan.lifeplatform.po.TaskInfoPo;
 import com.luffykaiyuan.lifeplatform.service.TaskInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;

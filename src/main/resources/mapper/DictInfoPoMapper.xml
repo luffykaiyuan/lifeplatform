@@ -13,25 +13,24 @@
   <sql id="Base_Column_List">
     id, dict_name, dict_type, dict_order, add_user, add_time, delete_status
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+
+  <select id="selectDictPlace" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from dict_info
-    where id = #{id,jdbcType=INTEGER}
+    where dict_type = '2'
+    and delete_status = '1'
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from dict_info
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.luffykaiyuan.lifeplatform.po.DictInfoPo">
-    insert into dict_info (id, dict_name, dict_type, 
-      dict_order, add_user, add_time, 
-      delete_status)
-    values (#{id,jdbcType=INTEGER}, #{dictName,jdbcType=VARCHAR}, #{dictType,jdbcType=VARCHAR}, 
-      #{dictOrder,jdbcType=INTEGER}, #{addUser,jdbcType=VARCHAR}, #{addTime,jdbcType=VARCHAR}, 
-      #{deleteStatus,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.luffykaiyuan.lifeplatform.po.DictInfoPo">
+
+  <select id="selectDictType" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dict_info
+    where dict_type = '1'
+    and delete_status = '1'
+  </select>
+
+  <insert id="addDict" parameterType="com.luffykaiyuan.lifeplatform.po.DictInfoPo">
     insert into dict_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -80,7 +79,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.luffykaiyuan.lifeplatform.po.DictInfoPo">
+
+  <update id="updateDict" parameterType="com.luffykaiyuan.lifeplatform.po.DictInfoPo">
     update dict_info
     <set>
       <if test="dictName != null">
@@ -102,16 +102,6 @@
         delete_status = #{deleteStatus,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.luffykaiyuan.lifeplatform.po.DictInfoPo">
-    update dict_info
-    set dict_name = #{dictName,jdbcType=VARCHAR},
-      dict_type = #{dictType,jdbcType=VARCHAR},
-      dict_order = #{dictOrder,jdbcType=INTEGER},
-      add_user = #{addUser,jdbcType=VARCHAR},
-      add_time = #{addTime,jdbcType=VARCHAR},
-      delete_status = #{deleteStatus,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

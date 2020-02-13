@@ -22,12 +22,6 @@
     end_username, end_name, add_time, delete_status
   </sql>
 
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from task_info
-    where id = #{id,jdbcType=VARCHAR}
-  </select>
   <select id="selectByTaskType" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

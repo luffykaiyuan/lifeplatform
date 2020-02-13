@@ -20,15 +20,7 @@
     where user_name = #{userName,jdbcType=VARCHAR}
   </select>
 
-  <insert id="insert" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysInfoPo">
-    insert into sys_info (id, user_name, password, 
-      sys_name, sys_rank, add_time, 
-      delete_status)
-    values (#{id,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{sysName,jdbcType=VARCHAR}, #{sysRank,jdbcType=VARCHAR}, #{addTime,jdbcType=VARCHAR}, 
-      #{deleteStatus,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysInfoPo">
+  <insert id="insertAdmin" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysInfoPo">
     insert into sys_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -77,7 +69,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysInfoPo">
+  <update id="updateAdmin" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysInfoPo">
     update sys_info
     <set>
       <if test="userName != null">
@@ -99,16 +91,6 @@
         delete_status = #{deleteStatus,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysInfoPo">
-    update sys_info
-    set user_name = #{userName,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      sys_name = #{sysName,jdbcType=VARCHAR},
-      sys_rank = #{sysRank,jdbcType=VARCHAR},
-      add_time = #{addTime,jdbcType=VARCHAR},
-      delete_status = #{deleteStatus,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

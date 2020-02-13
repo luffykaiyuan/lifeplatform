@@ -16,7 +16,7 @@
 </head>
 <body>
 <!--<div id="main" style="width: 600px;height:400px;"></div>-->
-<div id="app">
+<div id="app" v-cloak>
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
         <el-menu-item index="1">首页</el-menu-item>
         <el-menu-item index="2">任务中心</el-menu-item>
@@ -27,15 +27,15 @@
             <el-menu-item index="4-2">任务地址</el-menu-item>
         </el-submenu>
     </el-menu>
-    <template>
-        <el-table :data="taskData" style="width: 100%" v-if="flag == 2">
+    <template v-if="flag == 2">
+        <el-table border :data="taskData" style="width: 100%">
             <el-table-column prop="startUsername" label="发布人账号"></el-table-column>
             <el-table-column prop="startName" label="发布人昵称"></el-table-column>
             <el-table-column prop="taskTitle" label="任务标题"></el-table-column>
             <el-table-column prop="taskTime" label="发布时间"></el-table-column>
             <el-table-column prop="endUsername" label="接收人账号"></el-table-column>
             <el-table-column prop="endName" label="接收人昵称"></el-table-column>
-            <el-table-column fixed="right" label="操作" width="100">
+            <el-table-column fixed="right" label="操作">
                 <template slot-scope="scope">
                     <span class="el-icon-view lookStyle">查看详情</span>
                     <span class="el-icon-delete-solid deleteStyle">删除</span>
@@ -43,20 +43,45 @@
             </el-table-column>
         </el-table>
     </template>
-    <template>
-        <el-table :data="userData" style="width: 100%" v-if="flag == 3">
+    <template v-if="flag == 3">
+        <el-table border :data="userData" style="width: 100%">
             <el-table-column prop="loginId" label="用户账号"></el-table-column>
             <el-table-column prop="userGender" label="性别" :formatter="formatterGender"></el-table-column>
             <el-table-column prop="phone" label="电话号码"></el-table-column>
             <el-table-column prop="qqNumber" label="QQ号码"></el-table-column>
             <el-table-column prop="wechatNumber" label="微信号码"></el-table-column>
             <el-table-column prop="addTime" label="修改时间"></el-table-column>
-            <el-table-column fixed="right" label="操作" width="100">
+            <el-table-column fixed="right" label="操作">
                 <template slot-scope="scope">
                     <span class="el-icon-delete-solid deleteStyle">删除</span>
                 </template>
             </el-table-column>
         </el-table>
+    </template>
+    <template v-if="flag == '4-1' || flag == '4-2'">
+        <el-row>
+            <el-col  :span="2" :offset="16">
+                <div class="grid-content bg-purple-light">
+                    <el-button type="primary">新增字典</el-button>
+                </div>
+            </el-col>
+            <el-col :span="18" :offset="1">
+                <el-table border :data="taskTypeData" style="width: 100%">
+                    <el-table-column prop="dictName" label="字典名称"></el-table-column>
+                    <el-table-column prop="dictType" label="字典类型" :formatter="formatterType"></el-table-column>
+                    <el-table-column prop="addUser" label="添加人"></el-table-column>
+                    <el-table-column :key="Math.random()" :style=" " label="操作">
+                        <template slot-scope="scope">
+                            <span class="el-icon-delete-solid editStyle">编辑</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-col>
+            <el-col :span="3" :offset="1">
+
+            </el-col>
+        </el-row>
+
     </template>
 </div>
 </body>
@@ -73,11 +98,14 @@
                     initNews: '/news/selectAllNews',
                     initTask: '/taskInfo/selectAllTask',
                     initUser: '/userInfo/selectAllUser',
+                    initTaskType: '/dictInfo/selectDictType',
+                    initTaskPlace: '/dictInfo/selectDictPlace',
                 },
                 activeIndex: '1',
                 activeIndex2: '1',
                 taskData:[],
                 userData:[],
+                taskTypeData:[],
             }
         },
         created: function () {
@@ -97,7 +125,6 @@
                 var url = self.contextPath + self.urls.initTask;
                 axios.get(url)
                     .then(function (res) {
-                        console.log(res.data);
                         self.taskData = res.data;
                     })
             },
@@ -106,8 +133,23 @@
                 var url = self.contextPath + self.urls.initUser;
                 axios.get(url)
                     .then(function (res) {
-                        console.log(res.data);
                         self.userData = res.data;
+                    })
+            },
+            initTaskType(){
+                var self = this;
+                var url = self.contextPath + self.urls.initTaskType;
+                axios.get(url)
+                    .then(function (res) {
+                        self.taskTypeData = res.data;
+                    })
+            },
+            initTaskPlace(){
+                var self = this;
+                var url = self.contextPath + self.urls.initTaskPlace;
+                axios.get(url)
+                    .then(function (res) {
+                        self.taskTypeData = res.data;
                     })
             },
             formatterGender(row){
@@ -116,8 +158,19 @@
                 }
                 return "女";
             },
+            formatterType(row){
+                if (row.dictType === '1'){
+                    return "任务类型";
+                }
+                return "任务地址";
+            },
             handleSelect(key, keyPath) {
                 this.flag = key;
+                if (key === '4-1'){
+                    this.initTaskType();
+                } else if (key === '4-2'){
+                    this.initTaskPlace();
+                }
             }
         },
         watch: {}

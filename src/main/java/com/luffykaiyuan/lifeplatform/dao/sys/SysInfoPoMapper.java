@@ -10,13 +10,8 @@ public interface SysInfoPoMapper {
 
     SysInfoPo confirmAdmin(SysInfoPo sysInfoPo);
 
+    int insertAdmin(SysInfoPo sysInfoPo);
 
+    int updateAdmin(SysInfoPo sysInfoPo);
 
-    int insert(SysInfoPo record);
-
-    int insertSelective(SysInfoPo record);
-
-    int updateByPrimaryKeySelective(SysInfoPo record);
-
-    int updateByPrimaryKey(SysInfoPo record);
 }

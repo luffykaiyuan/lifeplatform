@@ -24,7 +24,4 @@ public interface TaskInfoPoMapper {
 
     List<TaskInfoPo> selectAllFinishTask(String endUsername);
 
-    //以下为自动生成代码
-
-    TaskInfoPo selectByPrimaryKey(String id);
 }
