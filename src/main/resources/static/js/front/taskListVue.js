@@ -10,12 +10,16 @@ var vue1 = new Vue({
                 initTaskReceive: '/taskInfo/selectAllReceiveTask',
                 initTaskFinish: '/taskInfo/selectAllFinishTask',
                 initUser: '/userInfo/selectUserInfo',
+                initTaskType: '/dictInfo/selectDictType',
+                initTaskPlace: '/dictInfo/selectDictPlace',
 
                 insertTask: '/taskInfo/insertTask',
                 receiveTask: '/taskInfo/receiveTask',
                 finishTask: '/taskInfo/finishTask',
                 notReceive: '/taskInfo/notReceive',
             },
+            taskType:[],
+            taskPlace:[],
             sureLogin: true,
             taskSelect: [{
                 value: '所有',
@@ -85,6 +89,8 @@ var vue1 = new Vue({
         }else{
             this.handleSelect("taskSquare");
         }
+        this.initTaskType();
+        this.initTaskPlace();
     },
     filters: {},
     mounted: function () {
@@ -255,17 +261,35 @@ var vue1 = new Vue({
                 window.location.href = this.contextPath + "/userInfo?flag=moreInfo";
             }
         },
+        initTaskType(){
+            var self = this;
+            var url = self.contextPath + self.urls.initTaskType;
+            axios.get(url)
+                .then(function (res) {
+                    self.taskType = res.data;
+                })
+        },
+        initTaskPlace(){
+            var self = this;
+            var url = self.contextPath + self.urls.initTaskPlace;
+            axios.get(url)
+                .then(function (res) {
+                    self.taskPlace = res.data;
+                })
+        },
         //格式化数据
         formatterPlace(row){
-            if (row.taskPlace === '1'){
-                return "成都东软学院";
+            for (let i = 0; i < this.taskPlace.length; i++) {
+                if (parseInt(row.taskPlace) === this.taskPlace[i].id){
+                    return this.taskPlace[i].dictName;
+                }
             }
             return "未知";
         },
         formatterType(row){
-            for (var i = 0; i < this.taskSelect.length; i++){
-                if (this.taskSelect[i].value === row.taskType){
-                    return this.taskSelect[i].label;
+            for (let i = 0; i < this.taskType.length; i++) {
+                if (parseInt(row.taskType) === this.taskType[i].id){
+                    return this.taskType[i].dictName;
                 }
             }
             return "未知";

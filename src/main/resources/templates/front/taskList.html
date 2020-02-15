@@ -112,14 +112,12 @@
             </el-form-item>
             <el-form-item label="任务类型" prop="taskType">
                 <el-select v-model="taskForm.taskType" placeholder="请选择任务类型">
-                    <el-option label="跑腿任务" value="1"></el-option>
-                    <el-option label="学习任务" value="2"></el-option>
-                    <el-option label="志愿任务" value="3"></el-option>
+                    <el-option v-for="(taskType,i) in taskType" :label="taskType.dictName" :value="taskType.id"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="任务地区" prop="taskPlace">
                 <el-select v-model="taskForm.taskPlace" placeholder="请选择任务地区">
-                    <el-option label="成都东软学院" value="1"></el-option>
+                    <el-option v-for="(taskType,i) in taskPlace" :label="taskType.dictName" :value="taskType.id"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="截止时间" required>

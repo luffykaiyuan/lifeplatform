@@ -62,17 +62,18 @@
         <el-row>
             <el-col  :span="2" :offset="16">
                 <div class="grid-content bg-purple-light">
-                    <el-button type="primary">新增字典</el-button>
+                    <el-button type="primary" @click="openDict">新增字典</el-button>
                 </div>
             </el-col>
             <el-col :span="18" :offset="1">
                 <el-table border :data="taskTypeData" style="width: 100%">
                     <el-table-column prop="dictName" label="字典名称"></el-table-column>
                     <el-table-column prop="dictType" label="字典类型" :formatter="formatterType"></el-table-column>
+                    <el-table-column prop="dictOrder" label="字典顺序"></el-table-column>
                     <el-table-column prop="addUser" label="添加人"></el-table-column>
                     <el-table-column :key="Math.random()" :style=" " label="操作">
                         <template slot-scope="scope">
-                            <span class="el-icon-delete-solid editStyle">编辑</span>
+                            <span class="el-icon-delete-solid editStyle" @click="editDict(scope.row)">编辑</span>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -82,98 +83,34 @@
             </el-col>
         </el-row>
 
+        <el-dialog title="字典操作" :visible.sync="dictFormVisible">
+            <el-form :model="dictForm">
+                <el-form-item label="字典名称" :label-width="formLabelWidth">
+                    <el-input v-model="dictForm.dictName" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="字典类型" :label-width="formLabelWidth">
+                    <el-select v-model="dictForm.dictType" placeholder="请选择字典类型">
+                        <el-option label="任务类别" value="1"></el-option>
+                        <el-option label="任务地址" value="2"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="字典顺序" :label-width="formLabelWidth">
+                    <el-input-number v-model="dictForm.dictOrder" :min="1" :max="10"></el-input-number>
+                </el-form-item>
+                <el-form-item label="字典状态" :label-width="formLabelWidth">
+                    <el-switch v-model="dictForm.deleteStatus" active-text="启用" inactive-text="关闭"
+                               active-value="1" inactive-value="0"></el-switch>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveDict">确 定</el-button>
+            </div>
+        </el-dialog>
     </template>
 </div>
 </body>
 <!--<script src="./js/echarts.min.js"></script>-->
 <script src="./js/index.js"></script>
-<script>
-    var vue1 = new Vue({
-        el: '#app',
-        data: function () {
-            return {
-                contextPath:'',
-                flag: '1',
-                urls:{
-                    initNews: '/news/selectAllNews',
-                    initTask: '/taskInfo/selectAllTask',
-                    initUser: '/userInfo/selectAllUser',
-                    initTaskType: '/dictInfo/selectDictType',
-                    initTaskPlace: '/dictInfo/selectDictPlace',
-                },
-                activeIndex: '1',
-                activeIndex2: '1',
-                taskData:[],
-                userData:[],
-                taskTypeData:[],
-            }
-        },
-        created: function () {
-            var contextPath = document.location.pathname;
-            var contextPath = contextPath.split('/')[1];
-            var contextPath = "/" + contextPath;
-            this.contextPath = contextPath;
-            this.initTask();
-            this.initUser();
-        },
-        filters: {},
-        mounted: function () {
-        },
-        methods: {
-            initTask(){
-                var self = this;
-                var url = self.contextPath + self.urls.initTask;
-                axios.get(url)
-                    .then(function (res) {
-                        self.taskData = res.data;
-                    })
-            },
-            initUser(){
-                var self = this;
-                var url = self.contextPath + self.urls.initUser;
-                axios.get(url)
-                    .then(function (res) {
-                        self.userData = res.data;
-                    })
-            },
-            initTaskType(){
-                var self = this;
-                var url = self.contextPath + self.urls.initTaskType;
-                axios.get(url)
-                    .then(function (res) {
-                        self.taskTypeData = res.data;
-                    })
-            },
-            initTaskPlace(){
-                var self = this;
-                var url = self.contextPath + self.urls.initTaskPlace;
-                axios.get(url)
-                    .then(function (res) {
-                        self.taskTypeData = res.data;
-                    })
-            },
-            formatterGender(row){
-                if (row.userGender === '1'){
-                    return "男";
-                }
-                return "女";
-            },
-            formatterType(row){
-                if (row.dictType === '1'){
-                    return "任务类型";
-                }
-                return "任务地址";
-            },
-            handleSelect(key, keyPath) {
-                this.flag = key;
-                if (key === '4-1'){
-                    this.initTaskType();
-                } else if (key === '4-2'){
-                    this.initTaskPlace();
-                }
-            }
-        },
-        watch: {}
-    });
-</script>
+<script src="./js/app/indexVue.js"></script>
 </html>

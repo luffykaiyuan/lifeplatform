@@ -19,7 +19,7 @@
     <include refid="Base_Column_List" />
     from dict_info
     where dict_type = '2'
-    and delete_status = '1'
+    order by dict_order
   </select>
 
   <select id="selectDictType" resultMap="BaseResultMap">
@@ -27,7 +27,7 @@
     <include refid="Base_Column_List" />
     from dict_info
     where dict_type = '1'
-    and delete_status = '1'
+    order by dict_order
   </select>
 
   <insert id="addDict" parameterType="com.luffykaiyuan.lifeplatform.po.DictInfoPo">
