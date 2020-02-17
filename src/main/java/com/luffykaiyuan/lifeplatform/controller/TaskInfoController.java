@@ -1,6 +1,8 @@
 package com.luffykaiyuan.lifeplatform.controller;
 
 import com.luffykaiyuan.lifeplatform.po.TaskInfoPo;
+import com.luffykaiyuan.lifeplatform.po.count.CountDict;
+import com.luffykaiyuan.lifeplatform.po.count.CountName;
 import com.luffykaiyuan.lifeplatform.service.TaskInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -133,5 +135,53 @@ public class TaskInfoController {
     @GetMapping("/selectAllFinishTask")
     public List<TaskInfoPo> selectAllFinishTask(@RequestParam("endUsername") String endUsername){
         return taskInfoService.selectAllFinishTask(endUsername);
+    }
+
+    /**
+    * @Description: 获取任务类型使用的排名
+    * @Param: []
+    * @return: java.util.List<com.luffykaiyuan.lifeplatform.po.count.CountDict>
+    * @Author: 陈开源
+    * @Date: 2020/2/17
+    */
+    @GetMapping("/countDictType")
+    List<CountDict> countDictType(){
+        return taskInfoService.countDictType();
+    }
+
+    /**
+    * @Description:  获取任务地址使用的排名
+    * @Param: []
+    * @return: java.util.List<com.luffykaiyuan.lifeplatform.po.count.CountDict>
+    * @Author: 陈开源
+    * @Date: 2020/2/17
+    */
+    @GetMapping("/countDictPlace")
+    List<CountDict> countDictPlace(){
+        return taskInfoService.countDictPlace();
+    }
+
+    /** 
+    * @Description: 获取发布人的排名 
+    * @Param: [] 
+    * @return: java.util.List<com.luffykaiyuan.lifeplatform.po.count.CountName> 
+    * @Author: 陈开源
+    * @Date: 2020/2/17 
+    */
+    @GetMapping("/countStartName")
+    List<CountName> countStartName(){
+        return taskInfoService.countStartName();
+    }
+    
+    /** 
+    * @Description: 获取完成任务的人员排名 
+    * @Param: [] 
+    * @return: java.util.List<com.luffykaiyuan.lifeplatform.po.count.CountEndName> 
+    * @Author: 陈开源
+    * @Date: 2020/2/17 
+    */
+    @GetMapping("/countEndName")
+    List<CountName> countEndName(){
+        return taskInfoService.countEndName();
     }
 }

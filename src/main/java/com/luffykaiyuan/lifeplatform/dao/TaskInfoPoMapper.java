@@ -1,6 +1,8 @@
 package com.luffykaiyuan.lifeplatform.dao;
 
 import com.luffykaiyuan.lifeplatform.po.TaskInfoPo;
+import com.luffykaiyuan.lifeplatform.po.count.CountDict;
+import com.luffykaiyuan.lifeplatform.po.count.CountName;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -24,4 +26,11 @@ public interface TaskInfoPoMapper {
 
     List<TaskInfoPo> selectAllFinishTask(String endUsername);
 
+    List<CountDict> countDictType();
+
+    List<CountDict> countDictPlace();
+
+    List<CountName> countStartName();
+
+    List<CountName> countEndName();
 }

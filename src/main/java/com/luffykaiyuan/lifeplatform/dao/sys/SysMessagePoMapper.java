@@ -1,17 +1,21 @@
 package com.luffykaiyuan.lifeplatform.dao.sys;
 
 import com.luffykaiyuan.lifeplatform.po.sys.SysMessagePo;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Mapper
+@Repository
 public interface SysMessagePoMapper {
-    int deleteByPrimaryKey(String id);
 
-    int insert(SysMessagePo record);
+    int insertMessage(SysMessagePo sysMessagePo);
 
-    int insertSelective(SysMessagePo record);
+    SysMessagePo selectMessage(String id);
 
-    SysMessagePo selectByPrimaryKey(String id);
+    List<SysMessagePo> selectAllMessage();
 
-    int updateByPrimaryKeySelective(SysMessagePo record);
+    int updateMessage(SysMessagePo sysMessagePo);
 
-    int updateByPrimaryKey(SysMessagePo record);
 }

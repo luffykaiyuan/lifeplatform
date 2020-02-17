@@ -2,6 +2,8 @@ package com.luffykaiyuan.lifeplatform.service;
 
 import com.luffykaiyuan.lifeplatform.dao.TaskInfoPoMapper;
 import com.luffykaiyuan.lifeplatform.po.TaskInfoPo;
+import com.luffykaiyuan.lifeplatform.po.count.CountDict;
+import com.luffykaiyuan.lifeplatform.po.count.CountName;
 import com.luffykaiyuan.lifeplatform.util.GetNowDate;
 import com.luffykaiyuan.lifeplatform.util.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,4 +84,22 @@ public class TaskInfoService {
     public List<TaskInfoPo> selectAllFinishTask(String endUsername){
         return taskInfoPoMapper.selectAllFinishTask(endUsername);
     }
+
+    public List<CountDict> countDictType(){
+        return taskInfoPoMapper.countDictType();
+    }
+
+    public List<CountDict> countDictPlace(){
+        return taskInfoPoMapper.countDictPlace();
+    }
+
+    public List<CountName> countStartName(){
+        return taskInfoPoMapper.countStartName();
+    }
+
+
+    public List<CountName> countEndName(){
+        return taskInfoPoMapper.countEndName();
+    }
+
 }
