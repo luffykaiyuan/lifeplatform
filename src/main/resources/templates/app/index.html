@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="./css/operateStyle.css"/>
+    <link rel="stylesheet" href="./css/app/index.css">
     <!-- import Vue before Element -->
     <script src="./js/jquery.js"></script>
     <script src="./js/vue.js"></script>
@@ -28,20 +29,62 @@
         </el-submenu>
     </el-menu>
     <template v-if="flag == 2">
-        <el-table border :data="taskData" style="width: 100%">
-            <el-table-column prop="startUsername" label="发布人账号"></el-table-column>
-            <el-table-column prop="startName" label="发布人昵称"></el-table-column>
-            <el-table-column prop="taskTitle" label="任务标题"></el-table-column>
-            <el-table-column prop="taskTime" label="发布时间"></el-table-column>
-            <el-table-column prop="endUsername" label="接收人账号"></el-table-column>
-            <el-table-column prop="endName" label="接收人昵称"></el-table-column>
-            <el-table-column fixed="right" label="操作">
-                <template slot-scope="scope">
-                    <span class="el-icon-view lookStyle">查看详情</span>
-                    <span class="el-icon-delete-solid deleteStyle">删除</span>
-                </template>
-            </el-table-column>
-        </el-table>
+        <el-row>
+            <el-col :span="18" :offset="1">
+                <el-table border :data="taskData" style="width: 100%">
+                    <el-table-column prop="startUsername" label="发布人账号"></el-table-column>
+                    <el-table-column prop="startName" label="发布人昵称"></el-table-column>
+                    <el-table-column prop="taskTitle" label="任务标题"></el-table-column>
+                    <el-table-column prop="taskTime" label="发布时间"></el-table-column>
+                    <el-table-column prop="endUsername" label="接收人账号"></el-table-column>
+                    <el-table-column prop="endName" label="接收人昵称"></el-table-column>
+                    <el-table-column fixed="right" label="操作">
+                        <template slot-scope="scope">
+                            <span class="el-icon-view lookStyle">查看详情</span>
+                            <span class="el-icon-delete-solid deleteStyle">删除</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-col>
+            <el-col :span="3" :offset="1">
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>任务发布排名</span>
+                        <el-tooltip placement="top">
+                            <div slot="content">任务发布并被完成的统计</div>
+                            <el-button style="padding: 0">?</el-button>
+                        </el-tooltip>
+                    </div>
+                    <div class="top-10">
+                        <ul>
+                            <li><a v-if="rankStartName[0]">{{rankStartName[0].name}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankStartName[1]">{{rankStartName[1].name}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankStartName[2]">{{rankStartName[2].name}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankStartName[3]">{{rankStartName[3].name}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankStartName[4]">{{rankStartName[4].name}}</a><a v-else>暂无数据</a></li>
+                        </ul>
+                    </div>
+                </el-card>
+                <el-card class="box-card" style="margin-top: 100px">
+                    <div slot="header" class="clearfix">
+                        <span>任务完成排名</span>
+                        <el-tooltip placement="top">
+                            <div slot="content">任务完成的统计</div>
+                            <el-button style="padding: 0">?</el-button>
+                        </el-tooltip>
+                    </div>
+                    <div class="top-10">
+                        <ul>
+                            <li><a v-if="rankEndName[0]">{{rankEndName[0].name}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankEndName[1]">{{rankEndName[1].name}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankEndName[2]">{{rankEndName[2].name}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankEndName[3]">{{rankEndName[3].name}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankEndName[4]">{{rankEndName[4].name}}</a><a v-else>暂无数据</a></li>
+                        </ul>
+                    </div>
+                </el-card>
+            </el-col>
+        </el-row>
     </template>
     <template v-if="flag == 3">
         <el-table border :data="userData" style="width: 100%">
@@ -66,7 +109,18 @@
                 </div>
             </el-col>
             <el-col :span="18" :offset="1">
-                <el-table border :data="taskTypeData" style="width: 100%">
+                <el-table border :data="taskTypeData" v-if="flag == '4-1'" style="width: 100%">
+                    <el-table-column prop="dictName" label="字典名称"></el-table-column>
+                    <el-table-column prop="dictType" label="字典类型" :formatter="formatterType"></el-table-column>
+                    <el-table-column prop="dictOrder" label="字典顺序"></el-table-column>
+                    <el-table-column prop="addUser" label="添加人"></el-table-column>
+                    <el-table-column :key="Math.random()" :style=" " label="操作">
+                        <template slot-scope="scope">
+                            <span class="el-icon-delete-solid editStyle" @click="editDict(scope.row)">编辑</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-table border :data="taskPlaceData" v-else style="width: 100%">
                     <el-table-column prop="dictName" label="字典名称"></el-table-column>
                     <el-table-column prop="dictType" label="字典类型" :formatter="formatterType"></el-table-column>
                     <el-table-column prop="dictOrder" label="字典顺序"></el-table-column>
@@ -79,7 +133,34 @@
                 </el-table>
             </el-col>
             <el-col :span="3" :offset="1">
-
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>任务类型使用排名</span>
+                    </div>
+                    <div class="top-10">
+                        <ul>
+                            <li><a v-if="rankDictType[0]">{{rankDictType[0].dictName}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankDictType[1]">{{rankDictType[1].dictName}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankDictType[2]">{{rankDictType[2].dictName}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankDictType[3]">{{rankDictType[3].dictName}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankDictType[4]">{{rankDictType[4].dictName}}</a><a v-else>暂无数据</a></li>
+                        </ul>
+                    </div>
+                </el-card>
+                <el-card class="box-card" style="margin-top: 100px">
+                    <div slot="header" class="clearfix">
+                        <span>任务地址使用排名</span>
+                    </div>
+                    <div class="top-10">
+                        <ul>
+                            <li><a v-if="rankDictPlace[0]">{{rankDictPlace[0].dictName}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankDictPlace[1]">{{rankDictPlace[1].dictName}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankDictPlace[2]">{{rankDictPlace[2].dictName}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankDictPlace[3]">{{rankDictPlace[3].dictName}}</a><a v-else>暂无数据</a></li>
+                            <li><a v-if="rankDictPlace[4]">{{rankDictPlace[4].dictName}}</a><a v-else>暂无数据</a></li>
+                        </ul>
+                    </div>
+                </el-card>
             </el-col>
         </el-row>
 

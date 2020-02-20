@@ -1,0 +1,68 @@
+a {
+    color: #525C66;
+    text-decoration: none;
+}
+<!-- div 大小设定 -->
+.top-10 {
+    float: left;
+    width: 340px;
+
+    margin-top: 106px;
+    margin-left: 118px;
+    background: #fff;
+    box-shadow: #d0d0d0 1px 1px 10px 0px;
+}
+
+.top-10 ul {
+    counter-reset: section;
+    margin-top: -30px;
+    margin-left: -30px;
+}
+
+.top-10 li {
+    float: left;
+    width: 150px;
+    line-height: 46px;
+    height: 46px;
+    overflow: hidden;
+    color: #525C66;
+    font-size: 14px;
+}
+
+.top-10 li:before {
+    counter-increment: section;
+    content: counter(section);
+    display: inline-block;
+    padding: 0 12px;
+    margin-right: 10px;
+    height: 18px;
+    line-height: 18px;
+    background: #0164b4;
+    color: #fff;
+    border-radius: 3px;
+    font-size: 9px
+}
+<!-- 排名后三名颜色控制 -->
+
+.top-10 li:nth-child(2):before {
+    background: #b8c2cc
+}
+
+.top-10 li:nth-child(3):before {
+    background: #b8c2cc
+}
+
+.top-10 li:nth-child(4):before {
+    background: #b8c2cc
+}
+
+.top-10 li:nth-child(5):before {
+    background: #b8c2cc
+}
+
+#rank-more {
+    float: left;
+    width: 100%;
+    margin-top: 8px;
+    text-align: center;
+}

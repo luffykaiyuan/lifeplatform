@@ -12,14 +12,24 @@ var vue1 = new Vue({
                 initTaskType: '/dictInfo/selectDictType',
                 initTaskPlace: '/dictInfo/selectDictPlace',
 
+                countDictType: '/taskInfo/countDictType',
+                countDictPlace: '/taskInfo/countDictPlace',
+                countStartName: '/taskInfo/countStartName',
+                countEndName: '/taskInfo/countEndName',
+
                 addDict: '/dictInfo/addDict',
                 updateDict: '/dictInfo/updateDict',
             },
+            rankDictType: [],
+            rankDictPlace: [],
+            rankStartName: [],
+            rankEndName: [],
             activeIndex: '1',
             activeIndex2: '1',
             taskData:[],
             userData:[],
             taskTypeData:[],
+            taskPlaceData:[],
 
             dictFormVisible: false,
             dictSU: '',
@@ -38,6 +48,12 @@ var vue1 = new Vue({
         this.contextPath = contextPath;
         this.initTask();
         this.initUser();
+        this.initTaskType();
+        this.initTaskPlace();
+        this.initRankDictType();
+        this.initRankDictPlace();
+        this.initRankStartName();
+        this.initRankEndName();
     },
     filters: {},
     mounted: function () {
@@ -86,6 +102,52 @@ var vue1 = new Vue({
                     self.taskData = res.data;
                 })
         },
+        initRankDictType(){
+            var self = this;
+            var url = self.contextPath + self.urls.countDictType;
+            axios.get(url)
+                .then(function (res) {
+                    self.rankDictType = res.data;
+                    for (let i = 0; i < self.rankDictType.length; i++) {
+                        for (let j = 0; j < self.taskTypeData.length; j++){
+                            if (parseInt(self.rankDictType[i].dict) === self.taskTypeData[j].id){
+                                self.rankDictType[i].dictName = self.taskTypeData[j].dictName;
+                            }
+                        }
+                    }
+                })
+        },
+        initRankDictPlace(){
+            var self = this;
+            var url = self.contextPath + self.urls.countDictPlace;
+            axios.get(url)
+                .then(function (res) {
+                    self.rankDictPlace = res.data;
+                    for (let i = 0; i < self.rankDictPlace.length; i++) {
+                        for (let j = 0; j < self.taskPlaceData.length; j++){
+                            if (parseInt(self.rankDictPlace[i].dict) === self.taskPlaceData[j].id){
+                                self.rankDictPlace[i].dictName = self.taskPlaceData[j].dictName;
+                            }
+                        }
+                    }
+                })
+        },
+        initRankStartName(){
+            var self = this;
+            var url = self.contextPath + self.urls.countStartName;
+            axios.get(url)
+                .then(function (res) {
+                    self.rankStartName = res.data;
+                })
+        },
+        initRankEndName(){
+            var self = this;
+            var url = self.contextPath + self.urls.countEndName;
+            axios.get(url)
+                .then(function (res) {
+                    self.rankEndName = res.data;
+                })
+        },
         initUser(){
             var self = this;
             var url = self.contextPath + self.urls.initUser;
@@ -107,7 +169,7 @@ var vue1 = new Vue({
             var url = self.contextPath + self.urls.initTaskPlace;
             axios.get(url)
                 .then(function (res) {
-                    self.taskTypeData = res.data;
+                    self.taskPlaceData = res.data;
                 })
         },
         formatterGender(row){

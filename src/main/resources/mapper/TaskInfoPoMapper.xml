@@ -198,31 +198,40 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
-  <select id="countDictType" resultMap="com.luffykaiyuan.lifeplatform.po.count.CountDict">
+  <select id="countDictType" resultType="com.luffykaiyuan.lifeplatform.po.count.CountDict">
     SELECT a.task_type dict, COUNT(a.task_type) count
     FROM task_info a
     WHERE a.delete_status = '2'
-    GROUP BY a.task_type;
+    GROUP BY a.task_type
+    ORDER BY count DESC
+    LIMIT 5
   </select>
 
-  <select id="countDictPlace" resultMap="com.luffykaiyuan.lifeplatform.po.count.CountDict">
+  <select id="countDictPlace" resultType="com.luffykaiyuan.lifeplatform.po.count.CountDict">
     SELECT a.task_place dict, COUNT(a.task_place) count
     FROM task_info a
     WHERE a.delete_status = '2'
-    GROUP BY a.task_place;
+    GROUP BY a.task_place
+    ORDER BY count DESC
+    LIMIT 5
   </select>
 
-  <select id="countStartName" resultMap="com.luffykaiyuan.lifeplatform.po.count.CountName">
+  <select id="countStartName" resultType="com.luffykaiyuan.lifeplatform.po.count.CountName">
     SELECT a.start_name name, COUNT(a.start_name) count
     FROM task_info a
     WHERE a.delete_status = '2'
-    GROUP BY a.start_name;
+    GROUP BY a.start_name
+    ORDER BY count DESC
+    LIMIT 5
   </select>
 
-  <select id="countEndName" resultMap="com.luffykaiyuan.lifeplatform.po.count.CountName">
+  <select id="countEndName" resultType="com.luffykaiyuan.lifeplatform.po.count.CountName">
     SELECT a.end_name name, COUNT(a.end_name) count
     FROM task_info a
     WHERE a.delete_status = '2'
-    GROUP BY a.end_name;
+    AND a.end_name != ''
+    GROUP BY a.end_name
+    ORDER BY count DESC
+    LIMIT 5
   </select>
 </mapper>
