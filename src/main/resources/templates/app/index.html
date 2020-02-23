@@ -27,6 +27,7 @@
             <el-menu-item index="4-1">任务类别</el-menu-item>
             <el-menu-item index="4-2">任务地址</el-menu-item>
         </el-submenu>
+        <el-menu-item index="5">公告管理</el-menu-item>
     </el-menu>
     <template v-if="flag == 2">
         <el-row>
@@ -186,6 +187,44 @@
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveDict">确 定</el-button>
+            </div>
+        </el-dialog>
+    </template>
+    <template v-if="flag == 5">
+        <el-row>
+            <el-col  :span="2" :offset="16">
+                <div class="grid-content bg-purple-light">
+                    <el-button type="primary" @click="openMessage">新增公告</el-button>
+                </div>
+            </el-col>
+            <el-col :span="18" :offset="1">
+                <el-table border :data="messageData" style="width: 100%">
+                    <el-table-column prop="announceTitle" label="公告标题"></el-table-column>
+                    <el-table-column prop="announceTime" label="发布时间"></el-table-column>
+                    <el-table-column prop="sysName" label="发布人"></el-table-column>
+                    <el-table-column fixed="right" label="操作">
+                        <template slot-scope="scope">
+                            <span class="el-icon-delete-solid lookStyle">查看</span>
+                            <span class="el-icon-delete-solid editStyle" @click="editMessage(scope.row)">编辑</span>
+                            <span class="el-icon-delete-solid deleteStyle">删除</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-col>
+        </el-row>
+
+        <el-dialog title="公告操作" :visible.sync="messageFormVisible">
+            <el-form :model="messageForm">
+                <el-form-item label="公告标题" :label-width="formLabelWidth">
+                    <el-input v-model="messageForm.announceTitle" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="公告内容" :label-width="formLabelWidth">
+                    <el-input v-model="messageForm.announceContent" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveMessage">确 定</el-button>
             </div>
         </el-dialog>
     </template>

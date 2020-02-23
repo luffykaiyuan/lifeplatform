@@ -11,6 +11,7 @@ var vue1 = new Vue({
                 initUser: '/userInfo/selectAllUser',
                 initTaskType: '/dictInfo/selectDictType',
                 initTaskPlace: '/dictInfo/selectDictPlace',
+                initMessage: '/message/selectAllMessage',
 
                 countDictType: '/taskInfo/countDictType',
                 countDictPlace: '/taskInfo/countDictPlace',
@@ -19,6 +20,8 @@ var vue1 = new Vue({
 
                 addDict: '/dictInfo/addDict',
                 updateDict: '/dictInfo/updateDict',
+                addMessage: '/message/insertMessage',
+                updateMessage: '/message/updateMessage',
             },
             rankDictType: [],
             rankDictPlace: [],
@@ -30,6 +33,7 @@ var vue1 = new Vue({
             userData:[],
             taskTypeData:[],
             taskPlaceData:[],
+            messageData:[],
 
             dictFormVisible: false,
             dictSU: '',
@@ -39,6 +43,13 @@ var vue1 = new Vue({
                 dictOrder:'',
                 deleteStatus: ''
             },
+
+            messageFormVisible: false,
+            messageSU: '',
+            messageForm:{
+                announceTitle: '',
+                announceContent: '',
+            }
         }
     },
     created: function () {
@@ -50,6 +61,7 @@ var vue1 = new Vue({
         this.initUser();
         this.initTaskType();
         this.initTaskPlace();
+        this.initMessage();
         this.initRankDictType();
         this.initRankDictPlace();
         this.initRankStartName();
@@ -94,6 +106,37 @@ var vue1 = new Vue({
                     self.initTaskType();
                 })
         },
+
+        openMessage(){
+            this.emptyDictForm();
+            this.messageFormVisible = true;
+            this.messageSU = 'save';
+        },
+        editMessage(row){
+            this.emptyMessageForm();
+            this.messageFormVisible = true;
+            this.messageForm = JSON.parse(JSON.stringify(row));
+            this.messageSU = 'update';
+
+        },
+        emptyMessageForm(){
+            this.messageForm.announceTitle = '';
+            this.messageForm.announceContent = '';
+        },
+        saveMessage(){
+            var self = this;if (self.messageSU === 'save'){
+                var url = self.contextPath + self.urls.addMessage;
+            }else {
+                var url = self.contextPath + self.urls.updateMessage;
+            }
+            axios.post(url, self.messageForm)
+                .then(function (res) {
+                    self.messageFormVisible = false;
+                    self.initMessage();
+                })
+        },
+
+        //-------------------------------------------初始化数据
         initTask(){
             var self = this;
             var url = self.contextPath + self.urls.initTask;
@@ -172,6 +215,15 @@ var vue1 = new Vue({
                     self.taskPlaceData = res.data;
                 })
         },
+        initMessage(){
+            var self = this;
+            var url = self.contextPath + self.urls.initMessage;
+            axios.get(url)
+                .then(function (res) {
+                    self.messageData = res.data;
+                })
+        },
+
         formatterGender(row){
             if (row.userGender === '1'){
                 return "男";
