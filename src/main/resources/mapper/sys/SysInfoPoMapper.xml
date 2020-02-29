@@ -18,6 +18,13 @@
     <include refid="Base_Column_List" />
     from sys_info
     where user_name = #{userName,jdbcType=VARCHAR}
+    and delete_status = '1'
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_info
   </select>
 
   <insert id="insertAdmin" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysInfoPo">

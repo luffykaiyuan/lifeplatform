@@ -23,7 +23,7 @@ public class SysMessageService {
             sysMessagePo.setSysId(id);
             sysMessagePo.setSysName(username);
         }
-        sysMessagePo.setId(UUIDUtils.getUUID(16));
+        sysMessagePo.setId(UUIDUtils.getUUID(32));
         sysMessagePo.setAnnounceTime(GetNowDate.getStringDate());
         sysMessagePo.setAddTime(GetNowDate.getStringDate());
         return sysMessagePoMapper.insertMessage(sysMessagePo);

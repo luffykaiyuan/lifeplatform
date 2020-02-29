@@ -12,6 +12,8 @@ var vue1 = new Vue({
                 initTaskType: '/dictInfo/selectDictType',
                 initTaskPlace: '/dictInfo/selectDictPlace',
                 initMessage: '/message/selectAllMessage',
+                initSysInfo: '/sysInfo/selectAll',
+                initSysRight: '/sysRight/selectAll',
 
                 countDictType: '/taskInfo/countDictType',
                 countDictPlace: '/taskInfo/countDictPlace',
@@ -22,6 +24,10 @@ var vue1 = new Vue({
                 updateDict: '/dictInfo/updateDict',
                 addMessage: '/message/insertMessage',
                 updateMessage: '/message/updateMessage',
+                addSysRight: '/sysRight/insertSysRight',
+                updateSysRight: '/sysRight/updateSysRight',
+                addSysInfo: '/sysInfo/insertAdmin',
+                updateSysInfo: '/sysInfo/updateAdmin',
             },
             rankDictType: [],
             rankDictPlace: [],
@@ -34,6 +40,8 @@ var vue1 = new Vue({
             taskTypeData:[],
             taskPlaceData:[],
             messageData:[],
+            sysInfoData:[],
+            sysRightData:[],
 
             dictFormVisible: false,
             dictSU: '',
@@ -49,6 +57,19 @@ var vue1 = new Vue({
             messageForm:{
                 announceTitle: '',
                 announceContent: '',
+            },
+
+            adminFormVisible: false,
+            adminSU: '',
+            adminForm:{
+                sysName: '',
+                userName: '',
+                password: '',
+                taskRight: '',
+                userRight: '',
+                dictRight: '',
+                messageRight: '',
+                adminRight: '',
             }
         }
     },
@@ -62,6 +83,7 @@ var vue1 = new Vue({
         this.initTaskType();
         this.initTaskPlace();
         this.initMessage();
+        this.initSys();
         this.initRankDictType();
         this.initRankDictPlace();
         this.initRankStartName();
@@ -117,7 +139,6 @@ var vue1 = new Vue({
             this.messageFormVisible = true;
             this.messageForm = JSON.parse(JSON.stringify(row));
             this.messageSU = 'update';
-
         },
         emptyMessageForm(){
             this.messageForm.announceTitle = '';
@@ -135,6 +156,48 @@ var vue1 = new Vue({
                     self.initMessage();
                 })
         },
+
+        openAdmin(){
+            this.emptyAdminForm();
+            this.adminFormVisible = true;
+            this.adminSU = 'save';
+        },
+        editAdmin(row){
+            this.emptyAdminForm();
+            this.adminFormVisible = true;
+            this.adminForm = JSON.parse(JSON.stringify(row));
+            this.adminSU = 'update';
+        },
+        emptyAdminForm(){
+            this.adminForm.sysName = '';
+            this.adminForm.userName = '';
+            this.adminForm.password = '';
+            this.adminForm.taskRight = '';
+            this.adminForm.userRight = '';
+            this.adminForm.dictRight = '';
+            this.adminForm.messageRight = '';
+            this.adminForm.adminRight = '';
+        },
+        saveAdmin(){
+            var self = this;if (self.adminSU === 'save'){
+                var urlRight = self.contextPath + self.urls.addSysRight;
+                var urlInfo = self.contextPath + self.urls.addSysInfo;
+            }else {
+                var urlRight = self.contextPath + self.urls.updateSysRight;
+                var urlInfo = self.contextPath + self.urls.updateSysInfo;
+            }
+            axios.post(urlInfo, self.adminForm)
+                .then(function (res) {
+                    self.adminForm.sysId = res.data;
+                    axios.post(urlRight, self.adminForm)
+                        .then(function (res) {
+                            self.adminFormVisible = false;
+                            self.initSys();
+                        })
+                })
+        },
+
+
 
         //-------------------------------------------初始化数据
         initTask(){
@@ -223,6 +286,34 @@ var vue1 = new Vue({
                     self.messageData = res.data;
                 })
         },
+        initSys(){
+            var self = this;
+            var url = self.contextPath + self.urls.initSysInfo;
+            axios.get(url)
+                .then(function (res) {
+                    self.sysInfoData = res.data;
+                    axios.get(self.contextPath + self.urls.initSysRight)
+                        .then(function (res) {
+                            self.sysRightData = res.data;
+                            self.bindData();
+                        })
+                })
+        },
+        bindData(){
+            var self = this;
+            for (let i = 0; i < self.sysInfoData.length; i++) {
+                for (let j = 0; j < self.sysRightData.length; j++){
+                    if (self.sysRightData[j].sysId === self.sysInfoData[i].id){
+                        self.sysInfoData[i].taskRight = self.sysRightData[j].taskRight;
+                        self.sysInfoData[i].userRight = self.sysRightData[j].userRight;
+                        self.sysInfoData[i].dictRight = self.sysRightData[j].dictRight;
+                        self.sysInfoData[i].messageRight = self.sysRightData[j].messageRight;
+                        self.sysInfoData[i].adminRight = self.sysRightData[j].adminRight;
+                        continue;
+                    }
+                }
+            }
+        },
 
         formatterGender(row){
             if (row.userGender === '1'){
@@ -235,6 +326,41 @@ var vue1 = new Vue({
                 return "任务类型";
             }
             return "任务地址";
+        },
+        formatterTaskRight(row){
+            if (row.taskRight === '1'){
+                return "有权限";
+            }else {
+                return "无";
+            }
+        },
+        formatterUserRight(row){
+            if (row.userRight === '1'){
+                return "有权限";
+            }else {
+                return "无";
+            }
+        },
+        formatterDictRight(row){
+            if (row.dictRight === '1'){
+                return "有权限";
+            }else {
+                return "无";
+            }
+        },
+        formatterMessageRight(row){
+            if (row.messageRight === '1'){
+                return "有权限";
+            }else {
+                return "无";
+            }
+        },
+        formatterAdminRight(row){
+            if (row.adminRight === '1'){
+                return "有权限";
+            }else {
+                return "无";
+            }
         },
         handleSelect(key, keyPath) {
             this.flag = key;

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luffykaiyuan.lifeplatform.dao.sys.SysRightMapper">
+  <resultMap id="BaseResultMap" type="com.luffykaiyuan.lifeplatform.po.sys.SysRight">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="sys_id" jdbcType="VARCHAR" property="sysId" />
+    <result column="task_right" jdbcType="VARCHAR" property="taskRight" />
+    <result column="user_right" jdbcType="VARCHAR" property="userRight" />
+    <result column="dict_right" jdbcType="VARCHAR" property="dictRight" />
+    <result column="message_right" jdbcType="VARCHAR" property="messageRight" />
+    <result column="admin_right" jdbcType="VARCHAR" property="adminRight" />
+    <result column="add_time" jdbcType="VARCHAR" property="addTime" />
+    <result column="delete_status" jdbcType="VARCHAR" property="deleteStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sys_id, task_right, user_right, dict_right, message_right, admin_right, add_time, delete_status
+  </sql>
+  <select id="selectBySysId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_right
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_right
+  </select>
+  <insert id="insertSysRight" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysRight">
+    insert into sys_right
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sysId != null">
+        sys_id,
+      </if>
+      <if test="taskRight != null">
+        task_right,
+      </if>
+      <if test="userRight != null">
+        user_right,
+      </if>
+      <if test="dictRight != null">
+        dict_right,
+      </if>
+      <if test="messageRight != null">
+        message_right,
+      </if>
+      <if test="adminRight != null">
+        admin_right,
+      </if>
+      <if test="addTime != null">
+        add_time,
+      </if>
+      <if test="deleteStatus != null">
+        delete_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="sysId != null">
+        #{sysId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskRight != null">
+        #{taskRight,jdbcType=VARCHAR},
+      </if>
+      <if test="userRight != null">
+        #{userRight,jdbcType=VARCHAR},
+      </if>
+      <if test="dictRight != null">
+        #{dictRight,jdbcType=VARCHAR},
+      </if>
+      <if test="messageRight != null">
+        #{messageRight,jdbcType=VARCHAR},
+      </if>
+      <if test="adminRight != null">
+        #{adminRight,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        #{addTime,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteStatus != null">
+        #{deleteStatus,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateSysRight" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysRight">
+    update sys_right
+    <set>
+      <if test="taskRight != null">
+        task_right = #{taskRight,jdbcType=VARCHAR},
+      </if>
+      <if test="userRight != null">
+        user_right = #{userRight,jdbcType=VARCHAR},
+      </if>
+      <if test="dictRight != null">
+        dict_right = #{dictRight,jdbcType=VARCHAR},
+      </if>
+      <if test="messageRight != null">
+        message_right = #{messageRight,jdbcType=VARCHAR},
+      </if>
+      <if test="adminRight != null">
+        admin_right = #{adminRight,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        add_time = #{addTime,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sys_id = #{sysId,jdbcType=VARCHAR},
+  </update>
+</mapper>

@@ -28,6 +28,7 @@
             <el-menu-item index="4-2">任务地址</el-menu-item>
         </el-submenu>
         <el-menu-item index="5">公告管理</el-menu-item>
+        <el-menu-item index="6">管理员管理</el-menu-item>
     </el-menu>
     <template v-if="flag == 2">
         <el-row>
@@ -39,7 +40,7 @@
                     <el-table-column prop="taskTime" label="发布时间"></el-table-column>
                     <el-table-column prop="endUsername" label="接收人账号"></el-table-column>
                     <el-table-column prop="endName" label="接收人昵称"></el-table-column>
-                    <el-table-column fixed="right" label="操作">
+                    <el-table-column :key="Math.random()" fixed="right" label="操作">
                         <template slot-scope="scope">
                             <span class="el-icon-view lookStyle">查看详情</span>
                             <span class="el-icon-delete-solid deleteStyle">删除</span>
@@ -95,7 +96,7 @@
             <el-table-column prop="qqNumber" label="QQ号码"></el-table-column>
             <el-table-column prop="wechatNumber" label="微信号码"></el-table-column>
             <el-table-column prop="addTime" label="修改时间"></el-table-column>
-            <el-table-column fixed="right" label="操作">
+            <el-table-column :key="Math.random()" fixed="right" label="操作">
                 <template slot-scope="scope">
                     <span class="el-icon-delete-solid deleteStyle">删除</span>
                 </template>
@@ -185,7 +186,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button @click="dictFormVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveDict">确 定</el-button>
             </div>
         </el-dialog>
@@ -202,7 +203,7 @@
                     <el-table-column prop="announceTitle" label="公告标题"></el-table-column>
                     <el-table-column prop="announceTime" label="发布时间"></el-table-column>
                     <el-table-column prop="sysName" label="发布人"></el-table-column>
-                    <el-table-column fixed="right" label="操作">
+                    <el-table-column :key="Math.random()" fixed="right" label="操作">
                         <template slot-scope="scope">
                             <span class="el-icon-delete-solid lookStyle">查看</span>
                             <span class="el-icon-delete-solid editStyle" @click="editMessage(scope.row)">编辑</span>
@@ -223,8 +224,79 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button @click="messageFormVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveMessage">确 定</el-button>
+            </div>
+        </el-dialog>
+    </template>
+    <template v-if="flag == 6">
+        <el-row>
+            <el-col  :span="2" :offset="16">
+                <div class="grid-content bg-purple-light">
+                    <el-button type="primary" @click="openAdmin">新增管理员</el-button>
+                </div>
+            </el-col>
+            <el-col :span="18" :offset="1">
+                <el-table border :data="sysInfoData" style="width: 100%">
+                    <el-table-column prop="sysName" label="管理员名称"></el-table-column>
+                    <el-table-column prop="userName" label="用户名"></el-table-column>
+                    <el-table-column prop="password" label="密码"></el-table-column>
+                    <el-table-column prop="taskRight" label="任务权限" :formatter="formatterTaskRight"></el-table-column>
+                    <el-table-column prop="userRight" label="用户权限" :formatter="formatterUserRight"></el-table-column>
+                    <el-table-column prop="dictRight" label="字典权限" :formatter="formatterDictRight"></el-table-column>
+                    <el-table-column prop="messageRight" label="公告权限" :formatter="formatterMessageRight"></el-table-column>
+                    <el-table-column prop="adminRight" label="管理员权限" :formatter="formatterAdminRight"></el-table-column>
+                    <el-table-column :key="Math.random()" fixed="right" label="操作">
+                        <template slot-scope="scope">
+                            <span class="el-icon-delete-solid lookStyle">查看</span>
+                            <span class="el-icon-delete-solid editStyle" @click="editMessage(scope.row)">编辑</span>
+                            <span class="el-icon-delete-solid deleteStyle">删除</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-col>
+        </el-row>
+
+        <el-dialog title="管理员操作" :visible.sync="adminFormVisible">
+            <el-form :model="adminForm">
+                <el-form-item label="管理员名称" :label-width="formLabelWidth">
+                    <el-input v-model="adminForm.sysName" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="用户名" :label-width="formLabelWidth">
+                    <el-input v-model="adminForm.userName" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" :label-width="formLabelWidth">
+                    <el-input v-model="adminForm.password" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="任务权限" :label-width="formLabelWidth">
+                    <el-switch v-model="adminForm.taskRight" active-value="1" inactive-value="0"
+                               active-text="有权限" inactive-text="无">
+                    </el-switch>
+                </el-form-item>
+                <el-form-item label="用户权限" :label-width="formLabelWidth">
+                    <el-switch v-model="adminForm.userRight" active-value="1" inactive-value="0"
+                               active-text="有权限" inactive-text="无">
+                    </el-switch>
+                </el-form-item>
+                <el-form-item label="字典权限" :label-width="formLabelWidth">
+                    <el-switch v-model="adminForm.dictRight" active-value="1" inactive-value="0"
+                               active-text="有权限" inactive-text="无">
+                    </el-switch>
+                </el-form-item>
+                <el-form-item label="公告权限" :label-width="formLabelWidth">
+                    <el-switch v-model="adminForm.messageRight" active-value="1" inactive-value="0"
+                               active-text="有权限" inactive-text="无">
+                    </el-switch>
+                </el-form-item>
+                <el-form-item label="管理员权限" :label-width="formLabelWidth">
+                    <el-switch v-model="adminForm.adminRight" active-value="1" inactive-value="0"
+                               active-text="有权限" inactive-text="无">
+                    </el-switch>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="adminFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveAdmin">确 定</el-button>
             </div>
         </el-dialog>
     </template>
