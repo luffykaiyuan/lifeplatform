@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.luffykaiyuan.lifeplatform.po.user.UserInfo">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="login_id" jdbcType="VARCHAR" property="loginId" />
+    <result column="img_id" jdbcType="VARCHAR" property="imgId" />
     <result column="user_gender" jdbcType="VARCHAR" property="userGender" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="qq_number" jdbcType="VARCHAR" property="qqNumber" />
@@ -12,7 +13,7 @@
     <result column="delete_status" jdbcType="VARCHAR" property="deleteStatus" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, login_id, user_gender, phone, qq_number, wechat_number, add_time, delete_status
+    id, login_id, img_id, user_gender, phone, qq_number, wechat_number, add_time, delete_status
   </sql>
   <select id="selectUserInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -35,6 +36,9 @@
       </if>
       <if test="loginId != null">
         login_id,
+      </if>
+      <if test="imgId != null">
+        img_id,
       </if>
       <if test="userGender != null">
         user_gender,
@@ -62,6 +66,9 @@
       <if test="loginId != null">
         #{loginId,jdbcType=VARCHAR},
       </if>
+      <if test="imgId != null">
+        #{imgId,jdbcType=VARCHAR},
+      </if>
       <if test="userGender != null">
         #{userGender,jdbcType=VARCHAR},
       </if>
@@ -86,6 +93,9 @@
   <update id="updateUserInfo" parameterType="com.luffykaiyuan.lifeplatform.po.user.UserInfo">
     update user_info
     <set>
+      <if test="imgId != null">
+        img_id = #{imgId,jdbcType=VARCHAR},
+      </if>
       <if test="userGender != null">
         user_gender = #{userGender,jdbcType=VARCHAR},
       </if>

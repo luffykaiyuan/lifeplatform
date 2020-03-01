@@ -5,6 +5,8 @@ public class UserInfo {
 
     private String loginId;
 
+    private String imgId;
+
     private String userGender;
 
     private String phone;
@@ -27,6 +29,14 @@ public class UserInfo {
 
     public String getLoginId() {
         return loginId;
+    }
+
+    public void setImgId(String imgId) {
+        this.imgId = imgId;
+    }
+
+    public String getImgId() {
+        return imgId;
     }
 
     public void setLoginId(String loginId) {

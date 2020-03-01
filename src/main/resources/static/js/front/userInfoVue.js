@@ -4,15 +4,23 @@ var vue1 = new Vue({
         return {
             contextPath:'',
             userName:'',
+            imageUrl:'',
             urls:{
                 initUserInfo: '/userInfo/selectUserInfo',
-                updateUserInfo: '/userInfo/updateUserInfo'
+                updateUserInfo: '/userInfo/updateUserInfo',
+
+                imgUpload: '',
+                selectFile: '/file/selectFile'
             },
             userForm: {
+                imgId: '',
                 phone: '',
                 wechatNumber: '',
                 qqNumber: '',
                 userGender: '',
+            },
+            fileData: {
+
             }
         }
     },
@@ -21,6 +29,7 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
+        this.urls.imgUpload = this.contextPath + '/file/imgUpload';
         this.userName = sessionStorage.getItem("userName");
         if (!this.userName){
             window.location.href = this.contextPath + "/login";
@@ -29,8 +38,10 @@ var vue1 = new Vue({
             var url = self.contextPath + self.urls.initUserInfo + "?loginId=" + self.userName;
             axios.get(url)
                 .then(function (res) {
-                    console.log(res);
                     self.userForm = res.data;
+                    if (res.data.imgId){
+                        self.imageUrl = self.contextPath + self.urls.selectFile + "?id=" + res.data.imgId;
+                    }
                 })
         }
     },
@@ -75,6 +86,31 @@ var vue1 = new Vue({
             }else if (key === 'moreInfo'){
 
             }
+        },
+        handleAvatarSuccess(res, file) {
+            this.imageUrl = URL.createObjectURL(file.raw);
+            this.userForm.imgId = res;
+            this.onSubmit();
+        },
+        beforeAvatarUpload(file) {
+            const isJPG = file.type === 'image/jpeg';
+            const isPNG = file.type === 'image/png';
+            const isLt2M = file.size / 1024 / 1024 < 2;
+
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!');
+                return false;
+            }
+
+            if (isJPG) {
+                return true;
+            } else {
+                if (isPNG) {
+                    return true;
+                }
+            }
+            this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+            return false;
         },
     },
     watch: {}
