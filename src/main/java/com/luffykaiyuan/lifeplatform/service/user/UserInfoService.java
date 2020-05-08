@@ -24,6 +24,10 @@ public class UserInfoService {
         return userInfoMapper.selectUserInfo(loginId);
     }
 
+    public UserInfo selectInfo(String nickName){
+        return userInfoMapper.selectInfo(nickName);
+    }
+
     public List<UserInfo> selectAllUser(){
         return userInfoMapper.selectAllUser();
     }

@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.luffykaiyuan.lifeplatform.po.user.UserInfo">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="login_id" jdbcType="VARCHAR" property="loginId" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
     <result column="img_id" jdbcType="VARCHAR" property="imgId" />
     <result column="user_gender" jdbcType="VARCHAR" property="userGender" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
@@ -13,7 +14,7 @@
     <result column="delete_status" jdbcType="VARCHAR" property="deleteStatus" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, login_id, img_id, user_gender, phone, qq_number, wechat_number, add_time, delete_status
+    id, login_id, img_id, nick_name, user_gender, phone, qq_number, wechat_number, add_time, delete_status
   </sql>
   <select id="selectUserInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -21,7 +22,12 @@
     from user_info
     where login_id = #{loginId,jdbcType=VARCHAR}
   </select>
-
+  <select id="selectInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_info
+    where nick_name = #{nickName,jdbcType=VARCHAR}
+  </select>
   <select id="selectAllUser" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -36,6 +42,9 @@
       </if>
       <if test="loginId != null">
         login_id,
+      </if>
+      <if test="nickName != null">
+        nick_name,
       </if>
       <if test="imgId != null">
         img_id,
@@ -65,6 +74,9 @@
       </if>
       <if test="loginId != null">
         #{loginId,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
       </if>
       <if test="imgId != null">
         #{imgId,jdbcType=VARCHAR},

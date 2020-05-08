@@ -16,6 +16,8 @@ public interface TaskInfoPoMapper {
 
     int updateTask(TaskInfoPo taskInfoPo);
 
+    List<TaskInfoPo> selectMyTask(String startName);
+
     List<TaskInfoPo> selectByTaskType(String taskType);
 
     List<TaskInfoPo> selectAllWaitTask();

@@ -5,6 +5,9 @@ var vue1 = new Vue({
             contextPath:'',
             userName:'',
             taskKind: '',
+            pageSize: 10,
+            currpage: 1,
+            imageUrl: '',
             urls:{
                 initTaskSquare: '/taskInfo/selectAllWaitTask',
                 initTaskReceive: '/taskInfo/selectAllReceiveTask',
@@ -17,6 +20,13 @@ var vue1 = new Vue({
                 receiveTask: '/taskInfo/receiveTask',
                 finishTask: '/taskInfo/finishTask',
                 notReceive: '/taskInfo/notReceive',
+                selectFile: '/file/selectFile'
+            },
+            hrefs:{
+                index: '/taskList',
+                login: '/login',
+                myRelease: '/myRelease',
+                myInfo: '/userInfo',
             },
             taskType:[],
             taskPlace:[],
@@ -45,6 +55,7 @@ var vue1 = new Vue({
                 taskTime: '',
                 taskContent: '',
             },
+            userForm: {},
             lookInfo:{
                 id: '',
                 taskType: '',
@@ -82,15 +93,17 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
+
+        this.hrefs.index = this.contextPath + this.hrefs.index;
+        this.hrefs.login = this.contextPath + this.hrefs.login;
+        this.hrefs.myRelease = this.contextPath + this.hrefs.myRelease;
+        this.hrefs.myInfo = this.contextPath + this.hrefs.myInfo;
+
         this.userName = sessionStorage.getItem("userName");
-        var flag = this.GetRequest().flag;
-        if(flag){
-            this.handleSelect(flag);
-        }else{
-            this.handleSelect("taskSquare");
-        }
         this.initTaskType();
         this.initTaskPlace();
+        this.refreshTask(this.urls.initTaskSquare);
+        this.initUser();
     },
     filters: {},
     mounted: function () {
@@ -108,6 +121,15 @@ var vue1 = new Vue({
                 }
             }
             return theRequest;
+        },
+        initUser(){
+            var self = this;
+            var url = self.contextPath + self.urls.initUser + "?loginId=" + self.userName;
+            axios.get(url)
+                .then(function (res) {
+                    self.userForm = res.data;
+                    self.imageUrl = self.contextPath + self.urls.selectFile + "?id=" + res.data.imgId;
+                })
         },
         //打开任务发布的弹窗
         openInsertTask(){
@@ -132,6 +154,8 @@ var vue1 = new Vue({
             this.$refs['taskForm'].validate((valid) => {
                 if (valid) {
                     var url = self.contextPath + self.urls.insertTask;
+                    self.taskForm.startUsername = self.userForm.userName;
+                    self.taskForm.startName = self.userForm.nickName;
                     axios.post(url, self.taskForm,)
                         .then(function (res) {
                             self.insertTaskVisible = false;
@@ -243,24 +267,6 @@ var vue1 = new Vue({
                     self.taskData = res.data;
                 })
         },
-        // 切换表单
-        handleSelect(key) {
-            this.taskKind = key;
-            if (key === 'taskSquare'){
-                this.refreshTask(this.urls.initTaskSquare);
-                this.operateWidth = 100;
-            }else if (key === 'taskReceive'){
-                var lastUrl = this.urls.initTaskReceive + "?endUsername=" + this.userName;
-                this.refreshTask(lastUrl);
-                this.operateWidth = 300;
-            }else if (key === 'taskFinish'){
-                var lastUrl = this.urls.initTaskFinish + "?endUsername=" + this.userName;
-                this.refreshTask(lastUrl);
-                this.operateWidth = 100;
-            }else if (key === 'moreInfo'){
-                window.location.href = this.contextPath + "/userInfo?flag=moreInfo";
-            }
-        },
         initTaskType(){
             var self = this;
             var url = self.contextPath + self.urls.initTaskType;
@@ -294,7 +300,16 @@ var vue1 = new Vue({
             }
             return "未知";
         },
-
+        handleCurrentChange(cpage) {
+            this.currpage = cpage;
+        },
+        handleSizeChange(psize) {
+            this.pagesize = psize;
+        },
+        quitLogin(){
+            sessionStorage.clear();
+            location.href="login";
+        },
     },
     watch: {}
 });

@@ -17,6 +17,12 @@ public class TaskInfoController {
     @Autowired
     TaskInfoService taskInfoService;
 
+    @GetMapping("/selectMyTask")
+    public List<TaskInfoPo> selectMyTask(@RequestParam("startName") String startName){
+        return taskInfoService.selectMyTask(startName);
+    }
+
+
     /** 
     * @Description: 查询所有任务 
     * @Param: [] 

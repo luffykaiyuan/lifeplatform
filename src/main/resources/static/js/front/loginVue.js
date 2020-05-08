@@ -57,6 +57,11 @@ var vue1 = new Vue({
                 registerUrl: '/user/insertLoginInfo',
                 confirmUser: '/user/confirmUser',
             },
+            hrefs:{
+                index: '/taskList',
+                login: '/login',
+                myInfo: '/userInfo',
+            },
             logORres: true,
             loginForm: {
                 userName: '',
@@ -99,6 +104,11 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
+
+        this.hrefs.index = this.contextPath + this.hrefs.index;
+        this.hrefs.login = this.contextPath + this.hrefs.login;
+        this.hrefs.myInfo = this.contextPath + this.hrefs.myInfo;
+
         sessionStorage.clear();
     },
     filters: {},

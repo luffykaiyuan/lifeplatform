@@ -26,6 +26,7 @@ public class LoginInfoService {
         UserInfo userInfo = new UserInfo();
         userInfo.setId(UUIDUtils.getUUID(32));
         userInfo.setLoginId(loginInfoPo.getUserName());
+        userInfo.setNickName(loginInfoPo.getNickName());
         userInfo.setAddTime(GetNowDate.getStringDate());
         userInfoMapper.insertUserInfo(userInfo);
         return loginInfoPoMapper.insertLoginInfo(loginInfoPo);

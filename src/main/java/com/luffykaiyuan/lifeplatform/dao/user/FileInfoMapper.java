@@ -12,7 +12,6 @@ public interface FileInfoMapper {
 
     FileInfo selectFile(String id);
 
-
     int updateByPrimaryKeySelective(FileInfo record);
 
 }

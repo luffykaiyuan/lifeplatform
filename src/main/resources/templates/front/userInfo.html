@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <!-- import CSS -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="./css/front/userInfoStyle.css">
@@ -17,89 +21,139 @@
 </head>
 <body>
 <div id="app" v-cloak>
-    <el-row>
-        <el-col :span="24">
-            <el-col :span="22">
-                <div class="grid-content bg-purple">
-                    <img style="width: 2%; border-radius: 15px;float: left" src="./img/logo.jpg">
-                </div>
-            </el-col>
-            <el-col :span="2">
-                <div class="grid-content bg-purple-light" v-if="!userName">
-                    <el-button icon="el-icon-user-solid" circle></el-button>
-                    <span style="font-size: 14px;">请登录</span>
-                </div>
-                <div class="grid-content bg-purple-light" v-else>
-                    <span style="font-size: 14px;">欢迎您,{{userName}}</span>
-                </div>
-            </el-col>
-        </el-col>
-    </el-row>
-    <el-divider></el-divider>
-    <el-row>
-        <el-col :span="4">
-            <div class="grid-content bg-purple">
-                <el-menu
-                        style="height: 930px"
-                        default-active="2"
-                        class="el-menu-vertical-demo"
-                        :default-openeds="['2']"
-                        @select="handleSelect">
-                    <el-submenu index="1">
-                        <template slot="title">
-                            <i class="el-icon-s-order"></i>
-                            <span>任务信息</span>
-                        </template>
-                        <el-menu-item index="taskSquare">任务广场</el-menu-item>
-                        <el-menu-item index="taskReceive">接收任务</el-menu-item>
-                        <el-menu-item index="taskFinish">完成任务</el-menu-item>
-                    </el-submenu>
-                    <el-submenu index="2">
-                        <template slot="title">
-                            <i class="el-icon-s-tools"></i>
-                            <span>我的信息</span>
-                        </template>
-                        <el-menu-item index="2-1">选项4</el-menu-item>
-                        <el-menu-item index="2-2">选项5</el-menu-item>
-                        <el-menu-item index="moreInfo">完善信息</el-menu-item>
-                    </el-submenu>
-                </el-menu>
+    <div class="container" style="margin-left: 10px;">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+                    <div class="navbar-header">
+                        <a class="navbar-brand">任务平台</a>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a :href="hrefs.index">任务广场</a>
+                            </li>
+                            <li v-if="!userName">
+                                <a :href="hrefs.login">登录</a>
+                            </li>
+                            <li class="dropdown" v-if="userName">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">我的任务<strong class="caret"></strong></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#">我发布的</a>
+                                    </li>
+                                    <li class="divider">
+                                    </li>
+                                    <li>
+                                        <a href="#">我接收的</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="active" v-if="userName">
+                                <a :href="hrefs.myInfo">个人中心</a>
+                            </li>
+                            <li v-if="userName">
+                                <a @click="quitLogin">退出登录</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </nav>
             </div>
-        </el-col>
-        <el-col :span="18">
-            <el-form ref="userForm" :model="userForm" label-width="80px">
-                <el-form-item label="头像">
-                    <el-upload
-                            class="avatar-uploader"
-                            :action="urls.imgUpload"
-                            :show-file-list="false"
-                            :on-success="handleAvatarSuccess"
-                            :before-upload="beforeAvatarUpload">
-                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                </el-form-item>
-                <el-form-item label="电话号码" placeholder="请输入电话号码">
-                    <el-input v-model="userForm.phone"></el-input>
-                </el-form-item>
-                <el-form-item label="微信号码" placeholder="请输入微信号码">
-                    <el-input v-model="userForm.wechatNumber"></el-input>
-                </el-form-item>
-                <el-form-item label="QQ号码" placeholder="请输入QQ号码">
-                    <el-input v-model="userForm.qqNumber"></el-input>
-                </el-form-item>
-                <el-form-item label="性别">
-                    <el-select v-model="userForm.userGender" placeholder="请选择性别">
-                        <el-option label="男" value="1"></el-option>
-                        <el-option label="女" value="2"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="onSubmit">提交信息</el-button>
-                </el-form-item>
-            </el-form>
-        </el-col>
-    </el-row>
+        </div>
+
+        <div class="row clearfix" style="margin-top: 50px">
+            <el-row>
+                <el-col :span="4">
+                    <div class="grid-content bg-purple">
+                        <el-menu
+                                default-active="1"
+                                class="el-menu-vertical-demo"
+                                @select="changeTap"
+                                style="height: 800px">
+                            <el-menu-item index="1">
+                                <i class="el-icon-menu"></i>
+                                <span slot="title">个人信息</span>
+                            </el-menu-item>
+                            <el-menu-item index="2">
+                                <i class="el-icon-document"></i>
+                                <span slot="title">修改头像</span>
+                            </el-menu-item>
+                            <el-menu-item index="3">
+                                <i class="el-icon-setting"></i>
+                                <span slot="title">修改密码</span>
+                            </el-menu-item>
+                        </el-menu>
+                    </div>
+                </el-col>
+                <el-col :span="16" :offset="4" style="margin-top: 80px">
+                    <el-card class="box-card" v-if="key === '1'">
+                        <div slot="header" class="clearfix">
+                            <span>个人信息</span>
+                        </div>
+                        <el-form ref="userForm" :model="userForm" label-width="80px">
+                            <el-form-item label="电话号码" placeholder="请输入电话号码">
+                                <el-input v-model="userForm.phone"></el-input>
+                            </el-form-item>
+                            <el-form-item label="微信号码" placeholder="请输入微信号码">
+                                <el-input v-model="userForm.wechatNumber"></el-input>
+                            </el-form-item>
+                            <el-form-item label="QQ号码" placeholder="请输入QQ号码">
+                                <el-input v-model="userForm.qqNumber"></el-input>
+                            </el-form-item>
+                            <el-form-item label="性别">
+                                <el-select v-model="userForm.userGender" placeholder="请选择性别" style="width: 100%">
+                                    <el-option label="男" value="1"></el-option>
+                                    <el-option label="女" value="2"></el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="onSubmit">提交信息</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </el-card>
+                    <el-card class="box-card"  v-if="key === '2'">
+                        <div slot="header" class="clearfix">
+                            <span>修改头像</span>
+                        </div>
+                        <el-form ref="userForm" :model="userForm" label-width="80px">
+                            <el-form-item label="头像">
+                                <el-upload
+                                        class="avatar-uploader"
+                                        :action="urls.imgUpload"
+                                        :show-file-list="false"
+                                        :on-success="handleAvatarSuccess"
+                                        :before-upload="beforeAvatarUpload">
+                                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                </el-upload>
+                            </el-form-item>
+                        </el-form>
+                    </el-card>
+                    <el-card class="box-card" v-if="key === '3'">
+                        <div slot="header" class="clearfix">
+                            <span>修改密码</span>
+                        </div>
+                        <el-form ref="passwordForm" :model="passwordForm" label-width="80px">
+                            <el-form-item label="旧密码" placeholder="请输入旧密码">
+                                <el-input type="password" show-password v-model="passwordForm.oldPassword"></el-input>
+                            </el-form-item>
+                            <el-form-item label="新密码" placeholder="请输入新密码">
+                                <el-input type="password" show-password v-model="passwordForm.password"></el-input>
+                            </el-form-item>
+                            <el-form-item label="确认密码" placeholder="请输入确认密码">
+                                <el-input type="password" show-password v-model="passwordForm.rePassword"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="onSubmit">提交信息</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
 </div>
 </body>
 <script src="./js/front/userInfoVue.js"></script>

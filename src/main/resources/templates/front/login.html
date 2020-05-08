@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>登录界面</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="./css/front/loginStyle.css">
@@ -17,54 +20,77 @@
 <body>
 <div id="app" v-cloak>
     <el-container>
-        <el-header style="height: 250px"></el-header>
-        <el-main>
-            <el-row>
-                <el-col :span="8" :offset="9">
-                    <el-card class="box-card" v-show="logORres">
-                    <div slot="header" class="clearfix">
-                        <span>用户登录</span>
-                    </div>
-                        <el-form :model="loginForm" :rules="loginFormRules" ref="loginForm" label-width="100px" class="demo-loginForm">
-                            <el-form-item label="账号" prop="userName">
-                                <el-input placeholder="请输入账号" v-model="loginForm.userName"></el-input>
-                            </el-form-item>
-                            <el-form-item label="密码" prop="password">
-                                <el-input placeholder="请输入密码" show-password v-model="loginForm.password"></el-input>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" @click="submitForm('loginForm')" :disabled="loginDisabled">登录</el-button>
-                                <el-button @click="toRegister">注册</el-button>
-                                <el-button type="success" @click="adminLogin">跳转至管理员登录</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </el-card>
-                    <el-card class="box-card" v-show="!logORres">
-                        <div slot="header" class="clearfix">
-                            <span>用户注册</span>
+        <div class="container" style="margin-left: 10px;">
+            <div class="row clearfix">
+                <div class="col-md-12 column">
+                    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+                        <div class="navbar-header">
+                            <a class="navbar-brand">任务平台</a>
                         </div>
-                        <el-form :model="registerForm" :rules="registerFormRules" ref="registerForm" label-width="100px" class="demo-loginForm">
-                            <el-form-item label="账号" prop="userName">
-                                <el-input placeholder="请输入账号" v-model="registerForm.userName"></el-input>
-                            </el-form-item>
-                            <el-form-item label="密码" prop="password">
-                                <el-input placeholder="请输入密码" show-password v-model="registerForm.password"></el-input>
-                            </el-form-item>
-                            <el-form-item label="确认密码" prop="repassword">
-                                <el-input placeholder="请输入密码" show-password v-model="registerForm.repassword"></el-input>
-                            </el-form-item>
-                            <el-form-item label="昵称" prop="nickName">
-                                <el-input placeholder="请输入昵称" v-model="registerForm.nickName"></el-input>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" @click="doRegister('registerForm')" :disabled="registerDisabled">注册</el-button>
-                                <el-button @click="toLogin">返回</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </el-card>
-                </el-col>
-            </el-row>
-        </el-main>
+
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav">
+                                <li>
+                                    <a :href="hrefs.index">任务广场</a>
+                                </li>
+                                <li class="active">
+                                    <a :href="hrefs.login">登录</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </nav>
+                </div>
+            </div>
+
+            <div class="row clearfix" style="margin-top: 320px">
+                <el-row>
+                    <el-col :span="8" :offset="11">
+                        <el-card class="box-card" v-show="logORres">
+                            <div slot="header" class="clearfix">
+                                <span>用户登录</span>
+                            </div>
+                            <el-form :model="loginForm" :rules="loginFormRules" ref="loginForm" label-width="100px" class="demo-loginForm">
+                                <el-form-item label="账号" prop="userName">
+                                    <el-input placeholder="请输入账号" v-model="loginForm.userName"></el-input>
+                                </el-form-item>
+                                <el-form-item label="密码" prop="password">
+                                    <el-input placeholder="请输入密码" show-password v-model="loginForm.password"></el-input>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button type="primary" @click="submitForm('loginForm')" :disabled="loginDisabled">登录</el-button>
+                                    <el-button @click="toRegister">注册</el-button>
+                                    <el-button type="success" @click="adminLogin">跳转至管理员登录</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </el-card>
+                        <el-card class="box-card" v-show="!logORres">
+                            <div slot="header" class="clearfix">
+                                <span>用户注册</span>
+                            </div>
+                            <el-form :model="registerForm" :rules="registerFormRules" ref="registerForm" label-width="100px" class="demo-loginForm">
+                                <el-form-item label="账号" prop="userName">
+                                    <el-input placeholder="请输入账号" v-model="registerForm.userName"></el-input>
+                                </el-form-item>
+                                <el-form-item label="密码" prop="password">
+                                    <el-input placeholder="请输入密码" show-password v-model="registerForm.password"></el-input>
+                                </el-form-item>
+                                <el-form-item label="确认密码" prop="repassword">
+                                    <el-input placeholder="请输入密码" show-password v-model="registerForm.repassword"></el-input>
+                                </el-form-item>
+                                <el-form-item label="昵称" prop="nickName">
+                                    <el-input placeholder="请输入昵称" v-model="registerForm.nickName"></el-input>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button type="primary" @click="doRegister('registerForm')" :disabled="registerDisabled">注册</el-button>
+                                    <el-button @click="toLogin">返回</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </el-card>
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
     </el-container>
 </div>
 </body>

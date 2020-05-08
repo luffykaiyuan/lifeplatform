@@ -16,6 +16,11 @@ public class EntryController {
         return "front/taskList";
     }
 
+    @RequestMapping("/myRelease")
+    public String entryMyRelease(){
+        return "front/myRelease";
+    }
+
     @RequestMapping("/userInfo")
     public String entryUserInfo(){
         return "front/userInfo";
@@ -30,4 +35,6 @@ public class EntryController {
     public String entryAdminLogin(){
         return "app/adminLogin";
     }
+
+
 }

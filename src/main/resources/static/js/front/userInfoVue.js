@@ -12,6 +12,11 @@ var vue1 = new Vue({
                 imgUpload: '',
                 selectFile: '/file/selectFile'
             },
+            hrefs:{
+                index: '/taskList',
+                login: '/login',
+                myInfo: '/userInfo',
+            },
             userForm: {
                 imgId: '',
                 phone: '',
@@ -19,9 +24,13 @@ var vue1 = new Vue({
                 qqNumber: '',
                 userGender: '',
             },
-            fileData: {
-
-            }
+            passwordForm: {
+                oldPassword: '',
+                password: '',
+                rePassword: '',
+            },
+            fileData: {},
+            key: '1'
         }
     },
     created: function () {
@@ -30,6 +39,11 @@ var vue1 = new Vue({
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
         this.urls.imgUpload = this.contextPath + '/file/imgUpload';
+
+        this.hrefs.index = this.contextPath + this.hrefs.index;
+        this.hrefs.login = this.contextPath + this.hrefs.login;
+        this.hrefs.myInfo = this.contextPath + this.hrefs.myInfo;
+
         this.userName = sessionStorage.getItem("userName");
         if (!this.userName){
             window.location.href = this.contextPath + "/login";
@@ -74,18 +88,8 @@ var vue1 = new Vue({
                     });
                 })
         },
-        // 切换表单
-        handleSelect(key, keyPath) {
-            this.taskKind = key;
-            if (key === 'taskSquare'){
-                window.location.href = this.contextPath + "/taskList?flag=taskSquare";
-            }else if (key === 'taskReceive'){
-                window.location.href = this.contextPath + "/taskList?flag=taskReceive";
-            }else if (key === 'taskFinish'){
-                window.location.href = this.contextPath + "/taskList?flag=taskFinish";
-            }else if (key === 'moreInfo'){
-
-            }
+        changeTap(key, keyPath) {
+            this.key = key;
         },
         handleAvatarSuccess(res, file) {
             this.imageUrl = URL.createObjectURL(file.raw);
@@ -111,6 +115,10 @@ var vue1 = new Vue({
             }
             this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
             return false;
+        },
+        quitLogin(){
+            sessionStorage.clear();
+            location.href="login";
         },
     },
     watch: {}

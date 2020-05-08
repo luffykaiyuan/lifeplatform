@@ -31,16 +31,16 @@
 
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li class="active">
+                            <li>
                                 <a :href="hrefs.index">任务广场</a>
                             </li>
                             <li v-if="!userName">
                                 <a :href="hrefs.login">登录</a>
                             </li>
-                            <li class="dropdown" v-if="userName">
+                            <li class="dropdown active" v-if="userName">
                                 <a class="dropdown-toggle" data-toggle="dropdown">我的任务<strong class="caret"></strong></a>
                                 <ul class="dropdown-menu">
-                                    <li>
+                                    <li class="active">
                                         <a :href="hrefs.myRelease">我发布的</a>
                                     </li>
                                     <li class="divider">
@@ -69,35 +69,37 @@
                     <el-col :span="20" :offset="2">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">任务中心</h3>
+                                <h3 class="panel-title">我发布的任务</h3>
                             </div>
                             <div class="panel-body" style="margin-top: 20px">
-                                这是一个基本的面板
+                                <el-select v-model="value" placeholder="请选择" @change="changeTap">
+                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                                </el-select>
                             </div>
-                            <el-table class="table" :data="taskData.slice((currpage - 1) * pageSize, currpage * pageSize)" border style="width: 100%">
-                                <el-table-column fixed prop="startName" label="发起人昵称"></el-table-column>
-                                <el-table-column prop="taskTitle" label="任务标题"></el-table-column>
-                                <el-table-column prop="taskType" label="任务类别" :formatter="formatterType"></el-table-column>
-                                <el-table-column prop="taskPlace" label="任务地址" :formatter="formatterPlace"></el-table-column>
-                                <el-table-column prop="taskTime" label="发布时间"></el-table-column>
-                                <el-table-column prop="endName" label="接收人昵称" v-if="taskKind != 'taskSquare'"></el-table-column>
-                                <el-table-column label="操作" :width="operateWidth">
-                                    <template slot-scope="scope">
-                                        <span class="el-icon-view lookStyle" @click="lookTask(scope.row)">查看</span>
-                                        <span class="el-icon-delete-solid deleteStyle" v-if="taskKind == 'taskReceive'" @click="notReceive(scope.row)">取消接受</span>
+                            <el-collapse v-model="activeNames">
+                                <el-collapse-item :name="item.id" v-for="(item, i) in MyAuditBack">
+                                    <template slot="title">
+                                        <span style="float:left;font-size:14px;padding: 15px">{{item.taskTitle}}</span>
+                                        <el-tag size="mini" type="warning" v-if="item.deleteStatus === 1">审核中</el-tag>
+                                        <el-tag size="mini" type="danger" v-else-if="item.deleteStatus === 3">未通过审核</el-tag>
+                                        <el-tag size="mini" type="success" v-else-if="item.deleteStatus === 6">任务完成</el-tag>
+                                        <el-tag size="mini" v-else>任务进行中</el-tag>
                                     </template>
-                                </el-table-column>
-                            </el-table>
-                        </div>
-                        <div class="panel-footer">
-                            <el-pagination background
-                                           layout="prev, pager, next , total"
-                                           :page-size="pageSize"
-                                           :total="taskData.length"
-                                           @current-change="handleCurrentChange"
-                                           @size-change="handleSizeChange"
-                            >
-                            </el-pagination>
+                                    <el-steps :active="item.deleteStatus" align-center :finish-status="item.steps">
+                                        <el-step title="审核中" description="这是一段很长很长很长的描述性文字"></el-step>
+                                        <el-step title="审核通过" description="这是一段很长很长很长的描述性文字"></el-step>
+                                        <el-step title="审核失败" description="这是一段很长很长很长的描述性文字"></el-step>
+                                        <el-step title="待接收" description="这是一段很长很长很长的描述性文字"></el-step>
+                                        <el-step title="已接收" description="这是一段很长很长很长的描述性文字"></el-step>
+                                        <el-step title="已完成" description="这是一段很长很长很长的描述性文字"></el-step>
+                                    </el-steps>
+                                    <el-button size="small" style="float: right;margin: 10px" type="primary" @click="lookTask(item)">查看详情</el-button>
+                                    <el-button size="small" v-if="item.deleteStatus === 3 || item.deleteStatus === 6"
+                                               style="float: right;margin: 10px" type="danger" @click="deleteTask(item)">删除任务</el-button>
+                                    <el-button size="small" v-if="item.deleteStatus === 5"
+                                               style="float: right;margin: 10px" type="primary" @click="finishTask(item)">完成任务</el-button>
+                                </el-collapse-item>
+                            </el-collapse>
                         </div>
                     </el-col>
                     <el-col :span="1" :offset="1">
@@ -155,10 +157,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel panel-default" style="width: 430px" v-if="userName">
+                        <div class="panel panel-default" style="width: 430px">
                             <div class="panel-heading">
                                 <h3 class="panel-title">
-                                    个人信息
+                                    个人发布任务信息
                                 </h3>
                             </div>
                             <div class="list-group-item">
@@ -167,143 +169,83 @@
                                 <span>
                                     <img :src="imageUrl" class="img-rounded" style="width: 50px; height: 50px">
                                 </span>
-                                        <div style="align-items: flex-end; width: 100%; flex-direction: column-reverse;">
-                                            <div style=" margin-left: 10%;margin-top: 7%">
+                                        <div style="align-items: flex-end; width: 20%; flex-direction: column-reverse;">
+                                            <div style=" margin-left: 10%;margin-top: 10%">
                                                 <span>{{userForm.nickName}}</span>
                                             </div>
-                                            <div style=" margin-left: 10%">
-                                                <span style="font-size: 11px;">会员很懒~什么都没留下~</span>
-                                            </div>
-                                        </div>
                                     </div>
-                                    <div style="margin-top: 5%; display: flex; flex-direction: row">
+                                    <div style="display: flex; flex-direction: row">
                                         <div style="flex-direction: column;">
-                                            <p style="color: #bfc9d9">我的文章</p>
-                                            <span>1111</span>
+                                            <p style="color: #bfc9d9">审核中任务</p>
+                                            <span>{{releaseNum}}</span>
                                         </div>
                                         <el-divider direction="vertical"></el-divider>
                                         <div style="flex-direction: column;">
-                                            <p style="color: #bfc9d9">我的粉丝</p>
-                                            <span>1111</span>
+                                            <p style="color: #bfc9d9">进行中任务</p>
+                                            <span>{{doingNum}}</span>
                                         </div>
                                         <el-divider direction="vertical"></el-divider>
                                         <div style="flex-direction: column;">
-                                            <p style="color: #bfc9d9">我的积分</p>
-                                            <span>1111</span>
+                                            <p style="color: #bfc9d9">已完成任务</p>
+                                            <span>{{finishNum}}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="list-group-item">
-                                <el-button type="primary" @click="openInsertTask">发布任务</el-button>
-                            </div>
                         </div>
-                        <div class="panel panel-default" style="width: 430px" v-else>
-                            <div class="panel-heading">
-                                <h3 class="panel-title">
-                                    跳转登录
-                                </h3>
-                            </div>
-                            <div class="list-group-item">
-                                <el-button type="primary" @click="quitLogin">登录注册</el-button>
-                            </div>
                         </div>
                     </el-col>
                 </el-row>
             </div>
         </div>
-    </div>
 
-    <el-dialog :visible.sync="insertTaskVisible" width="50%">
-        <span style="font-size: 20px;font-weight: normal; color: rgba(52,148,243,1)">▌</span>发布任务
-        <el-divider></el-divider>
-        <el-form :model="taskForm" :rules="taskFormRules" ref="taskForm" label-width="100px" class="demo-taskForm">
-            <el-row>
-                <el-col :span="12">
-                    <el-form-item label="任务标题" prop="taskTitle">
-                        <el-input v-model="taskForm.taskTitle" placeholder="请输入任务标题"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="任务类型" prop="taskType">
-                        <el-select v-model="taskForm.taskType" placeholder="请选择任务类型" style="width: 100%">
-                            <el-option v-for="(taskType,i) in taskType" :label="taskType.dictName" :value="taskType.id"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="任务地区" prop="taskPlace">
-                        <el-select v-model="taskForm.taskPlace" placeholder="请选择任务地区" style="width: 100%">
-                            <el-option v-for="(taskType,i) in taskPlace" :label="taskType.dictName" :value="taskType.id"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="截止时间" required>
-                        <el-col :span="11">
-                            <el-form-item prop="date1">
-                                <el-date-picker type="date" placeholder="选择截止时间" value-format="yyyy-MM-dd"
-                                                v-model="taskForm.taskTime" style="width: 300px;"></el-date-picker>
-                            </el-form-item>
-                        </el-col>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                    <el-form-item label="任务内容" prop="desc">
-                        <el-input type="textarea" v-model="taskForm.taskContent" placeholder="请输入任务内容"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="insertTaskVisible = false">取 消</el-button>
-            <el-button type="primary" @click="insertTask">确 定</el-button>
-        </span>
-    </el-dialog>
-    <el-dialog :visible.sync="receiveTaskVisible" width="80%">
-        <span style="font-size: 20px;font-weight: normal; color: rgba(52,148,243,1)">▌</span>接收任务
-        <el-divider></el-divider>
-        <el-card class="box-card">
-            <div slot="header" class="clearfix">
-                <span>任务信息</span>
-            </div>
-            <el-row>
-                <el-col :span="2" :offset="1">任务类型</el-col>
-                <el-col :span="5">{{lookInfo.taskType}}</el-col>
-                <el-col :span="2" :offset="1">任务地址</el-col>
-                <el-col :span="5">{{lookInfo.taskPlace}}</el-col>
-                <el-col :span="2" :offset="1">截止时间</el-col>
-                <el-col :span="5">{{lookInfo.taskTime}}</el-col>
-            </el-row>
-        </el-card>
-        <el-card class="box-card">
-            <div slot="header" class="clearfix">
-                <span>发布人信息</span>
-            </div>
-            <el-row>
-                <el-col :span="2" :offset="1">电话</el-col>
-                <el-col :span="5">{{lookInfo.phone}}</el-col>
-                <el-col :span="2" :offset="1">微信号</el-col>
-                <el-col :span="5">{{lookInfo.wechatNumber}}</el-col>
-                <el-col :span="2" :offset="1">QQ号码</el-col>
-                <el-col :span="5">{{lookInfo.qqNumber}}</el-col>
-            </el-row>
-        </el-card>
-        <el-card class="box-card">
-            <div slot="header" class="clearfix">
-                <span>任务详情</span>
-            </div>
-            <el-row>
-                <el-col :span="24" :offset="1">{{lookInfo.taskContent}}</el-col>
-            </el-row>
-        </el-card>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="receiveTaskVisible = false">取 消</el-button>
-            <el-button type="primary" @click="receiveTask" v-if="taskKind == 'taskSquare'">接受任务</el-button>
-            <el-button type="primary" @click="finishTask" v-if="taskKind == 'taskReceive'">完成任务</el-button>
-        </span>
-    </el-dialog>
+        <el-dialog tiele="任务详情" :visible.sync="dialogVisible" width="80%">
+            <el-divider></el-divider>
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span style="font-size: 20px;font-weight: normal; color: rgba(52,148,243,1)">▌</span>任务信息
+                </div>
+                <el-row>
+                    <el-col :span="2" :offset="1">任务类型</el-col>
+                    <el-col :span="5">{{oneTask.taskType}}</el-col>
+                    <el-col :span="2" :offset="1">任务地址</el-col>
+                    <el-col :span="5">{{oneTask.taskPlace}}</el-col>
+                    <el-col :span="2" :offset="1">截止时间</el-col>
+                    <el-col :span="5">{{oneTask.taskTime}}</el-col>
+                </el-row>
+                <el-row style="margin-top: 20px">
+                    <el-col :span="2" :offset="1">任务详情</el-col>
+                    <el-col :span="16">{{oneTask.taskContent}}</el-col>
+                </el-row>
+            </el-card>
+            <el-card class="box-card" v-if="oneTask.endName">
+                <div slot="header" class="clearfix">
+                    <span style="font-size: 20px;font-weight: normal; color: rgba(52,148,243,1)">▌</span>接收人信息
+                </div>
+                <el-row style="margin-top: 20px">
+                    <el-col :span="2" :offset="1">昵称</el-col>
+                    <el-col :span="5">{{endInfo.nickName}}</el-col>
+                    <el-col :span="2" :offset="1">电话</el-col>
+                    <el-col :span="5">{{endInfo.phone}}</el-col>
+                    <el-col :span="2" :offset="1">微信号</el-col>
+                    <el-col :span="5">{{endInfo.wechatNumber}}</el-col>
+                </el-row>
+            </el-card>
+            <el-card class="box-card" v-if="oneTask.deleteStatus === 5 || oneTask.deleteStatus === 6">
+                <div slot="header" class="clearfix">
+                    <span style="font-size: 20px;font-weight: normal; color: rgba(52,148,243,1)">▌</span>完成反馈信息
+                </div>
+                <el-row>
+                    <el-col :span="24" :offset="1">达大厦大所大所大所</el-col>
+                </el-row>
+            </el-card>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+            </span>
+        </el-dialog>
+
+    </div>
 </div>
 </body>
-<script src="./js/front/taskListVue.js"></script>
+<script src="./js/front/myRelease.js"></script>
 </html>

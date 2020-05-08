@@ -5,6 +5,8 @@ public class UserInfo {
 
     private String loginId;
 
+    private String nickName;
+
     private String imgId;
 
     private String userGender;
@@ -33,6 +35,14 @@ public class UserInfo {
 
     public void setImgId(String imgId) {
         this.imgId = imgId;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getImgId() {

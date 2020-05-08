@@ -24,6 +24,11 @@ public class UserInfoController {
         return userInfoService.selectUserInfo(loginId);
     }
 
+    @GetMapping("/selectInfo")
+    public UserInfo selectInfo(@RequestParam("nickName") String nickName){
+        return userInfoService.selectInfo(nickName);
+    }
+
     @GetMapping("/selectAllUser")
     public List<UserInfo> selectAllUser(){
         return userInfoService.selectAllUser();
