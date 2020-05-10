@@ -46,7 +46,7 @@
                                     <li class="divider">
                                     </li>
                                     <li>
-                                        <a href="#">我接收的</a>
+                                        <a :href="hrefs.myGet">我接收的</a>
                                     </li>
                                 </ul>
                             </li>
@@ -79,12 +79,10 @@
                                 <el-table-column prop="taskTitle" label="任务标题"></el-table-column>
                                 <el-table-column prop="taskType" label="任务类别" :formatter="formatterType"></el-table-column>
                                 <el-table-column prop="taskPlace" label="任务地址" :formatter="formatterPlace"></el-table-column>
-                                <el-table-column prop="taskTime" label="发布时间"></el-table-column>
-                                <el-table-column prop="endName" label="接收人昵称" v-if="taskKind != 'taskSquare'"></el-table-column>
+                                <el-table-column prop="taskTime" label="截止时间"></el-table-column>
                                 <el-table-column label="操作" :width="operateWidth">
                                     <template slot-scope="scope">
                                         <span class="el-icon-view lookStyle" @click="lookTask(scope.row)">查看</span>
-                                        <span class="el-icon-delete-solid deleteStyle" v-if="taskKind == 'taskReceive'" @click="notReceive(scope.row)">取消接受</span>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -167,29 +165,27 @@
                                 <span>
                                     <img :src="imageUrl" class="img-rounded" style="width: 50px; height: 50px">
                                 </span>
-                                        <div style="align-items: flex-end; width: 100%; flex-direction: column-reverse;">
-                                            <div style=" margin-left: 10%;margin-top: 7%">
+                                        <div style="align-items: flex-end; width: 20%; flex-direction: column-reverse;">
+                                            <div style=" margin-left: 10%;margin-top: 10%">
                                                 <span>{{userForm.nickName}}</span>
                                             </div>
-                                            <div style=" margin-left: 10%">
-                                                <span style="font-size: 11px;">会员很懒~什么都没留下~</span>
+                                        </div>
+                                        <div style="display: flex; flex-direction: row">
+                                            <el-divider direction="vertical"></el-divider>
+                                            <div style="flex-direction: column;">
+                                                <p style="color: #bfc9d9">发布任务</p>
+                                                <span>{{myRelease}}</span>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div style="margin-top: 5%; display: flex; flex-direction: row">
-                                        <div style="flex-direction: column;">
-                                            <p style="color: #bfc9d9">我的文章</p>
-                                            <span>1111</span>
-                                        </div>
-                                        <el-divider direction="vertical"></el-divider>
-                                        <div style="flex-direction: column;">
-                                            <p style="color: #bfc9d9">我的粉丝</p>
-                                            <span>1111</span>
-                                        </div>
-                                        <el-divider direction="vertical"></el-divider>
-                                        <div style="flex-direction: column;">
-                                            <p style="color: #bfc9d9">我的积分</p>
-                                            <span>1111</span>
+                                            <el-divider direction="vertical"></el-divider>
+                                            <div style="flex-direction: column;">
+                                                <p style="color: #bfc9d9">接受任务</p>
+                                                <span>{{myReceive}}</span>
+                                            </div>
+                                            <el-divider direction="vertical"></el-divider>
+                                            <div style="flex-direction: column;">
+                                                <p style="color: #bfc9d9">已完成任务</p>
+                                                <span>{{myFinish}}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -299,8 +295,7 @@
         </el-card>
         <span slot="footer" class="dialog-footer">
             <el-button @click="receiveTaskVisible = false">取 消</el-button>
-            <el-button type="primary" @click="receiveTask" v-if="taskKind == 'taskSquare'">接受任务</el-button>
-            <el-button type="primary" @click="finishTask" v-if="taskKind == 'taskReceive'">完成任务</el-button>
+            <el-button type="primary" @click="receiveTask">接受任务</el-button>
         </span>
     </el-dialog>
 </div>

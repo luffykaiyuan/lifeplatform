@@ -21,6 +21,11 @@ public class EntryController {
         return "front/myRelease";
     }
 
+    @RequestMapping("/myGet")
+    public String entryMyGet(){
+        return "front/myGet";
+    }
+
     @RequestMapping("/userInfo")
     public String entryUserInfo(){
         return "front/userInfo";

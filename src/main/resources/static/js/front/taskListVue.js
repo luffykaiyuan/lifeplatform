@@ -15,19 +15,24 @@ var vue1 = new Vue({
                 initUser: '/userInfo/selectUserInfo',
                 initTaskType: '/dictInfo/selectDictType',
                 initTaskPlace: '/dictInfo/selectDictPlace',
+                getNum: '/taskInfo/getNum',
 
                 insertTask: '/taskInfo/insertTask',
                 receiveTask: '/taskInfo/receiveTask',
-                finishTask: '/taskInfo/finishTask',
-                notReceive: '/taskInfo/notReceive',
-                selectFile: '/file/selectFile'
+                selectFile: '/file/selectFile',
+                selectInfo: '/userInfo/selectInfo',
+
             },
             hrefs:{
                 index: '/taskList',
                 login: '/login',
                 myRelease: '/myRelease',
+                myGet: '/myGet',
                 myInfo: '/userInfo',
             },
+            myRelease: 0,
+            myReceive: 0,
+            myFinish: 0,
             taskType:[],
             taskPlace:[],
             sureLogin: true,
@@ -97,6 +102,7 @@ var vue1 = new Vue({
         this.hrefs.index = this.contextPath + this.hrefs.index;
         this.hrefs.login = this.contextPath + this.hrefs.login;
         this.hrefs.myRelease = this.contextPath + this.hrefs.myRelease;
+        this.hrefs.myGet = this.contextPath + this.hrefs.myGet;
         this.hrefs.myInfo = this.contextPath + this.hrefs.myInfo;
 
         this.userName = sessionStorage.getItem("userName");
@@ -113,7 +119,7 @@ var vue1 = new Vue({
         GetRequest() {
             var url = location.search;
             var theRequest = new Object();
-            if (url.indexOf("?") != -1) {
+            if (url.indexOf("?") !== -1) {
                 var str = url.substr(1);
                 strs = str.split("&");
                 for (var i = 0; i < strs.length; i++) {
@@ -129,6 +135,17 @@ var vue1 = new Vue({
                 .then(function (res) {
                     self.userForm = res.data;
                     self.imageUrl = self.contextPath + self.urls.selectFile + "?id=" + res.data.imgId;
+                    self.getThreeNum();
+                })
+        },
+        getThreeNum(){
+            var self = this;
+            var url = this.contextPath + this.urls.getNum + "?nickName=" + self.userForm.nickName;
+            axios.get(url)
+                .then(function (res) {
+                    self.myRelease = res.data[0];
+                    self.myReceive = res.data[1];
+                    self.myFinish = res.data[2];
                 })
         },
         //打开任务发布的弹窗
@@ -140,12 +157,28 @@ var vue1 = new Vue({
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    window.location.href = this.contextPath + "/login";
+                    window.location.href = self.contextPath + "/login";
                 }).catch(() => {
                     return;
                 });
             }else{
-                self.insertTaskVisible = true;
+                var url = self.contextPath + self.urls.selectInfo + "?nickName=" + self.userForm.nickName;
+                axios.get(url)
+                    .then(function (res) {
+                        if (res.data.phone && res.data.wechatNumber){
+                            self.insertTaskVisible = true;
+                        }else {
+                            self.$confirm('请完善个人信息，方便与您取得联系?', '提示', {
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                type: 'warning'
+                            }).then(() => {
+                                window.location.href = self.contextPath + "/userInfo";
+                            }).catch(() => {
+                                return;
+                            });
+                        }
+                    })
             }
         },
         //新增任务
@@ -204,59 +237,6 @@ var vue1 = new Vue({
                     });
                     self.refreshTask(self.urls.initTaskSquare);
                 })
-        },
-        notReceive(row){
-            var self = this;
-            var url = self.contextPath + self.urls.notReceive + "?id=" + row.id;
-            self.$confirm('确定要取消任务?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                axios.get(url)
-                    .then(function (res) {
-                        self.receiveTaskVisible = false;
-                        self.$message({
-                            showClose: true,
-                            message: '已取消！',
-                            type: 'success'
-                        });
-                        var lastUrl = self.urls.initTaskReceive + "?endUsername=" + self.userName;
-                        self.refreshTask(lastUrl);
-                    })
-            }).catch(() => {
-                self.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
-            });
-        },
-        //完成任务
-        finishTask(){
-            var self = this;
-            var url = self.contextPath + self.urls.finishTask + "?id=" + self.lookInfo.id;
-            self.$confirm('确定任务是否完成?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                axios.get(url)
-                    .then(function (res) {
-                        self.receiveTaskVisible = false;
-                        self.$message({
-                            showClose: true,
-                            message: '已成功完成任务！',
-                            type: 'success'
-                        });
-                        var lastUrl = self.urls.initTaskReceive + "?endUsername=" + self.userName;
-                        self.refreshTask(lastUrl);
-                    })
-            }).catch(() => {
-                self.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
-            });
         },
         //刷新数据
         refreshTask(lastUrl){

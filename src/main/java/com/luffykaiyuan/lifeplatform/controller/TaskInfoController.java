@@ -22,6 +22,15 @@ public class TaskInfoController {
         return taskInfoService.selectMyTask(startName);
     }
 
+    @GetMapping("/selectMyGet")
+    public List<TaskInfoPo> selectMyGet(@RequestParam("endName") String endName){
+        return taskInfoService.selectMyGet(endName);
+    }
+
+    @GetMapping("/getNum")
+    public List getNum(@RequestParam("nickName") String nickName){
+        return taskInfoService.getNum(nickName);
+    }
 
     /** 
     * @Description: 查询所有任务 

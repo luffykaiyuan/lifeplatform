@@ -30,6 +30,34 @@
     and delete_status != '3'
     order by task_time desc
   </select>
+  <select id="selectMyGet" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from task_info
+    where end_name = #{endName,jdbcType=VARCHAR}
+    and delete_status != '3'
+    order by task_time desc
+  </select>
+
+  <select id="countMyRelease" parameterType="java.lang.String" resultType="int">
+    select count(id)
+    from task_info
+    where start_name = #{startName,jdbcType=VARCHAR}
+    and delete_status != '2'
+    and delete_status != '3'
+  </select>
+  <select id="countMyReceive" parameterType="java.lang.String" resultType="int">
+    select count(id)
+    from task_info
+    where end_name = #{endName,jdbcType=VARCHAR}
+    and delete_status = '2'
+  </select>
+  <select id="countMyFinish" parameterType="java.lang.String" resultType="int">
+    select count(id)
+    from task_info
+    where end_name = #{endName,jdbcType=VARCHAR}
+    and delete_status = '3'
+  </select>
 
   <select id="selectByTaskType" parameterType="java.lang.String" resultMap="BaseResultMap">
     select

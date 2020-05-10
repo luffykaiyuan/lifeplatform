@@ -40,12 +40,12 @@
                             <li class="dropdown active" v-if="userName">
                                 <a class="dropdown-toggle" data-toggle="dropdown">我的任务<strong class="caret"></strong></a>
                                 <ul class="dropdown-menu">
-                                    <li class="active">
+                                    <li>
                                         <a :href="hrefs.myRelease">我发布的</a>
                                     </li>
                                     <li class="divider">
                                     </li>
-                                    <li>
+                                    <li class="active">
                                         <a :href="hrefs.myGet">我接收的</a>
                                     </li>
                                 </ul>
@@ -69,15 +69,10 @@
                     <el-col :span="20" :offset="2">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">我发布的任务</h3>
-                            </div>
-                            <div class="panel-body" style="margin-top: 20px">
-                                <el-select v-model="value" placeholder="请选择" @change="changeTap">
-                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                                </el-select>
+                                <h3 class="panel-title">待完成的任务</h3>
                             </div>
                             <el-collapse v-model="activeNames">
-                                <el-collapse-item :name="item.id" v-for="(item, i) in MyAuditBack">
+                                <el-collapse-item :name="item.id" v-for="(item, i) in MyDoing">
                                     <template slot="title">
                                         <span style="float:left;font-size:14px;padding: 15px">{{item.taskTitle}}</span>
                                         <el-tag size="mini" type="warning" v-if="item.deleteStatus === 1">审核中</el-tag>
@@ -94,10 +89,31 @@
                                         <el-step title="已完成" description="这是一段很长很长很长的描述性文字"></el-step>
                                     </el-steps>
                                     <el-button size="small" style="float: right;margin: 10px" type="primary" @click="lookTask(item)">查看详情</el-button>
-                                    <el-button size="small" v-if="item.deleteStatus === 3 || item.deleteStatus === 6"
-                                               style="float: right;margin: 10px" type="danger" @click="deleteTask(item)">删除任务</el-button>
-                                    <el-button size="small" v-if="item.deleteStatus === 5"
-                                               style="float: right;margin: 10px" type="primary" @click="finishTask(item)">完成任务</el-button>
+                                </el-collapse-item>
+                            </el-collapse>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">已完成的任务</h3>
+                            </div>
+                            <el-collapse v-model="activeNames">
+                                <el-collapse-item :name="item.id" v-for="(item, i) in MyFinish">
+                                    <template slot="title">
+                                        <span style="float:left;font-size:14px;padding: 15px">{{item.taskTitle}}</span>
+                                        <el-tag size="mini" type="warning" v-if="item.deleteStatus === 1">审核中</el-tag>
+                                        <el-tag size="mini" type="danger" v-else-if="item.deleteStatus === 3">未通过审核</el-tag>
+                                        <el-tag size="mini" type="success" v-else-if="item.deleteStatus === 6">任务完成</el-tag>
+                                        <el-tag size="mini" v-else>任务进行中</el-tag>
+                                    </template>
+                                    <el-steps :active="item.deleteStatus" align-center :finish-status="item.steps">
+                                        <el-step title="审核中" description="这是一段很长很长很长的描述性文字"></el-step>
+                                        <el-step title="审核通过" description="这是一段很长很长很长的描述性文字"></el-step>
+                                        <el-step title="审核失败" description="这是一段很长很长很长的描述性文字"></el-step>
+                                        <el-step title="待接收" description="这是一段很长很长很长的描述性文字"></el-step>
+                                        <el-step title="已接收" description="这是一段很长很长很长的描述性文字"></el-step>
+                                        <el-step title="已完成" description="这是一段很长很长很长的描述性文字"></el-step>
+                                    </el-steps>
+                                    <el-button size="small" style="float: right;margin: 10px" type="success" @click="lookTask(item)">查看详情</el-button>
                                 </el-collapse-item>
                             </el-collapse>
                         </div>
@@ -175,10 +191,6 @@
                                             </div>
                                     </div>
                                     <div style="display: flex; flex-direction: row">
-                                        <div style="flex-direction: column;">
-                                            <p style="color: #bfc9d9">审核中任务</p>
-                                            <span>{{releaseNum}}</span>
-                                        </div>
                                         <el-divider direction="vertical"></el-divider>
                                         <div style="flex-direction: column;">
                                             <p style="color: #bfc9d9">进行中任务</p>
@@ -199,7 +211,7 @@
             </div>
         </div>
 
-        <el-dialog tiele="任务详情" :visible.sync="dialogVisible" width="80%">
+        <el-dialog tiele="任务详情" :visible.sync="taskVisible" width="80%">
             <el-divider></el-divider>
             <el-card class="box-card">
                 <div slot="header" class="clearfix">
@@ -207,11 +219,11 @@
                 </div>
                 <el-row>
                     <el-col :span="2" :offset="1">昵称</el-col>
-                    <el-col :span="5">{{userForm.nickName}}</el-col>
+                    <el-col :span="5">{{startInfo.nickName}}</el-col>
                     <el-col :span="2" :offset="1">电话</el-col>
-                    <el-col :span="5">{{userForm.phone}}</el-col>
+                    <el-col :span="5">{{startInfo.phone}}</el-col>
                     <el-col :span="2" :offset="1">微信号</el-col>
-                    <el-col :span="5">{{userForm.wechatNumber}}</el-col>
+                    <el-col :span="5">{{startInfo.wechatNumber}}</el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="2" :offset="1">任务类型</el-col>
@@ -258,11 +270,30 @@
             </el-card>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button  v-if="!feedInfo.id" type="primary" @click="openFeed(item)">提交反馈</el-button>
             </span>
         </el-dialog>
+        <el-dialog title="提交反馈" :visible.sync="feedVisible" width="50%">
+            <el-upload
+                    :action="urls.imgUpload"
+                    list-type="picture-card"
+                    :on-success="handleAvatarSuccess"
+                    :on-remove="handleRemove"
+                    :before-upload="beforeAvatarUpload">
+                <i class="el-icon-plus"></i>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+                <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="feedVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitFeed">提交</el-button>
+            </span>
+        </el-dialog>
+
 
     </div>
 </div>
 </body>
-<script src="./js/front/myRelease.js"></script>
+<script src="./js/front/myGet.js"></script>
 </html>

@@ -9,14 +9,16 @@ var vue1 = new Vue({
             activeNames: [],
             imageUrl: '',
             urls:{
+                imgUpload: '',
                 initUser: '/userInfo/selectUserInfo',
                 selectInfo: '/userInfo/selectInfo',
                 initTaskType: '/dictInfo/selectDictType',
                 initTaskPlace: '/dictInfo/selectDictPlace',
 
                 selectFile: '/file/selectFile',
-                selectMyTask: '/taskInfo/selectMyTask',
+                selectMyGet: '/taskInfo/selectMyGet',
                 updateTask: '/taskInfo/updateTask',
+                insertFeedback: '/feedback/insertFeedback',
                 selectFeedback: '/feedback/selectFeedback',
             },
             hrefs:{
@@ -26,34 +28,21 @@ var vue1 = new Vue({
                 myGet: '/myGet',
                 myInfo: '/userInfo',
             },
+            dialogImageUrl: '',
             taskType:[],
             taskPlace:[],
-            options: [{
-                value: 0,
-                label: '全部'
-            }, {
-                value: 1,
-                label: '审核中'
-            }, {
-                value: 3,
-                label: '审核失败'
-            }, {
-                value: 4,
-                label: '待接收'
-            }, {
-                value: 5,
-                label: '已接收'
-            }, {
-                value: 6,
-                label: '已完成'
-            }],
-            MyAudit: [],
-            MyAuditBack: [],
+            MyDoing: [],
+            MyFinish: [],
             sureLogin: true,
             dialogVisible: false,
+            taskVisible: false,
+            feedVisible: false,
             oneTask: {},
             endInfo: {},
+            startInfo: {},
             feedInfo: {},
+            one: {},
+            imgNum: 0,
             value: 0,
             releaseNum: 0,
             doingNum: 0,
@@ -70,6 +59,13 @@ var vue1 = new Vue({
                 wechatNumber: '',
                 taskContent: '',
             },
+            feedFrom:{
+                id: '',
+                taskId: '',
+                nickName: '',
+                imgId1: '',
+                imgId2: '',
+            },
             operateWidth: 200
         }
     },
@@ -84,6 +80,7 @@ var vue1 = new Vue({
         this.hrefs.myRelease = this.contextPath + this.hrefs.myRelease;
         this.hrefs.myGet = this.contextPath + this.hrefs.myGet;
         this.hrefs.myInfo = this.contextPath + this.hrefs.myInfo;
+        this.urls.imgUpload = contextPath + '/file/imgUpload';
 
         this.userName = sessionStorage.getItem("userName");
         this.initUser();
@@ -96,42 +93,33 @@ var vue1 = new Vue({
     methods: {
         getMyTask(){
             var self = this;
-            var url = self.contextPath + self.urls.selectMyTask + "?startName=" + self.nickName;
+            var url = self.contextPath + self.urls.selectMyGet + "?endName=" + self.nickName;
             self.releaseNum = 0;
             self.doingNum = 0;
             self.finishNum = 0;
             axios.get(url)
                 .then(function (res) {
-                    self.MyAudit = res.data;
+                    self.MyDoing = [];
+                    self.MyFinish = [];
                     for(var i = 0; i < res.data.length; i++){
-                        if (self.MyAudit[i].deleteStatus === '-1'){
-                            self.MyAudit[i].steps = 'finish ';
-                            self.MyAudit[i].deleteStatus = 1;
-                            self.releaseNum += 1;
-                        }else if (self.MyAudit[i].deleteStatus === '-2'){
-                            self.MyAudit[i].steps = 'error';
-                            self.MyAudit[i].deleteStatus = 3;
-                            self.releaseNum += 1;
-                        }else if (self.MyAudit[i].deleteStatus === '0'){
-                            self.MyAudit[i].steps = 'finish';
-                            self.MyAudit[i].deleteStatus = 4;
+                        if (res.data[i].deleteStatus === '1'){
+                            res.data[i].steps = 'finish';
+                            res.data[i].deleteStatus = 5;
                             self.doingNum += 1;
-                        }else if (self.MyAudit[i].deleteStatus === '1'){
-                            self.MyAudit[i].steps = 'finish';
-                            self.MyAudit[i].deleteStatus = 5;
-                            self.doingNum += 1;
-                        }else if (self.MyAudit[i].deleteStatus === '2'){
-                            self.MyAudit[i].steps = 'success';
-                            self.MyAudit[i].deleteStatus = 6;
+                            self.MyDoing.push(res.data[i]);
+                        }else if (res.data[i].deleteStatus === '2'){
+                            res.data[i].steps = 'success';
+                            res.data[i].deleteStatus = 6;
                             self.finishNum += 1;
+                            self.MyFinish.push(res.data[i]);
                         }
                     }
-                    self.MyAuditBack = self.MyAudit;
                 })
         },
         //获取url中"?"符后的字串
         lookTask(item){
-            this.dialogVisible = true;
+            this.taskVisible = true;
+            this.one = item;
             for (var i = 0; i < this.taskPlace.length; i++){
                 if (parseInt(item.taskPlace) === this.taskPlace[i].id){
                     item.taskPlace = this.taskPlace[i].dictName;
@@ -143,8 +131,13 @@ var vue1 = new Vue({
                 }
             }
             this.oneTask = item;
+            var self = this;
+            var url = self.contextPath + self.urls.selectInfo + "?nickName=" + this.oneTask.startName;
+            axios.get(url)
+                .then(function (res) {
+                    self.startInfo = res.data;
+                })
             if (this.oneTask.endName){
-                var self = this;
                 var url = self.contextPath + self.urls.selectInfo + "?nickName=" + this.oneTask.endName;
                 axios.get(url)
                     .then(function (res) {
@@ -165,42 +158,7 @@ var vue1 = new Vue({
                     self.feedInfo = res.data;
                 })
         },
-        deleteTask(item){
-            var self = this;
-            this.$confirm('确认删除任务吗？')
-                .then(_ => {
-                    var url = self.contextPath + self.urls.updateTask;
-                    item.deleteStatus = "3";
-                    axios.post(url, item)
-                        .then(function (res) {
-                            self.getMyTask();
-                            self.$message({
-                                showClose: true,
-                                message: '任务已删除！',
-                                type: 'success'
-                            });
-                        })
-                })
-                .catch(_ => {});
-        },
-        finishTask(item){
-            var self = this;
-            this.$confirm('确认任务已完成吗？')
-                .then(_ => {
-                    var url = self.contextPath + self.urls.updateTask;
-                    item.deleteStatus = "2";
-                    axios.post(url, item)
-                        .then(function (res) {
-                            self.getMyTask();
-                            self.$message({
-                                showClose: true,
-                                message: '操作成功！',
-                                type: 'success'
-                            });
-                        })
-                })
-                .catch(_ => {});
-        },
+
         GetRequest() {
             var url = location.search;
             var theRequest = new Object();
@@ -222,6 +180,26 @@ var vue1 = new Vue({
                     self.imageUrl = self.contextPath + self.urls.selectFile + "?id=" + res.data.imgId;
                     self.nickName = self.userForm.nickName;
                     self.getMyTask();
+                })
+        },
+        openFeed(){
+            this.feedVisible = true;
+            this.feedFrom.nickName = this.one.endName;
+            this.feedFrom.taskId = this.one.id;
+            this.imgNum = 0;
+        },
+        submitFeed(){
+            var self = this;
+            var url = self.contextPath + self.urls.insertFeedback;
+            axios.post(url, self.feedFrom)
+                .then(function (res) {
+                    self.$message({
+                        showClose: true,
+                        message: '反馈成功！',
+                        type: 'success'
+                    });
+                    self.feedVisible = false;
+                    self.taskVisible = false;
                 })
         },
         //刷新数据
@@ -253,41 +231,42 @@ var vue1 = new Vue({
                     self.taskPlace = res.data;
                 })
         },
-        changeTap(item){
-            this.MyAuditBack = [];
-            if (item === 0){
-                this.MyAuditBack = this.MyAudit;
-            }else if(item === 1){
-                for (var i = 0; i < this.MyAudit.length; i++){
-                    if (this.MyAudit[i].deleteStatus === 1){
-                        this.MyAuditBack.push(this.MyAudit[i]);
-                    }
-                }
-            }else if(item === 3){
-                for (var i = 0; i < this.MyAudit.length; i++){
-                    if (this.MyAudit[i].deleteStatus === 3){
-                        this.MyAuditBack.push(this.MyAudit[i]);
-                    }
-                }
-            }else if(item === 4){
-                for (var i = 0; i < this.MyAudit.length; i++){
-                    if (this.MyAudit[i].deleteStatus === 4){
-                        this.MyAuditBack.push(this.MyAudit[i]);
-                    }
-                }
-            }else if(item === 5){
-                for (var i = 0; i < this.MyAudit.length; i++){
-                    if (this.MyAudit[i].deleteStatus === 5){
-                        this.MyAuditBack.push(this.MyAudit[i]);
-                    }
-                }
+        handleAvatarSuccess(res, file) {
+            var self = this;
+            self.dialogImageUrl = URL.createObjectURL(file.raw);
+            self.imgNum = self.imgNum + 1;
+            if (this.imgNum === 1){
+                this.feedFrom.imgId1 = res;
             }else{
-                for (var i = 0; i < this.MyAudit.length; i++){
-                    if (this.MyAudit[i].deleteStatus === 6){
-                        this.MyAuditBack.push(this.MyAudit[i]);
-                    }
+                this.feedFrom.imgId2 = res;
+            }
+        },
+        handleRemove(file, fileList) {
+            console.log(file, fileList);
+        },
+        beforeAvatarUpload(file) {
+            if (this.imgNum === 2){
+                this.$message.error('最多上传2张图片！');
+                return false;
+            }
+            const isJPG = file.type === 'image/jpeg';
+            const isPNG = file.type === 'image/png';
+            const isLt2M = file.size / 1024 / 1024 < 2;
+
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!');
+                return false;
+            }
+
+            if (isJPG) {
+                return true;
+            } else {
+                if (isPNG) {
+                    return true;
                 }
             }
+            this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+            return false;
         },
     },
     watch: {}

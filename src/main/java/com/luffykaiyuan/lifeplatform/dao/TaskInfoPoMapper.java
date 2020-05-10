@@ -16,7 +16,15 @@ public interface TaskInfoPoMapper {
 
     int updateTask(TaskInfoPo taskInfoPo);
 
+    int countMyRelease(String startName);
+
+    int countMyReceive(String endName);
+
+    int countMyFinish(String endName);
+
     List<TaskInfoPo> selectMyTask(String startName);
+
+    List<TaskInfoPo> selectMyGet(String endName);
 
     List<TaskInfoPo> selectByTaskType(String taskType);
 

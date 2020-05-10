@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -61,12 +62,32 @@ public class TaskInfoService {
         return taskInfoPoMapper.updateTask(taskInfoPo);
     }
 
+    public List getNum(String nickName){
+        List list = new ArrayList();
+        list.add(taskInfoPoMapper.countMyRelease(nickName));
+        list.add(taskInfoPoMapper.countMyReceive(nickName));
+        list.add(taskInfoPoMapper.countMyFinish(nickName));
+        return list;
+    }
+
+    public int countMyReceive(String endName){
+        return taskInfoPoMapper.countMyReceive(endName);
+    }
+
+    public int countMyFinish(String endName){
+        return taskInfoPoMapper.countMyFinish(endName);
+    }
+
     public List<TaskInfoPo> selectByTaskType(String taskType){
         return taskInfoPoMapper.selectByTaskType(taskType);
     }
 
     public List<TaskInfoPo> selectMyTask(String startName){
         return taskInfoPoMapper.selectMyTask(startName);
+    }
+
+    public List<TaskInfoPo> selectMyGet(String endName){
+        return taskInfoPoMapper.selectMyGet(endName);
     }
 
     public List<TaskInfoPo> selectAllWaitTask(){

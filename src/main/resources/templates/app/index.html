@@ -22,8 +22,9 @@
 <body>
 <!--<div id="main" style="width: 600px;height:400px;"></div>-->
 <div id="app" v-cloak>
-    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-        <el-menu-item index="1">首页</el-menu-item>
+
+    <el-menu :default-active="activeIndex" class="el-menu-demo" @select="handleSelect">
+        <el-menu-item index="/taskList">首页</el-menu-item>
         <el-menu-item index="2">任务中心</el-menu-item>
         <el-menu-item index="3">人员中心</el-menu-item>
         <el-submenu index="4">
