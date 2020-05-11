@@ -22,6 +22,10 @@ public interface TaskInfoPoMapper {
 
     int countMyFinish(String endName);
 
+    List<TaskInfoPo> selectAudit();
+
+    List<TaskInfoPo> selectDoing();
+
     List<TaskInfoPo> selectMyTask(String startName);
 
     List<TaskInfoPo> selectMyGet(String endName);

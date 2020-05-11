@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="./css/operateStyle.css"/>
+    <link rel="stylesheet" href="./css/app/index.css">
+    <!-- import Vue before Element -->
+    <script src="./js/jquery.js"></script>
+    <script src="./js/vue.js"></script>
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <title>任务发布中心</title>
+</head>
+<body>
+<!--<div id="main" style="width: 600px;height:400px;"></div>-->
+<div id="app" v-cloak>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">Brand</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <el-row style="margin-top: 50px">
+        <el-col :span="3">
+            <el-menu style="height: 915px" :default-active="contextPath" class="el-menu-demo" @select="handleSelect">
+                <el-menu-item index="index">首页</el-menu-item>
+                <el-submenu index="1">
+                    <template slot="title">任务中心</template>
+                    <el-menu-item index="taskBack" >待审核任务</el-menu-item>
+                    <el-menu-item index="taskDoing">已审核任务</el-menu-item>
+                </el-submenu>
+                <el-menu-item index="userBack">人员中心</el-menu-item>
+                <el-submenu index="2">
+                    <template slot="title">字典管理</template>
+                    <el-menu-item index="typeBack">任务类别</el-menu-item>
+                    <el-menu-item index="placeBack">任务地址</el-menu-item>
+                </el-submenu>
+                <el-menu-item index="messageBack">公告管理</el-menu-item>
+                <el-menu-item index="adminBack">管理员管理</el-menu-item>
+                <el-menu-item index="quitLogin">退出登录</el-menu-item>
+            </el-menu>
+        </el-col>
+        <el-col :span="15" :offset="1">
+            <el-card class="box-card" style="margin-top: 50px">
+                <div slot="header" class="clearfix">
+                    <span>地址字典</span>
+                    <el-button style="float: right; padding: 3px 0" type="text" @click="openDict">新增字典</el-button>
+                </div>
+                <el-table border :data="taskPlaceData" style="width: 100%">
+                    <el-table-column prop="dictName" label="字典名称"></el-table-column>
+                    <el-table-column prop="dictType" label="字典类型" :formatter="formatterType"></el-table-column>
+                    <el-table-column prop="dictOrder" label="字典顺序"></el-table-column>
+                    <el-table-column prop="addUser" label="添加人"></el-table-column>
+                    <el-table-column :key="Math.random()" :style=" " label="操作">
+                        <template slot-scope="scope">
+                            <span class="el-icon-delete-solid editStyle" @click="editDict(scope.row)">编辑</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-card>
+        </el-col>
+        <el-col :span="3" :offset="1" style="margin-top: 50px; margin-right: 10px">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>任务地址使用排名</span>
+                </div>
+                <div class="top-10">
+                    <ul>
+                        <li><a v-if="rankDictPlace[0]">{{rankDictPlace[0].dictName}}</a><a v-else>暂无数据</a></li>
+                        <li><a v-if="rankDictPlace[1]">{{rankDictPlace[1].dictName}}</a><a v-else>暂无数据</a></li>
+                        <li><a v-if="rankDictPlace[2]">{{rankDictPlace[2].dictName}}</a><a v-else>暂无数据</a></li>
+                        <li><a v-if="rankDictPlace[3]">{{rankDictPlace[3].dictName}}</a><a v-else>暂无数据</a></li>
+                        <li><a v-if="rankDictPlace[4]">{{rankDictPlace[4].dictName}}</a><a v-else>暂无数据</a></li>
+                    </ul>
+                </div>
+            </el-card>
+        </el-col>
+    </el-row>
+
+    <el-dialog title="字典操作" :visible.sync="dictFormVisible">
+        <el-form :model="dictForm">
+            <el-form-item label="字典名称" :label-width="formLabelWidth">
+                <el-input v-model="dictForm.dictName" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="字典类型" :label-width="formLabelWidth">
+                <el-select v-model="dictForm.dictType" placeholder="请选择字典类型">
+                    <el-option label="任务类别" value="1"></el-option>
+                    <el-option label="任务地址" value="2"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="字典顺序" :label-width="formLabelWidth">
+                <el-input-number v-model="dictForm.dictOrder" :min="1" :max="10"></el-input-number>
+            </el-form-item>
+            <el-form-item label="字典状态" :label-width="formLabelWidth">
+                <el-switch v-model="dictForm.deleteStatus" active-text="启用" inactive-text="关闭"
+                           active-value="1" inactive-value="0"></el-switch>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dictFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="saveDict">确 定</el-button>
+        </div>
+    </el-dialog>
+</div>
+</body>
+<!--<script src="./js/echarts.min.js"></script>-->
+<script src="./js/index.js"></script>
+<script src="./js/app/placeBackVue.js"></script>
+</html>

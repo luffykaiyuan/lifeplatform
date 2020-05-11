@@ -6,15 +6,27 @@ var vue1 = new Vue({
             flag: '1',
             formLabelWidth: '120',
             urls:{
-                initTaskType: '/dictInfo/selectDictType',
-                initTaskPlace: '/dictInfo/selectDictPlace',
                 initSysInfo: '/sysInfo/selectAll',
                 initSysRight: '/sysRight/selectAll',
+
+                addSysInfo: '/sysInfo/insertAdmin',
+                updateSysInfo: '/sysInfo/updateAdmin',
             },
-            taskTypeData:[],
-            taskPlaceData:[],
             sysInfoData:[],
             sysRightData:[],
+
+            adminFormVisible: false,
+            adminSU: '',
+            adminForm:{
+                sysName: '',
+                userName: '',
+                password: '',
+                taskRight: '',
+                userRight: '',
+                dictRight: '',
+                messageRight: '',
+                adminRight: '',
+            }
         }
     },
     created: function () {
@@ -22,32 +34,55 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
-        this.initTaskType();
-        this.initTaskPlace();
         this.initSys();
     },
     filters: {},
     mounted: function () {
     },
     methods: {
+        openAdmin(){
+            this.emptyAdminForm();
+            this.adminFormVisible = true;
+            this.adminSU = 'save';
+        },
+        editAdmin(row){
+            this.emptyAdminForm();
+            this.adminFormVisible = true;
+            this.adminForm = JSON.parse(JSON.stringify(row));
+            this.adminSU = 'update';
+        },
+        emptyAdminForm(){
+            this.adminForm.sysName = '';
+            this.adminForm.userName = '';
+            this.adminForm.password = '';
+            this.adminForm.taskRight = '';
+            this.adminForm.userRight = '';
+            this.adminForm.dictRight = '';
+            this.adminForm.messageRight = '';
+            this.adminForm.adminRight = '';
+        },
+        saveAdmin(){
+            var self = this;if (self.adminSU === 'save'){
+                var urlRight = self.contextPath + self.urls.addSysRight;
+                var urlInfo = self.contextPath + self.urls.addSysInfo;
+            }else {
+                var urlRight = self.contextPath + self.urls.updateSysRight;
+                var urlInfo = self.contextPath + self.urls.updateSysInfo;
+            }
+            axios.post(urlInfo, self.adminForm)
+                .then(function (res) {
+                    self.adminForm.sysId = res.data;
+                    axios.post(urlRight, self.adminForm)
+                        .then(function (res) {
+                            self.adminFormVisible = false;
+                            self.initSys();
+                        })
+                })
+        },
+
+
 
         //-------------------------------------------初始化数据
-        initTaskType(){
-            var self = this;
-            var url = self.contextPath + self.urls.initTaskType;
-            axios.get(url)
-                .then(function (res) {
-                    self.taskTypeData = res.data;
-                })
-        },
-        initTaskPlace(){
-            var self = this;
-            var url = self.contextPath + self.urls.initTaskPlace;
-            axios.get(url)
-                .then(function (res) {
-                    self.taskPlaceData = res.data;
-                })
-        },
         initSys(){
             var self = this;
             var url = self.contextPath + self.urls.initSysInfo;
@@ -76,7 +111,16 @@ var vue1 = new Vue({
                 }
             }
         },
-
+        changeTap(row){
+            var self = this;
+            // axios.post(self.contextPath + self.updateRole, row,)
+            //     .then(function (res) {
+            //         self.$message({
+            //             message: '操作成功！',
+            //             type: 'success'
+            //         });
+            //     })
+        },
         handleSelect(key, keyPath) {
             this.flag = key;
             if (key === "index"){

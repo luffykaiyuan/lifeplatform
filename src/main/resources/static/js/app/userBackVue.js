@@ -5,16 +5,22 @@ var vue1 = new Vue({
             contextPath:'',
             flag: '1',
             formLabelWidth: '120',
+            pageSize: 10,
+            currpage: 1,
             urls:{
-                initTaskType: '/dictInfo/selectDictType',
-                initTaskPlace: '/dictInfo/selectDictPlace',
+                initNews: '/news/selectAllNews',
+                initUser: '/userInfo/selectAllUser',
                 initSysInfo: '/sysInfo/selectAll',
                 initSysRight: '/sysRight/selectAll',
             },
-            taskTypeData:[],
-            taskPlaceData:[],
+            rankDictType: [],
+            rankDictPlace: [],
+            rankStartName: [],
+            rankEndName: [],
+            userData:[],
             sysInfoData:[],
             sysRightData:[],
+
         }
     },
     created: function () {
@@ -22,30 +28,20 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
-        this.initTaskType();
-        this.initTaskPlace();
+        this.initUser();
         this.initSys();
     },
     filters: {},
     mounted: function () {
     },
     methods: {
-
         //-------------------------------------------初始化数据
-        initTaskType(){
+        initUser(){
             var self = this;
-            var url = self.contextPath + self.urls.initTaskType;
+            var url = self.contextPath + self.urls.initUser;
             axios.get(url)
                 .then(function (res) {
-                    self.taskTypeData = res.data;
-                })
-        },
-        initTaskPlace(){
-            var self = this;
-            var url = self.contextPath + self.urls.initTaskPlace;
-            axios.get(url)
-                .then(function (res) {
-                    self.taskPlaceData = res.data;
+                    self.userData = res.data;
                 })
         },
         initSys(){
@@ -77,6 +73,12 @@ var vue1 = new Vue({
             }
         },
 
+        formatterGender(row){
+            if (row.userGender === '1'){
+                return "男";
+            }
+            return "女";
+        },
         handleSelect(key, keyPath) {
             this.flag = key;
             if (key === "index"){
@@ -98,6 +100,12 @@ var vue1 = new Vue({
             }else if (key === "quitLogin"){
                 location.href="adminLogin";
             }
+        },
+        handleCurrentChange(cpage) {
+            this.currpage = cpage;
+        },
+        handleSizeChange(psize) {
+            this.pagesize = psize;
         },
     },
     watch: {}

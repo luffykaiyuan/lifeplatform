@@ -6,15 +6,29 @@ var vue1 = new Vue({
             flag: '1',
             formLabelWidth: '120',
             urls:{
-                initTaskType: '/dictInfo/selectDictType',
+                initNews: '/news/selectAllNews',
                 initTaskPlace: '/dictInfo/selectDictPlace',
                 initSysInfo: '/sysInfo/selectAll',
                 initSysRight: '/sysRight/selectAll',
+
+                countDictPlace: '/taskInfo/countDictPlace',
+
+                addDict: '/dictInfo/addDict',
+                updateDict: '/dictInfo/updateDict',
             },
-            taskTypeData:[],
+            rankDictPlace: [],
             taskPlaceData:[],
             sysInfoData:[],
             sysRightData:[],
+
+            dictFormVisible: false,
+            dictSU: '',
+            dictForm:{
+                dictName:'',
+                dictType:'',
+                dictOrder:'',
+                deleteStatus: ''
+            },
         }
     },
     created: function () {
@@ -22,22 +36,66 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
-        this.initTaskType();
         this.initTaskPlace();
         this.initSys();
+        this.initRankDictPlace();
     },
     filters: {},
     mounted: function () {
     },
     methods: {
+        //打开字典操作弹窗
+        openDict(){
+            this.emptyDictForm();
+            this.dictFormVisible = true;
+            this.dictSU = 'save';
+        },
+        //打开编辑窗口
+        editDict(row){
+            this.emptyDictForm();
+            this.dictFormVisible = true;
+            this.dictForm = JSON.parse(JSON.stringify(row));
+            this.dictSU = 'update';
+
+        },
+        //清空字典表单
+        emptyDictForm(){
+            this.dictForm.dictName = '';
+            this.dictForm.dictType = '';
+            this.dictForm.dictOrder = '';
+            this.dictForm.deleteStatus = '';
+        },
+        //保存修改字典
+        saveDict(){
+            var self = this;if (self.dictSU === 'save'){
+                var url = self.contextPath + self.urls.addDict;
+            }else {
+                var url = self.contextPath + self.urls.updateDict;
+            }
+            axios.post(url, self.dictForm)
+                .then(function (res) {
+                    self.dictFormVisible = false;
+                    self.initTaskPlace();
+                    self.initTaskType();
+                })
+        },
+
+
 
         //-------------------------------------------初始化数据
-        initTaskType(){
+        initRankDictPlace(){
             var self = this;
-            var url = self.contextPath + self.urls.initTaskType;
+            var url = self.contextPath + self.urls.countDictPlace;
             axios.get(url)
                 .then(function (res) {
-                    self.taskTypeData = res.data;
+                    self.rankDictPlace = res.data;
+                    for (let i = 0; i < self.rankDictPlace.length; i++) {
+                        for (let j = 0; j < self.taskPlaceData.length; j++){
+                            if (parseInt(self.rankDictPlace[i].dict) === self.taskPlaceData[j].id){
+                                self.rankDictPlace[i].dictName = self.taskPlaceData[j].dictName;
+                            }
+                        }
+                    }
                 })
         },
         initTaskPlace(){
@@ -77,6 +135,18 @@ var vue1 = new Vue({
             }
         },
 
+        formatterGender(row){
+            if (row.userGender === '1'){
+                return "男";
+            }
+            return "女";
+        },
+        formatterType(row){
+            if (row.dictType === '1'){
+                return "任务类型";
+            }
+            return "任务地址";
+        },
         handleSelect(key, keyPath) {
             this.flag = key;
             if (key === "index"){

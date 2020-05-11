@@ -82,6 +82,14 @@ public class TaskInfoService {
         return taskInfoPoMapper.selectByTaskType(taskType);
     }
 
+    public List<TaskInfoPo> selectAudit(){
+        return taskInfoPoMapper.selectAudit();
+    }
+
+    public List<TaskInfoPo> selectDoing() {
+        return taskInfoPoMapper.selectDoing();
+    }
+
     public List<TaskInfoPo> selectMyTask(String startName){
         return taskInfoPoMapper.selectMyTask(startName);
     }

@@ -39,6 +39,21 @@
     order by task_time desc
   </select>
 
+  <select id="selectAudit" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from task_info
+    where delete_status = '-1'
+  </select>
+
+  <select id="selectDoing" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from task_info
+    where delete_status != '-1'
+    and delete_status != '-2'
+  </select>
+
   <select id="countMyRelease" parameterType="java.lang.String" resultType="int">
     select count(id)
     from task_info

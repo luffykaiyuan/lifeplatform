@@ -27,6 +27,16 @@ public class TaskInfoController {
         return taskInfoService.selectMyGet(endName);
     }
 
+    @GetMapping("/selectAudit")
+    public List<TaskInfoPo> selectAudit(){
+        return taskInfoService.selectAudit();
+    }
+
+    @GetMapping("/selectDoing")
+    public List<TaskInfoPo> selectDoing(){
+        return taskInfoService.selectDoing();
+    }
+
     @GetMapping("/getNum")
     public List getNum(@RequestParam("nickName") String nickName){
         return taskInfoService.getNum(nickName);

@@ -6,15 +6,28 @@ var vue1 = new Vue({
             flag: '1',
             formLabelWidth: '120',
             urls:{
-                initTaskType: '/dictInfo/selectDictType',
-                initTaskPlace: '/dictInfo/selectDictPlace',
+                initNews: '/news/selectAllNews',
+                initMessage: '/message/selectAllMessage',
                 initSysInfo: '/sysInfo/selectAll',
                 initSysRight: '/sysRight/selectAll',
+
+                addMessage: '/message/insertMessage',
+                updateMessage: '/message/updateMessage',
+                addSysRight: '/sysRight/insertSysRight',
+                updateSysRight: '/sysRight/updateSysRight',
+                addSysInfo: '/sysInfo/insertAdmin',
+                updateSysInfo: '/sysInfo/updateAdmin',
             },
-            taskTypeData:[],
-            taskPlaceData:[],
+            messageData:[],
             sysInfoData:[],
             sysRightData:[],
+
+            messageFormVisible: false,
+            messageSU: '',
+            messageForm:{
+                announceTitle: '',
+                announceContent: '',
+            },
         }
     },
     created: function () {
@@ -22,8 +35,7 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
-        this.initTaskType();
-        this.initTaskPlace();
+        this.initMessage();
         this.initSys();
     },
     filters: {},
@@ -31,21 +43,43 @@ var vue1 = new Vue({
     },
     methods: {
 
-        //-------------------------------------------初始化数据
-        initTaskType(){
-            var self = this;
-            var url = self.contextPath + self.urls.initTaskType;
-            axios.get(url)
+        openMessage(){
+            this.emptyDictForm();
+            this.messageFormVisible = true;
+            this.messageSU = 'save';
+        },
+        editMessage(row){
+            this.emptyMessageForm();
+            this.messageFormVisible = true;
+            this.messageForm = JSON.parse(JSON.stringify(row));
+            this.messageSU = 'update';
+        },
+        emptyMessageForm(){
+            this.messageForm.announceTitle = '';
+            this.messageForm.announceContent = '';
+        },
+        saveMessage(){
+            var self = this;if (self.messageSU === 'save'){
+                var url = self.contextPath + self.urls.addMessage;
+            }else {
+                var url = self.contextPath + self.urls.updateMessage;
+            }
+            axios.post(url, self.messageForm)
                 .then(function (res) {
-                    self.taskTypeData = res.data;
+                    self.messageFormVisible = false;
+                    self.initMessage();
                 })
         },
-        initTaskPlace(){
+
+
+
+        //-------------------------------------------初始化数据
+        initMessage(){
             var self = this;
-            var url = self.contextPath + self.urls.initTaskPlace;
+            var url = self.contextPath + self.urls.initMessage;
             axios.get(url)
                 .then(function (res) {
-                    self.taskPlaceData = res.data;
+                    self.messageData = res.data;
                 })
         },
         initSys(){
@@ -76,7 +110,6 @@ var vue1 = new Vue({
                 }
             }
         },
-
         handleSelect(key, keyPath) {
             this.flag = key;
             if (key === "index"){
