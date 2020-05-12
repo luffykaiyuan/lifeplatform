@@ -66,7 +66,7 @@
                     <el-table-column prop="endName" label="接收人昵称"></el-table-column>
                     <el-table-column :key="Math.random()" fixed="right" label="操作">
                         <template slot-scope="scope">
-                            <span class="el-icon-view lookStyle">查看详情</span>
+                            <span class="el-icon-view lookStyle" @click="lookMore(scope.row)">查看详情</span>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -117,6 +117,67 @@
             </el-card>
         </el-col>
     </el-row>
+    <el-dialog tiele="任务详情" :visible.sync="taskVisible" width="80%">
+        <el-divider></el-divider>
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span style="font-size: 20px;font-weight: normal; color: rgba(52,148,243,1)">▌</span>任务信息
+            </div>
+            <el-row>
+                <el-col :span="2" :offset="1">昵称</el-col>
+                <el-col :span="5">{{startInfo.nickName}}</el-col>
+                <el-col :span="2" :offset="1">电话</el-col>
+                <el-col :span="5">{{startInfo.phone}}</el-col>
+                <el-col :span="2" :offset="1">微信号</el-col>
+                <el-col :span="5">{{startInfo.wechatNumber}}</el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="2" :offset="1">任务类型</el-col>
+                <el-col :span="5">{{oneTask.taskType}}</el-col>
+                <el-col :span="2" :offset="1">任务地址</el-col>
+                <el-col :span="5">{{oneTask.taskPlace}}</el-col>
+                <el-col :span="2" :offset="1">截止时间</el-col>
+                <el-col :span="5">{{oneTask.taskTime}}</el-col>
+            </el-row>
+            <el-row style="margin-top: 10px">
+                <el-col :span="2" :offset="1">任务详情</el-col>
+                <el-col :span="16">{{oneTask.taskContent}}</el-col>
+            </el-row>
+        </el-card>
+        <el-card class="box-card" v-if="oneTask.endName">
+            <div slot="header" class="clearfix">
+                <span style="font-size: 20px;font-weight: normal; color: rgba(52,148,243,1)">▌</span>接收人信息
+            </div>
+            <el-row style="margin-top: 20px">
+                <el-col :span="2" :offset="1">昵称</el-col>
+                <el-col :span="5">{{endInfo.nickName}}</el-col>
+                <el-col :span="2" :offset="1">电话</el-col>
+                <el-col :span="5">{{endInfo.phone}}</el-col>
+                <el-col :span="2" :offset="1">微信号</el-col>
+                <el-col :span="5">{{endInfo.wechatNumber}}</el-col>
+            </el-row>
+        </el-card>
+        <el-card class="box-card" v-if="feedInfo.id">
+            <div slot="header" class="clearfix">
+                <span style="font-size: 20px;font-weight: normal; color: rgba(52,148,243,1)">▌</span>完成反馈信息
+            </div>
+            <el-row>
+                <el-col :span="10" :offset="1">
+                    <div v-if="feedInfo.imgId1">
+                        <img :src="feedInfo.imgId1" class="avatar" style="width: 200px; height: 200px">
+                    </div>
+                </el-col>
+                <el-col :span="10" :offset="3">
+                    <div v-if="feedInfo.imgId2">
+                        <img :src="feedInfo.imgId2" class="avatar" style="width: 200px; height: 200px">
+                    </div>
+                </el-col>
+            </el-row>
+        </el-card>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="taskVisible = false">取 消</el-button>
+        </span>
+    </el-dialog>
 </div>
 </body>
 <!--<script src="./js/echarts.min.js"></script>-->

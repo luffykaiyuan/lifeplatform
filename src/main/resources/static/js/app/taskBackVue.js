@@ -7,70 +7,34 @@ var vue1 = new Vue({
             formLabelWidth: '120',
             urls:{
                 initNews: '/news/selectAllNews',
-                initTask: '/taskInfo/selectAllTask',
+                initTask: '/taskInfo/selectAudit',
                 initUser: '/userInfo/selectAllUser',
+                selectInfo: '/userInfo/selectInfo',
                 initTaskType: '/dictInfo/selectDictType',
                 initTaskPlace: '/dictInfo/selectDictPlace',
-                initMessage: '/message/selectAllMessage',
                 initSysInfo: '/sysInfo/selectAll',
                 initSysRight: '/sysRight/selectAll',
 
-                countDictType: '/taskInfo/countDictType',
-                countDictPlace: '/taskInfo/countDictPlace',
                 countStartName: '/taskInfo/countStartName',
                 countEndName: '/taskInfo/countEndName',
 
-                addDict: '/dictInfo/addDict',
-                updateDict: '/dictInfo/updateDict',
-                addMessage: '/message/insertMessage',
-                updateMessage: '/message/updateMessage',
-                addSysRight: '/sysRight/insertSysRight',
-                updateSysRight: '/sysRight/updateSysRight',
-                addSysInfo: '/sysInfo/insertAdmin',
-                updateSysInfo: '/sysInfo/updateAdmin',
+                updateTask: '/taskInfo/updateTask',
             },
+            pageSize: 10,
+            currpage: 1,
+            taskVisible: false,
+            flagBack: {},
+            lookInfo: {},
+            rankStartName: '',
+            rankEndName: '',
             rankDictType: [],
             rankDictPlace: [],
-            rankStartName: [],
-            rankEndName: [],
-            activeIndex: '1',
-            activeIndex2: '1',
             taskData:[],
             userData:[],
             taskTypeData:[],
             taskPlaceData:[],
-            messageData:[],
             sysInfoData:[],
             sysRightData:[],
-
-            dictFormVisible: false,
-            dictSU: '',
-            dictForm:{
-                dictName:'',
-                dictType:'',
-                dictOrder:'',
-                deleteStatus: ''
-            },
-
-            messageFormVisible: false,
-            messageSU: '',
-            messageForm:{
-                announceTitle: '',
-                announceContent: '',
-            },
-
-            adminFormVisible: false,
-            adminSU: '',
-            adminForm:{
-                sysName: '',
-                userName: '',
-                password: '',
-                taskRight: '',
-                userRight: '',
-                dictRight: '',
-                messageRight: '',
-                adminRight: '',
-            }
         }
     },
     created: function () {
@@ -82,10 +46,7 @@ var vue1 = new Vue({
         this.initUser();
         this.initTaskType();
         this.initTaskPlace();
-        this.initMessage();
         this.initSys();
-        this.initRankDictType();
-        this.initRankDictPlace();
         this.initRankStartName();
         this.initRankEndName();
     },
@@ -93,112 +54,79 @@ var vue1 = new Vue({
     mounted: function () {
     },
     methods: {
-        //打开字典操作弹窗
-        openDict(){
-            this.emptyDictForm();
-            this.dictFormVisible = true;
-            this.dictSU = 'save';
-        },
-        //打开编辑窗口
-        editDict(row){
-            this.emptyDictForm();
-            this.dictFormVisible = true;
-            this.dictForm = JSON.parse(JSON.stringify(row));
-            this.dictSU = 'update';
-
-        },
-        //清空字典表单
-        emptyDictForm(){
-            this.dictForm.dictName = '';
-            this.dictForm.dictType = '';
-            this.dictForm.dictOrder = '';
-            this.dictForm.deleteStatus = '';
-        },
-        //保存修改字典
-        saveDict(){
-            var self = this;if (self.dictSU === 'save'){
-                var url = self.contextPath + self.urls.addDict;
-            }else {
-                var url = self.contextPath + self.urls.updateDict;
+        openMore(row){
+            this.taskVisible = true;
+            this.flagBack = row;
+            for (let i = 0; i < this.taskTypeData.length; i++) {
+                if (this.taskTypeData[i].id === row.taskType){
+                    row.taskType = this.taskTypeData[i].dictName;
+                }
             }
-            axios.post(url, self.dictForm)
+            for (let i = 0; i < this.taskPlaceData.length; i++) {
+                if (this.taskPlaceData[i].id === row.taskPlace){
+                    row.taskPlace = this.taskPlaceData[i].dictName;
+                }
+            }
+            var self = this;
+            var url = self.contextPath + self.urls.selectInfo + "?nickName=" + row.startName;
+            axios.get(url)
                 .then(function (res) {
-                    self.dictFormVisible = false;
-                    self.initTaskPlace();
-                    self.initTaskType();
+                    row.phone = res.data.phone;
+                    row.wechatNumber = res.data.wechatNumber;
+                    row.qqNumber = res.data.qqNumber;
+                    self.lookInfo = row;
                 })
         },
-
-        openMessage(){
-            this.emptyDictForm();
-            this.messageFormVisible = true;
-            this.messageSU = 'save';
+        refuseTask(){
+            var self = this;
+            self.$confirm('此操作将拒绝任务的发布，是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                var url = self.contextPath + self.urls.updateTask;
+                self.flagBack.deleteStatus = "-2";
+                axios.post(url, self.flagBack)
+                    .then(function (res) {
+                        self.$message({
+                            message: '操作成功！',
+                            type: 'success'
+                        });
+                        self.taskVisible = false;
+                        self.initTask();
+                    })
+            }).catch(() => {
+                self.$message({
+                    message: '已取消！',
+                    type: 'success'
+                });
+            });
         },
-        editMessage(row){
-            this.emptyMessageForm();
-            this.messageFormVisible = true;
-            this.messageForm = JSON.parse(JSON.stringify(row));
-            this.messageSU = 'update';
+        passTask(){
+            var self = this;
+            self.$confirm('此操作将发布任务，是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                var url = self.contextPath + self.urls.updateTask;
+                self.flagBack.deleteStatus = "0";
+                axios.post(url, self.flagBack)
+                    .then(function (res) {
+                        self.$message({
+                            message: '操作成功！',
+                            type: 'success'
+                        });
+                        self.taskVisible = false;
+                        self.initTask();
+                    })
+            }).catch(() => {
+                self.$message({
+                    message: '已取消！',
+                    type: 'success'
+                });
+            });
         },
-        emptyMessageForm(){
-            this.messageForm.announceTitle = '';
-            this.messageForm.announceContent = '';
-        },
-        saveMessage(){
-            var self = this;if (self.messageSU === 'save'){
-                var url = self.contextPath + self.urls.addMessage;
-            }else {
-                var url = self.contextPath + self.urls.updateMessage;
-            }
-            axios.post(url, self.messageForm)
-                .then(function (res) {
-                    self.messageFormVisible = false;
-                    self.initMessage();
-                })
-        },
-
-        openAdmin(){
-            this.emptyAdminForm();
-            this.adminFormVisible = true;
-            this.adminSU = 'save';
-        },
-        editAdmin(row){
-            this.emptyAdminForm();
-            this.adminFormVisible = true;
-            this.adminForm = JSON.parse(JSON.stringify(row));
-            this.adminSU = 'update';
-        },
-        emptyAdminForm(){
-            this.adminForm.sysName = '';
-            this.adminForm.userName = '';
-            this.adminForm.password = '';
-            this.adminForm.taskRight = '';
-            this.adminForm.userRight = '';
-            this.adminForm.dictRight = '';
-            this.adminForm.messageRight = '';
-            this.adminForm.adminRight = '';
-        },
-        saveAdmin(){
-            var self = this;if (self.adminSU === 'save'){
-                var urlRight = self.contextPath + self.urls.addSysRight;
-                var urlInfo = self.contextPath + self.urls.addSysInfo;
-            }else {
-                var urlRight = self.contextPath + self.urls.updateSysRight;
-                var urlInfo = self.contextPath + self.urls.updateSysInfo;
-            }
-            axios.post(urlInfo, self.adminForm)
-                .then(function (res) {
-                    self.adminForm.sysId = res.data;
-                    axios.post(urlRight, self.adminForm)
-                        .then(function (res) {
-                            self.adminFormVisible = false;
-                            self.initSys();
-                        })
-                })
-        },
-
-
-
         //-------------------------------------------初始化数据
         initTask(){
             var self = this;
@@ -206,36 +134,6 @@ var vue1 = new Vue({
             axios.get(url)
                 .then(function (res) {
                     self.taskData = res.data;
-                })
-        },
-        initRankDictType(){
-            var self = this;
-            var url = self.contextPath + self.urls.countDictType;
-            axios.get(url)
-                .then(function (res) {
-                    self.rankDictType = res.data;
-                    for (let i = 0; i < self.rankDictType.length; i++) {
-                        for (let j = 0; j < self.taskTypeData.length; j++){
-                            if (parseInt(self.rankDictType[i].dict) === self.taskTypeData[j].id){
-                                self.rankDictType[i].dictName = self.taskTypeData[j].dictName;
-                            }
-                        }
-                    }
-                })
-        },
-        initRankDictPlace(){
-            var self = this;
-            var url = self.contextPath + self.urls.countDictPlace;
-            axios.get(url)
-                .then(function (res) {
-                    self.rankDictPlace = res.data;
-                    for (let i = 0; i < self.rankDictPlace.length; i++) {
-                        for (let j = 0; j < self.taskPlaceData.length; j++){
-                            if (parseInt(self.rankDictPlace[i].dict) === self.taskPlaceData[j].id){
-                                self.rankDictPlace[i].dictName = self.taskPlaceData[j].dictName;
-                            }
-                        }
-                    }
                 })
         },
         initRankStartName(){
@@ -276,14 +174,6 @@ var vue1 = new Vue({
             axios.get(url)
                 .then(function (res) {
                     self.taskPlaceData = res.data;
-                })
-        },
-        initMessage(){
-            var self = this;
-            var url = self.contextPath + self.urls.initMessage;
-            axios.get(url)
-                .then(function (res) {
-                    self.messageData = res.data;
                 })
         },
         initSys(){
@@ -327,41 +217,6 @@ var vue1 = new Vue({
             }
             return "任务地址";
         },
-        formatterTaskRight(row){
-            if (row.taskRight === '1'){
-                return "有权限";
-            }else {
-                return "无";
-            }
-        },
-        formatterUserRight(row){
-            if (row.userRight === '1'){
-                return "有权限";
-            }else {
-                return "无";
-            }
-        },
-        formatterDictRight(row){
-            if (row.dictRight === '1'){
-                return "有权限";
-            }else {
-                return "无";
-            }
-        },
-        formatterMessageRight(row){
-            if (row.messageRight === '1'){
-                return "有权限";
-            }else {
-                return "无";
-            }
-        },
-        formatterAdminRight(row){
-            if (row.adminRight === '1'){
-                return "有权限";
-            }else {
-                return "无";
-            }
-        },
         handleSelect(key, keyPath) {
             this.flag = key;
             if (key === "index"){
@@ -383,6 +238,12 @@ var vue1 = new Vue({
             }else if (key === "quitLogin"){
                 location.href="adminLogin";
             }
+        },
+        handleCurrentChange(cpage) {
+            this.currpage = cpage;
+        },
+        handleSizeChange(psize) {
+            this.pagesize = psize;
         },
     },
     watch: {}
