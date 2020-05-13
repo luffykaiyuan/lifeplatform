@@ -12,6 +12,9 @@ var vue1 = new Vue({
                 initUser: '/userInfo/selectAllUser',
                 initSysInfo: '/sysInfo/selectAll',
                 initSysRight: '/sysRight/selectAll',
+
+                selectByNickName: '/user/selectByNickName',
+                updateLoginInfo: '/user/updateLoginInfo'
             },
             rankDictType: [],
             rankDictPlace: [],
@@ -21,6 +24,19 @@ var vue1 = new Vue({
             sysInfoData:[],
             sysRightData:[],
 
+            dialogVisible: false,
+            oldPassData: {
+                newPass: ''
+            },
+            newPassData: {
+                newPass: ''
+            },
+            newPassDataRules: {
+                newPass: [
+                    { required: true, message: '请输入活动名称', trigger: 'blur' },
+                    { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                ]
+            }
         }
     },
     created: function () {
@@ -35,6 +51,28 @@ var vue1 = new Vue({
     mounted: function () {
     },
     methods: {
+        lookPass(row){
+            var self = this;
+            var url = self.contextPath + self.urls.selectByNickName + "?nickName=" + row.nickName;
+            self.dialogVisible = true;
+            axios.get(url)
+                .then(function (res) {
+                    self.oldPassData = res.data;
+                })
+        },
+        changePass(){
+            var self = this;
+            var url = self.contextPath + self.urls.updateLoginInfo;
+            self.oldPassData.password = self.newPassData.newPass;
+            axios.post(url, self.oldPassData)
+                .then(function (res) {
+                    self.dialogVisible = false;
+                    self.$message({
+                        message: '修改成功',
+                        type: 'success'
+                    });
+                })
+        },
         //-------------------------------------------初始化数据
         initUser(){
             var self = this;

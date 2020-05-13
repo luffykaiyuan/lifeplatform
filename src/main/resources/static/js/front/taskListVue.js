@@ -16,6 +16,7 @@ var vue1 = new Vue({
                 initTaskType: '/dictInfo/selectDictType',
                 initTaskPlace: '/dictInfo/selectDictPlace',
                 getNum: '/taskInfo/getNum',
+                selectThreeMessage: '/message/selectThreeMessage',
 
                 insertTask: '/taskInfo/insertTask',
                 receiveTask: '/taskInfo/receiveTask',
@@ -51,6 +52,19 @@ var vue1 = new Vue({
             }],
             value: '',
             taskData: [],
+            messageThreeData:[{
+                announceTitle: '',
+                announceContent: '',
+                imgId: ''
+            },{
+                announceTitle: '',
+                announceContent: '',
+                imgId: ''
+            },{
+                announceTitle: '',
+                announceContent: '',
+                imgId: ''
+            }],
             insertTaskVisible: false,
             receiveTaskVisible: false,
             taskForm: {
@@ -108,6 +122,7 @@ var vue1 = new Vue({
         this.userName = sessionStorage.getItem("userName");
         this.initTaskType();
         this.initTaskPlace();
+        this.initThreeMessage();
         this.refreshTask(this.urls.initTaskSquare);
         this.initUser();
     },
@@ -261,6 +276,17 @@ var vue1 = new Vue({
             axios.get(url)
                 .then(function (res) {
                     self.taskPlace = res.data;
+                })
+        },
+        initThreeMessage(){
+            var self = this;
+            var url = self.contextPath + self.urls.selectThreeMessage;
+            axios.get(url)
+                .then(function (res) {
+                    for (let i = 0; i < res.data.length; i++) {
+                        res.data[i].imgId = self.contextPath + self.urls.selectFile + "?id=" + res.data[i].imgId;
+                    }
+                    self.messageThreeData = res.data;
                 })
         },
         //格式化数据

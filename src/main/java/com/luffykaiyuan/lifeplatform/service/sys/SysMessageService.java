@@ -37,7 +37,15 @@ public class SysMessageService {
         return sysMessagePoMapper.selectAllMessage();
     }
 
+    public List<SysMessagePo> selectThreeMessage(){
+        return sysMessagePoMapper.selectThreeMessage();
+    }
+
     public int updateMessage(SysMessagePo sysMessagePo){
         return sysMessagePoMapper.updateMessage(sysMessagePo);
+    }
+
+    public int updateAllMessage(List<SysMessagePo> list){
+        return sysMessagePoMapper.updateAllMessage(list);
     }
 }

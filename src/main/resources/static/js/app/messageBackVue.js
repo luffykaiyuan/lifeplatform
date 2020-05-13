@@ -6,27 +6,42 @@ var vue1 = new Vue({
             flag: '1',
             formLabelWidth: '120',
             urls:{
-                initNews: '/news/selectAllNews',
                 initMessage: '/message/selectAllMessage',
+                selectThreeMessage: '/message/selectThreeMessage',
                 initSysInfo: '/sysInfo/selectAll',
                 initSysRight: '/sysRight/selectAll',
 
                 addMessage: '/message/insertMessage',
                 updateMessage: '/message/updateMessage',
-                addSysRight: '/sysRight/insertSysRight',
-                updateSysRight: '/sysRight/updateSysRight',
-                addSysInfo: '/sysInfo/insertAdmin',
-                updateSysInfo: '/sysInfo/updateAdmin',
+                updateAllMessage: '/message/updateAllMessage',
+
+                imgUpload: '',
+                selectFile: '/file/selectFile'
             },
             messageData:[],
+            messageThreeData:[{
+                announceTitle: '',
+                announceContent: '',
+                imgId: ''
+            },{
+                announceTitle: '',
+                announceContent: '',
+                imgId: ''
+            },{
+                announceTitle: '',
+                announceContent: '',
+                imgId: ''
+            }],
             sysInfoData:[],
             sysRightData:[],
+            imageUrl:'',
 
             messageFormVisible: false,
             messageSU: '',
             messageForm:{
                 announceTitle: '',
                 announceContent: '',
+                imgId: '',
             },
         }
     },
@@ -35,7 +50,10 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
+        this.urls.imgUpload = this.contextPath + '/file/imgUpload';
+
         this.initMessage();
+        this.initThreeMessage();
         this.initSys();
     },
     filters: {},
@@ -44,22 +62,25 @@ var vue1 = new Vue({
     methods: {
 
         openMessage(){
-            this.emptyDictForm();
+            this.emptyMessageForm();
             this.messageFormVisible = true;
             this.messageSU = 'save';
         },
         editMessage(row){
-            this.emptyMessageForm();
             this.messageFormVisible = true;
+            this.imageUrl = '';
             this.messageForm = JSON.parse(JSON.stringify(row));
+            this.imageUrl = this.contextPath + this.urls.selectFile + "?id=" + row.imgId;
             this.messageSU = 'update';
         },
         emptyMessageForm(){
             this.messageForm.announceTitle = '';
             this.messageForm.announceContent = '';
+            this.messageForm.announceContent = '';
         },
         saveMessage(){
-            var self = this;if (self.messageSU === 'save'){
+            var self = this;
+            if (self.messageSU === 'save'){
                 var url = self.contextPath + self.urls.addMessage;
             }else {
                 var url = self.contextPath + self.urls.updateMessage;
@@ -68,10 +89,69 @@ var vue1 = new Vue({
                 .then(function (res) {
                     self.messageFormVisible = false;
                     self.initMessage();
+                    self.initThreeMessage();
                 })
         },
+        deleteMessage(row){
+            this.$confirm('确认删除此公告吗？')
+                .then(_ => {
+                    var self = this;
+                    var url = self.contextPath + self.urls.updateMessage;
+                    row.deleteStatus = "0";
+                    axios.post(url, row)
+                        .then(function (res) {
+                            self.$message.success('删除成功');
+                        })
+                })
+                .catch(_ => {});
 
+        },
+        saveThree(){
+            var self = this;
+            var url = self.contextPath + self.urls.updateAllMessage;
+            var flag = 0;
+            for(var i = 0; i < self.messageData.length; i++){
+                if (self.messageData[i].deleteStatus === "2"){
+                    flag += 1;
+                }
+            }
+            if (flag === 3){
+                axios.post(url, self.messageData)
+                    .then(function (res) {
+                        self.$message.success('发布成功');
+                        self.initMessage();
+                        self.initThreeMessage();
+                    })
+            }else{
+                self.$message.error('请确保有3个发布中的公告！');
+                return;
+            }
+        },
 
+        handleAvatarSuccess(res, file) {
+            this.imageUrl = URL.createObjectURL(file.raw);
+            this.messageForm.imgId = res;
+        },
+        beforeAvatarUpload(file) {
+            const isJPG = file.type === 'image/jpeg';
+            const isPNG = file.type === 'image/png';
+            const isLt2M = file.size / 1024 / 1024 < 2;
+
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!');
+                return false;
+            }
+
+            if (isJPG) {
+                return true;
+            } else {
+                if (isPNG) {
+                    return true;
+                }
+            }
+            this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+            return false;
+        },
 
         //-------------------------------------------初始化数据
         initMessage(){
@@ -80,6 +160,17 @@ var vue1 = new Vue({
             axios.get(url)
                 .then(function (res) {
                     self.messageData = res.data;
+                })
+        },
+        initThreeMessage(){
+            var self = this;
+            var url = self.contextPath + self.urls.selectThreeMessage;
+            axios.get(url)
+                .then(function (res) {
+                    for (let i = 0; i < res.data.length; i++) {
+                        res.data[i].imgId = self.contextPath + self.urls.selectFile + "?id=" + res.data[i].imgId;
+                    }
+                    self.messageThreeData = res.data;
                 })
         },
         initSys(){

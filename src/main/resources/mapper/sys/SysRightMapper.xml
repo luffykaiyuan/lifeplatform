@@ -112,6 +112,6 @@
         delete_status = #{deleteStatus,jdbcType=VARCHAR},
       </if>
     </set>
-    where sys_id = #{sysId,jdbcType=VARCHAR},
+    where sys_id = #{sysId,jdbcType=VARCHAR}
   </update>
 </mapper>

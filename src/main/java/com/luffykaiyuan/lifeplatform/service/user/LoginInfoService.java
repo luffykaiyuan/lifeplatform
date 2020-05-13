@@ -32,6 +32,10 @@ public class LoginInfoService {
         return loginInfoPoMapper.insertLoginInfo(loginInfoPo);
     }
 
+    public LoginInfoPo selectByNickName(String nickName){
+        return loginInfoPoMapper.selectByNickName(nickName);
+    }
+
     public String selectByUserName(LoginInfoPo loginInfoPo, HttpSession session){
         LoginInfoPo back =  loginInfoPoMapper.selectByUserName(loginInfoPo.getUserName());
         if (back == null){
@@ -57,6 +61,6 @@ public class LoginInfoService {
     }
 
     public int updateLoginInfo(LoginInfoPo loginInfoPo){
-        return updateLoginInfo(loginInfoPo);
+        return loginInfoPoMapper.updateLoginInfo(loginInfoPo);
     }
 }

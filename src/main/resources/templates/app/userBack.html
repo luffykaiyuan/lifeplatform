@@ -20,14 +20,13 @@
     <title>任务发布中心</title>
 </head>
 <body>
-<!--<div id="main" style="width: 600px;height:400px;"></div>-->
 <div id="app" v-cloak>
     <div class="container">
         <div class="row clearfix">
             <div class="col-md-12 column">
                 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">Brand</a>
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">任务平台</a>
                     </div>
                 </nav>
             </div>
@@ -66,6 +65,7 @@
                     <el-table-column prop="wechatNumber" label="微信号码"></el-table-column>
                     <el-table-column :key="Math.random()" fixed="right" label="操作">
                         <template slot-scope="scope">
+                            <span class="el-icon-view lookStyle" @click="lookPass(scope.row)">查看密码</span>
                             <span class="el-icon-delete-solid deleteStyle">删除</span>
                         </template>
                     </el-table-column>
@@ -79,9 +79,28 @@
             </el-card>
         </el-col>
     </el-row>
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+        <el-row>
+            <el-col :span="12">
+                原密码
+            </el-col>
+            <el-col :span="12">
+                {{oldPassData.password}}
+            </el-col>
+            <el-col :span="24" style="margin-top: 50px">
+                <el-form :model="newPassData" :rules="newPassDataRules" ref="newPassData" label-width="65px" class="demo-ruleForm">
+                    <el-form-item label="新密码" prop="newPass">
+                        <el-input v-model="newPassData.newPass"></el-input>
+                    </el-form-item>
+                </el-form>
+            </el-col>
+        </el-row>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="changePass">修改密码</el-button>
+  </span>
+    </el-dialog>
 </div>
 </body>
-<!--<script src="./js/echarts.min.js"></script>-->
-<script src="./js/index.js"></script>
 <script src="./js/app/userBackVue.js"></script>
 </html>

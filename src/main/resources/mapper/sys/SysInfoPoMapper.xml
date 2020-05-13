@@ -25,6 +25,7 @@
     select
     <include refid="Base_Column_List" />
     from sys_info
+    where delete_status = '1'
   </select>
 
   <insert id="insertAdmin" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysInfoPo">

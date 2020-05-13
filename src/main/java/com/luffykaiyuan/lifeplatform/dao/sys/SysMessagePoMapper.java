@@ -16,6 +16,9 @@ public interface SysMessagePoMapper {
 
     List<SysMessagePo> selectAllMessage();
 
+    List<SysMessagePo> selectThreeMessage();
+
     int updateMessage(SysMessagePo sysMessagePo);
 
+    int updateAllMessage(List<SysMessagePo> list);
 }

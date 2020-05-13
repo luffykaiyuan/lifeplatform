@@ -19,6 +19,12 @@ public class LoginInfoController {
 
     @Autowired
     SysInfoService sysInfoService;
+
+    @GetMapping("/selectByNickName")
+    public LoginInfoPo selectByNickName(@RequestParam("nickName") String nickName){
+        return loginInfoService.selectByNickName(nickName);
+    }
+
     /**
     * @Description: 用户注册 
     * @Param: [loginInfoPo] 
@@ -63,10 +69,9 @@ public class LoginInfoController {
     * @Author: 陈开源
     * @Date: 2019/11/22 
     */
-    @RequestMapping("/updateLoginInfo")
-    public String updateLoginInfo(@RequestBody LoginInfoPo loginInfoPo){
+    @PostMapping("/updateLoginInfo")
+    public void updateLoginInfo(@RequestBody LoginInfoPo loginInfoPo){
         loginInfoService.updateLoginInfo(loginInfoPo);
-        return "success";
     }
 
     /** 

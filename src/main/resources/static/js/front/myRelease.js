@@ -11,6 +11,7 @@ var vue1 = new Vue({
             urls:{
                 initUser: '/userInfo/selectUserInfo',
                 selectInfo: '/userInfo/selectInfo',
+                selectThreeMessage: '/message/selectThreeMessage',
                 initTaskType: '/dictInfo/selectDictType',
                 initTaskPlace: '/dictInfo/selectDictPlace',
 
@@ -28,6 +29,19 @@ var vue1 = new Vue({
             },
             taskType:[],
             taskPlace:[],
+            messageThreeData:[{
+                announceTitle: '',
+                announceContent: '',
+                imgId: ''
+            },{
+                announceTitle: '',
+                announceContent: '',
+                imgId: ''
+            },{
+                announceTitle: '',
+                announceContent: '',
+                imgId: ''
+            }],
             options: [{
                 value: 0,
                 label: '全部'
@@ -86,6 +100,7 @@ var vue1 = new Vue({
         this.hrefs.myInfo = this.contextPath + this.hrefs.myInfo;
 
         this.userName = sessionStorage.getItem("userName");
+        this.initThreeMessage();
         this.initUser();
         this.initTaskType();
         this.initTaskPlace();
@@ -251,6 +266,17 @@ var vue1 = new Vue({
             axios.get(url)
                 .then(function (res) {
                     self.taskPlace = res.data;
+                })
+        },
+        initThreeMessage(){
+            var self = this;
+            var url = self.contextPath + self.urls.selectThreeMessage;
+            axios.get(url)
+                .then(function (res) {
+                    for (let i = 0; i < res.data.length; i++) {
+                        res.data[i].imgId = self.contextPath + self.urls.selectFile + "?id=" + res.data[i].imgId;
+                    }
+                    self.messageThreeData = res.data;
                 })
         },
         changeTap(item){

@@ -11,6 +11,8 @@ var vue1 = new Vue({
 
                 addSysInfo: '/sysInfo/insertAdmin',
                 updateSysInfo: '/sysInfo/updateAdmin',
+                addSysRight: '/sysRight/insertSysRight',
+                updateSysRight: '/sysRight/updateSysRight',
             },
             sysInfoData:[],
             sysRightData:[],
@@ -79,7 +81,20 @@ var vue1 = new Vue({
                         })
                 })
         },
-
+        deleteAdmin(row){
+            this.$confirm('确认删除此管理员吗？')
+                .then(_ => {
+                    var self = this;
+                    var url = self.contextPath + self.urls.updateSysInfo;
+                    row.deleteStatus = "0";
+                    axios.post(url, row)
+                        .then(function (res) {
+                            self.$message.success('删除成功');
+                            self.initSys();
+                        })
+                })
+                .catch(_ => {});
+        },
 
 
         //-------------------------------------------初始化数据
@@ -113,13 +128,15 @@ var vue1 = new Vue({
         },
         changeTap(row){
             var self = this;
-            // axios.post(self.contextPath + self.updateRole, row,)
-            //     .then(function (res) {
-            //         self.$message({
-            //             message: '操作成功！',
-            //             type: 'success'
-            //         });
-            //     })
+            row.sysId = row.id;
+            row.id = null;
+            axios.post(self.contextPath + self.urls.updateSysRight, row,)
+                .then(function (res) {
+                    self.$message({
+                        message: '操作成功！',
+                        type: 'success'
+                    });
+                })
         },
         handleSelect(key, keyPath) {
             this.flag = key;

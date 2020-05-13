@@ -32,8 +32,18 @@ public class SysMessageController {
         return sysMessageService.selectAllMessage();
     }
 
+    @GetMapping("/selectThreeMessage")
+    public List<SysMessagePo> selectThreeMessage(){
+        return sysMessageService.selectThreeMessage();
+    }
+
     @PostMapping("/updateMessage")
     public int updateMessage(@RequestBody SysMessagePo sysMessagePo){
         return sysMessageService.updateMessage(sysMessagePo);
+    }
+
+    @PostMapping("/updateAllMessage")
+    public int updateAllMessage(@RequestBody List<SysMessagePo> list){
+        return sysMessageService.updateAllMessage(list);
     }
 }

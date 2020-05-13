@@ -76,7 +76,6 @@ var vue1 = new Vue({
                 .then(function (res) {
                     self.dictFormVisible = false;
                     self.initTaskPlace();
-                    self.initTaskType();
                 })
         },
 
@@ -135,17 +134,11 @@ var vue1 = new Vue({
             }
         },
 
-        formatterGender(row){
-            if (row.userGender === '1'){
-                return "男";
+        formatterStatus(row){
+            if (row.deleteStatus === '1'){
+                return "使用中";
             }
-            return "女";
-        },
-        formatterType(row){
-            if (row.dictType === '1'){
-                return "任务类型";
-            }
-            return "任务地址";
+            return "暂停";
         },
         handleSelect(key, keyPath) {
             this.flag = key;

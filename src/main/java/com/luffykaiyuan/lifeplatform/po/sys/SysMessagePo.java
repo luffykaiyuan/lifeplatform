@@ -11,6 +11,8 @@ public class SysMessagePo {
 
     private String announceContent;
 
+    private String imgId;
+
     private String announceTime;
 
     private String addTime;
@@ -55,6 +57,14 @@ public class SysMessagePo {
 
     public void setAnnounceContent(String announceContent) {
         this.announceContent = announceContent == null ? null : announceContent.trim();
+    }
+
+    public void setImgId(String imgId) {
+        this.imgId = imgId;
+    }
+
+    public String getImgId() {
+        return imgId;
     }
 
     public String getAnnounceTime() {

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="./css/operateStyle.css"/>
-    <link rel="stylesheet" href="./css/app/index.css">
+    <link rel="stylesheet" href="./css/app/messageBackStyle.css">
     <!-- import Vue before Element -->
     <script src="./js/jquery.js"></script>
     <script src="./js/vue.js"></script>
@@ -20,14 +20,13 @@
     <title>任务发布中心</title>
 </head>
 <body>
-<!--<div id="main" style="width: 600px;height:400px;"></div>-->
 <div id="app" v-cloak>
     <div class="container">
         <div class="row clearfix">
             <div class="col-md-12 column">
                 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">Brand</a>
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">任务平台</a>
                     </div>
                 </nav>
             </div>
@@ -62,15 +61,21 @@
                 <el-table border :data="messageData" style="width: 100%">
                     <el-table-column prop="announceTitle" label="公告标题"></el-table-column>
                     <el-table-column prop="announceTime" label="发布时间"></el-table-column>
-                    <el-table-column prop="sysName" label="发布人"></el-table-column>
+                    <el-table-column prop="deleteStatus" label="是否展示">
+                        <template slot-scope="scope">
+                            <el-switch v-model="scope.row.deleteStatus" active-value="2" inactive-value="1"
+                                       active-text="展示" inactive-text=""></el-switch>
+                        </template>
+                    </el-table-column>
                     <el-table-column :key="Math.random()" fixed="right" label="操作">
                         <template slot-scope="scope">
-                            <span class="el-icon-delete-solid lookStyle">查看</span>
-                            <span class="el-icon-delete-solid editStyle" @click="editMessage(scope.row)">编辑</span>
-                            <span class="el-icon-delete-solid deleteStyle">删除</span>
+                            <span class="el-icon-edit editStyle" @click="editMessage(scope.row)">编辑</span>
+                            <span class="el-icon-delete-solid deleteStyle" @click="deleteMessage(scope.row)">删除</span>
                         </template>
                     </el-table-column>
                 </el-table>
+                <el-button type="primary" @click="saveThree"
+                           size="medium" style="margin-top: 20px; margin-bottom: 10px; float: right;">保存发布</el-button>
             </el-card>
         </el-col>
         <el-col :span="7" :offset="1" style="margin-top: 50px">
@@ -92,35 +97,35 @@
                         </ol>
                         <div class="carousel-inner">
                             <div class="item active">
-                                <img alt="" style="width: 400px; height: 260px" src="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1588584718&di=53a4fde8e3df5c2e06bca7023d88a6c2&src=http://a3.att.hudong.com/14/75/01300000164186121366756803686.jpg" />
+                                <img alt="" style="width: 400px; height: 260px" :src="messageThreeData[0].imgId" />
                                 <div class="carousel-caption">
                                     <h4>
-                                        First Thumbnail label
+                                        {{messageThreeData[0].announceTitle}}
                                     </h4>
                                     <p>
-                                        Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+                                        {{messageThreeData[0].announceContent}}
                                     </p>
                                 </div>
                             </div>
                             <div class="item">
-                                <img alt="" style="width: 400px; height: 260px" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1588595060222&di=ab472a4317dbf114df70f39588be912d&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F64%2F76%2F20300001349415131407760417677.jpg" />
+                                <img alt="" style="width: 400px; height: 260px" :src="messageThreeData[1].imgId" />
                                 <div class="carousel-caption">
                                     <h4>
-                                        Second Thumbnail label
+                                        {{messageThreeData[1].announceTitle}}
                                     </h4>
                                     <p>
-                                        Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+                                        {{messageThreeData[1].announceContent}}
                                     </p>
                                 </div>
                             </div>
                             <div class="item">
-                                <img alt="" style="width: 400px; height: 260px" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1588595060222&di=74aade3ebb08a9fd6c752dcf1ac9f5c3&imgtype=0&src=http%3A%2F%2Ffile02.16sucai.com%2Fd%2Ffile%2F2014%2F0704%2Fe53c868ee9e8e7b28c424b56afe2066d.jpg" />
+                                <img alt="" style="width: 400px; height: 260px" :src="messageThreeData[2].imgId" />
                                 <div class="carousel-caption">
                                     <h4>
-                                        Third Thumbnail label
+                                        {{messageThreeData[2].announceTitle}}
                                     </h4>
                                     <p>
-                                        Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+                                        {{messageThreeData[2].announceContent}}
                                     </p>
                                 </div>
                             </div>
@@ -133,12 +138,31 @@
 
     <el-dialog title="公告操作" :visible.sync="messageFormVisible">
         <el-form :model="messageForm">
-            <el-form-item label="公告标题" :label-width="formLabelWidth">
-                <el-input v-model="messageForm.announceTitle" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="公告内容" :label-width="formLabelWidth">
-                <el-input v-model="messageForm.announceContent" autocomplete="off"></el-input>
-            </el-form-item>
+            <el-row>
+                <el-col :span="10">
+                    <el-form-item label="公告标题" :label-width="formLabelWidth">
+                        <el-input v-model="messageForm.announceTitle" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="10" :offset="2">
+                    <el-form-item label="公告内容" :label-width="formLabelWidth">
+                        <el-input v-model="messageForm.announceContent" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="头像">
+                        <el-upload
+                                class="avatar-uploader"
+                                :action="urls.imgUpload"
+                                :show-file-list="false"
+                                :on-success="handleAvatarSuccess"
+                                :before-upload="beforeAvatarUpload">
+                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        </el-upload>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="messageFormVisible = false">取 消</el-button>
@@ -147,7 +171,5 @@
     </el-dialog>
 </div>
 </body>
-<!--<script src="./js/echarts.min.js"></script>-->
-<script src="./js/index.js"></script>
 <script src="./js/app/messageBackVue.js"></script>
 </html>

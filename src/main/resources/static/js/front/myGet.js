@@ -12,6 +12,7 @@ var vue1 = new Vue({
                 imgUpload: '',
                 initUser: '/userInfo/selectUserInfo',
                 selectInfo: '/userInfo/selectInfo',
+                selectThreeMessage: '/message/selectThreeMessage',
                 initTaskType: '/dictInfo/selectDictType',
                 initTaskPlace: '/dictInfo/selectDictPlace',
 
@@ -33,6 +34,19 @@ var vue1 = new Vue({
             taskPlace:[],
             MyDoing: [],
             MyFinish: [],
+            messageThreeData:[{
+                announceTitle: '',
+                announceContent: '',
+                imgId: ''
+            },{
+                announceTitle: '',
+                announceContent: '',
+                imgId: ''
+            },{
+                announceTitle: '',
+                announceContent: '',
+                imgId: ''
+            }],
             sureLogin: true,
             dialogVisible: false,
             taskVisible: false,
@@ -83,6 +97,7 @@ var vue1 = new Vue({
         this.urls.imgUpload = contextPath + '/file/imgUpload';
 
         this.userName = sessionStorage.getItem("userName");
+        this.initThreeMessage();
         this.initUser();
         this.initTaskType();
         this.initTaskPlace();
@@ -180,6 +195,17 @@ var vue1 = new Vue({
                     self.imageUrl = self.contextPath + self.urls.selectFile + "?id=" + res.data.imgId;
                     self.nickName = self.userForm.nickName;
                     self.getMyTask();
+                })
+        },
+        initThreeMessage(){
+            var self = this;
+            var url = self.contextPath + self.urls.selectThreeMessage;
+            axios.get(url)
+                .then(function (res) {
+                    for (let i = 0; i < res.data.length; i++) {
+                        res.data[i].imgId = self.contextPath + self.urls.selectFile + "?id=" + res.data[i].imgId;
+                    }
+                    self.messageThreeData = res.data;
                 })
         },
         openFeed(){

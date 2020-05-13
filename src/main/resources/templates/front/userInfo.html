@@ -38,15 +38,15 @@
                                 <a :href="hrefs.login">登录</a>
                             </li>
                             <li class="dropdown" v-if="userName">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">我的任务<strong class="caret"></strong></a>
+                                <a class="dropdown-toggle" data-toggle="dropdown">我的任务<strong class="caret"></strong></a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="#">我发布的</a>
+                                        <a :href="hrefs.myRelease">我发布的</a>
                                     </li>
                                     <li class="divider">
                                     </li>
-                                    <li>
-                                        <a href="#">我接收的</a>
+                                    <li class="active">
+                                        <a :href="hrefs.myGet">我接收的</a>
                                     </li>
                                 </ul>
                             </li>

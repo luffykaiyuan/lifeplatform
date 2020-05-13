@@ -20,14 +20,13 @@
     <title>任务发布中心</title>
 </head>
 <body>
-<!--<div id="main" style="width: 600px;height:400px;"></div>-->
 <div id="app" v-cloak>
     <div class="container">
         <div class="row clearfix">
             <div class="col-md-12 column">
                 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">Brand</a>
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">任务平台</a>
                     </div>
                 </nav>
             </div>
@@ -61,12 +60,12 @@
                 </div>
                 <el-table border :data="taskPlaceData" style="width: 100%">
                     <el-table-column prop="dictName" label="字典名称"></el-table-column>
-                    <el-table-column prop="dictType" label="字典类型" :formatter="formatterType"></el-table-column>
                     <el-table-column prop="dictOrder" label="字典顺序"></el-table-column>
                     <el-table-column prop="addUser" label="添加人"></el-table-column>
+                    <el-table-column prop="deleteStatus" label="字典状态" :formatter="formatterStatus"></el-table-column>
                     <el-table-column :key="Math.random()" :style=" " label="操作">
                         <template slot-scope="scope">
-                            <span class="el-icon-delete-solid editStyle" @click="editDict(scope.row)">编辑</span>
+                            <span class="el-icon-edit editStyle" @click="editDict(scope.row)">编辑</span>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -92,22 +91,31 @@
 
     <el-dialog title="字典操作" :visible.sync="dictFormVisible">
         <el-form :model="dictForm">
-            <el-form-item label="字典名称" :label-width="formLabelWidth">
-                <el-input v-model="dictForm.dictName" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="字典类型" :label-width="formLabelWidth">
-                <el-select v-model="dictForm.dictType" placeholder="请选择字典类型">
-                    <el-option label="任务类别" value="1"></el-option>
-                    <el-option label="任务地址" value="2"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="字典顺序" :label-width="formLabelWidth">
-                <el-input-number v-model="dictForm.dictOrder" :min="1" :max="10"></el-input-number>
-            </el-form-item>
-            <el-form-item label="字典状态" :label-width="formLabelWidth">
-                <el-switch v-model="dictForm.deleteStatus" active-text="启用" inactive-text="关闭"
-                           active-value="1" inactive-value="0"></el-switch>
-            </el-form-item>
+            <el-row>
+                <el-col :span="10">
+                    <el-form-item label="字典名称" :label-width="formLabelWidth">
+                        <el-input v-model="dictForm.dictName" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="10" :offset="2">
+                    <el-form-item label="字典类型" :label-width="formLabelWidth">
+                        <el-select v-model="dictForm.dictType" placeholder="请选择字典类型">
+                            <el-option label="任务地址" value="2"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="10">
+                    <el-form-item label="字典顺序" :label-width="formLabelWidth">
+                        <el-input-number v-model="dictForm.dictOrder" :min="1" :max="10"></el-input-number>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="10" :offset="2">
+                    <el-form-item label="字典状态" :label-width="formLabelWidth">
+                        <el-switch v-model="dictForm.deleteStatus" active-text="启用" inactive-text="关闭"
+                                   active-value="1" inactive-value="0"></el-switch>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dictFormVisible = false">取 消</el-button>
@@ -116,7 +124,5 @@
     </el-dialog>
 </div>
 </body>
-<!--<script src="./js/echarts.min.js"></script>-->
-<script src="./js/index.js"></script>
 <script src="./js/app/placeBackVue.js"></script>
 </html>

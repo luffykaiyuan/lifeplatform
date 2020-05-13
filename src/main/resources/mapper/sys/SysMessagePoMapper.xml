@@ -7,12 +7,13 @@
     <result column="sys_name" jdbcType="VARCHAR" property="sysName" />
     <result column="announce_title" jdbcType="VARCHAR" property="announceTitle" />
     <result column="announce_content" jdbcType="VARCHAR" property="announceContent" />
+    <result column="img_id" jdbcType="VARCHAR" property="imgId" />
     <result column="announce_time" jdbcType="VARCHAR" property="announceTime" />
     <result column="add_time" jdbcType="VARCHAR" property="addTime" />
     <result column="delete_status" jdbcType="VARCHAR" property="deleteStatus" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, sys_id, sys_name, announce_title, announce_content, announce_time, add_time, 
+    id, sys_id, sys_name, announce_title, announce_content, img_id, announce_time, add_time,
     delete_status
   </sql>
   <select id="selectMessage" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -25,7 +26,13 @@
     select
     <include refid="Base_Column_List" />
     from sys_message
-    where delete_status = '1'
+    where delete_status != '0'
+  </select>
+  <select id="selectThreeMessage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_message
+    where delete_status = '2'
   </select>
   <insert id="insertMessage" parameterType="com.luffykaiyuan.lifeplatform.po.sys.SysMessagePo">
     insert into sys_message
@@ -44,6 +51,9 @@
       </if>
       <if test="announceContent != null">
         announce_content,
+      </if>
+      <if test="imgId != null">
+        img_id,
       </if>
       <if test="announceTime != null">
         announce_time,
@@ -71,6 +81,9 @@
       <if test="announceContent != null">
         #{announceContent,jdbcType=VARCHAR},
       </if>
+      <if test="imgId != null">
+        #{imgId,jdbcType=VARCHAR},
+      </if>
       <if test="announceTime != null">
         #{announceTime,jdbcType=VARCHAR},
       </if>
@@ -97,6 +110,9 @@
       <if test="announceContent != null">
         announce_content = #{announceContent,jdbcType=VARCHAR},
       </if>
+      <if test="imgId != null">
+        img_id = #{imgId,jdbcType=VARCHAR},
+      </if>
       <if test="announceTime != null">
         announce_time = #{announceTime,jdbcType=VARCHAR},
       </if>
@@ -108,5 +124,19 @@
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateAllMessage" parameterType="list">
+    update sys_message
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="delete_status =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+            when id=#{i.id} then #{i.deleteStatus}
+        </foreach>
+      </trim>
+    </trim>
+    where
+    <foreach collection="list" separator="or" item="i" index="index" >
+      id=#{i.id}
+    </foreach>
   </update>
 </mapper>

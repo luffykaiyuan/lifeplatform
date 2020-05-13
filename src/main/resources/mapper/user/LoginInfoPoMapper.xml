@@ -24,6 +24,12 @@
     from login_info
     where user_name = #{userName,jdbcType=VARCHAR}
   </select>
+  <select id="selectByNickName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from login_info
+    where nick_name = #{nickName,jdbcType=VARCHAR}
+  </select>
 
   <insert id="insertLoginInfo" parameterType="com.luffykaiyuan.lifeplatform.po.user.LoginInfoPo">
     insert into login_info

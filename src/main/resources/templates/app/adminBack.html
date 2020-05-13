@@ -20,14 +20,13 @@
     <title>任务发布中心</title>
 </head>
 <body>
-<!--<div id="main" style="width: 600px;height:400px;"></div>-->
 <div id="app" v-cloak>
     <div class="container">
         <div class="row clearfix">
             <div class="col-md-12 column">
                 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">Brand</a>
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand">任务平台</a>
                     </div>
                 </nav>
             </div>
@@ -95,16 +94,74 @@
                     </el-table-column>
                     <el-table-column fixed="right" label="操作">
                         <template slot-scope="scope">
-                            <span class="el-icon-delete-solid deleteStyle">删除</span>
+                            <span class="el-icon-delete-solid deleteStyle" @click="deleteAdmin(scope.row)">删除</span>
                         </template>
                     </el-table-column>
                 </el-table>
             </el-card>
         </el-col>
     </el-row>
+    <el-dialog title="管理员操作" :visible.sync="adminFormVisible">
+        <el-form :model="adminForm">
+            <el-row>
+                <el-col :span="7">
+                    <el-form-item label="管理员名称" :label-width="formLabelWidth">
+                        <el-input v-model="adminForm.sysName" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="7" :offset="1">
+                    <el-form-item label="用户名" :label-width="formLabelWidth">
+                        <el-input v-model="adminForm.userName" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="7" :offset="1">
+                    <el-form-item label="密码" :label-width="formLabelWidth">
+                        <el-input v-model="adminForm.password" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="任务权限" :label-width="formLabelWidth">
+                        <el-switch v-model="adminForm.taskRight" active-value="1" inactive-value="0"
+                                   active-text="有权限" inactive-text="无">
+                        </el-switch>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="用户权限" :label-width="formLabelWidth">
+                        <el-switch v-model="adminForm.userRight" active-value="1" inactive-value="0"
+                                   active-text="有权限" inactive-text="无">
+                        </el-switch>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="字典权限" :label-width="formLabelWidth">
+                        <el-switch v-model="adminForm.dictRight" active-value="1" inactive-value="0"
+                                   active-text="有权限" inactive-text="无">
+                        </el-switch>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="公告权限" :label-width="formLabelWidth">
+                        <el-switch v-model="adminForm.messageRight" active-value="1" inactive-value="0"
+                                   active-text="有权限" inactive-text="无">
+                        </el-switch>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="管理员权限" :label-width="formLabelWidth">
+                        <el-switch v-model="adminForm.adminRight" active-value="1" inactive-value="0"
+                                   active-text="有权限" inactive-text="无">
+                        </el-switch>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="adminFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="saveAdmin">确 定</el-button>
+        </div>
+    </el-dialog>
 </div>
 </body>
-<!--<script src="./js/echarts.min.js"></script>-->
-<script src="./js/index.js"></script>
 <script src="./js/app/adminBackVue.js"></script>
 </html>

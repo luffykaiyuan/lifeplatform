@@ -12,6 +12,8 @@ public interface LoginInfoPoMapper {
 
     LoginInfoPo selectByUserName(String userName);
 
+    LoginInfoPo selectByNickName(String nickName);
+
     String confirmUser(String userName);
 
     int updateLoginInfo(LoginInfoPo loginInfoPo);
