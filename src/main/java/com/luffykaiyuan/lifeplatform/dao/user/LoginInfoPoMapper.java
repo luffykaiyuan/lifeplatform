@@ -17,4 +17,6 @@ public interface LoginInfoPoMapper {
     String confirmUser(String userName);
 
     int updateLoginInfo(LoginInfoPo loginInfoPo);
+
+    int deleteLoginInfo(LoginInfoPo loginInfoPo);
 }

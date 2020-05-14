@@ -15,6 +15,8 @@ var vue1 = new Vue({
             hrefs:{
                 index: '/taskList',
                 login: '/login',
+                myRelease: '/myRelease',
+                myGet: '/myGet',
                 myInfo: '/userInfo',
             },
             userForm: {
@@ -42,6 +44,8 @@ var vue1 = new Vue({
 
         this.hrefs.index = this.contextPath + this.hrefs.index;
         this.hrefs.login = this.contextPath + this.hrefs.login;
+        this.hrefs.myRelease = this.contextPath + this.hrefs.myRelease;
+        this.hrefs.myGet = this.contextPath + this.hrefs.myGet;
         this.hrefs.myInfo = this.contextPath + this.hrefs.myInfo;
 
         this.userName = sessionStorage.getItem("userName");

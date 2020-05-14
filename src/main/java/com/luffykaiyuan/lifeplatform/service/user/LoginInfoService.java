@@ -63,4 +63,12 @@ public class LoginInfoService {
     public int updateLoginInfo(LoginInfoPo loginInfoPo){
         return loginInfoPoMapper.updateLoginInfo(loginInfoPo);
     }
+
+    public int deleteLoginInfo(LoginInfoPo loginInfoPo){
+        UserInfo userInfo = new UserInfo();
+        userInfo.setId(loginInfoPo.getId());
+        userInfo.setDeleteStatus("0");
+        userInfoMapper.updateUserInfo(userInfo);
+        return loginInfoPoMapper.deleteLoginInfo(loginInfoPo);
+    }
 }

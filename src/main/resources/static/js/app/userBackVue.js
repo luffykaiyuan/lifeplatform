@@ -14,7 +14,8 @@ var vue1 = new Vue({
                 initSysRight: '/sysRight/selectAll',
 
                 selectByNickName: '/user/selectByNickName',
-                updateLoginInfo: '/user/updateLoginInfo'
+                updateLoginInfo: '/user/updateLoginInfo',
+                deleteLoginInfo: '/user/deleteLoginInfo'
             },
             rankDictType: [],
             rankDictPlace: [],
@@ -23,6 +24,8 @@ var vue1 = new Vue({
             userData:[],
             sysInfoData:[],
             sysRightData:[],
+            myRight:[],
+            userName: '',
 
             dialogVisible: false,
             oldPassData: {
@@ -44,6 +47,8 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
+        this.userName = sessionStorage.getItem("userName");
+
         this.initUser();
         this.initSys();
     },
@@ -72,6 +77,30 @@ var vue1 = new Vue({
                         type: 'success'
                     });
                 })
+        },
+        deleteUser(row){
+            var self = this;
+            self.$confirm('此操作将删除用户，是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                var url = self.contextPath + self.urls.deleteLoginInfo;
+                row.deleteStatus = "0";
+                axios.post(url, row)
+                    .then(function (res) {
+                        self.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                        self.initUser();
+                    })
+            }).catch(() => {
+                self.$message({
+                    message: '已取消！',
+                    type: 'success'
+                });
+            });
         },
         //-------------------------------------------初始化数据
         initUser(){
@@ -107,6 +136,12 @@ var vue1 = new Vue({
                         self.sysInfoData[i].adminRight = self.sysRightData[j].adminRight;
                         continue;
                     }
+                }
+            }
+            for (let i = 0; i < self.sysInfoData.length; i++) {
+                if (this.userName === self.sysInfoData[i].userName){
+                    self.myRight = self.sysInfoData[i];
+                    break;
                 }
             }
         },

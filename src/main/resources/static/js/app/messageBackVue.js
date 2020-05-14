@@ -43,6 +43,8 @@ var vue1 = new Vue({
                 announceContent: '',
                 imgId: '',
             },
+            myRight:[],
+            userName: '',
         }
     },
     created: function () {
@@ -51,6 +53,7 @@ var vue1 = new Vue({
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
         this.urls.imgUpload = this.contextPath + '/file/imgUpload';
+        this.userName = sessionStorage.getItem("userName");
 
         this.initMessage();
         this.initThreeMessage();
@@ -198,6 +201,12 @@ var vue1 = new Vue({
                         self.sysInfoData[i].adminRight = self.sysRightData[j].adminRight;
                         continue;
                     }
+                }
+            }
+            for (let i = 0; i < self.sysInfoData.length; i++) {
+                if (this.userName === self.sysInfoData[i].userName){
+                    self.myRight = self.sysInfoData[i];
+                    break;
                 }
             }
         },

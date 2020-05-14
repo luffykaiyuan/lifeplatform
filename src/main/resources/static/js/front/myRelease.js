@@ -84,7 +84,9 @@ var vue1 = new Vue({
                 wechatNumber: '',
                 taskContent: '',
             },
-            operateWidth: 200
+            operateWidth: 200,
+            typeInfo: '',
+            placeInfo: '',
         }
     },
     created: function () {
@@ -147,14 +149,15 @@ var vue1 = new Vue({
         //获取url中"?"符后的字串
         lookTask(item){
             this.dialogVisible = true;
+            this.feedInfo = {};
             for (var i = 0; i < this.taskPlace.length; i++){
                 if (parseInt(item.taskPlace) === this.taskPlace[i].id){
-                    item.taskPlace = this.taskPlace[i].dictName;
+                    this.placeInfo = this.taskPlace[i].dictName;
                 }
             }
             for (var i = 0; i < this.taskType.length; i++){
                 if (parseInt(item.taskType) === this.taskType[i].id){
-                    item.taskType = this.taskType[i].dictName;
+                    this.typeInfo = this.taskType[i].dictName;
                 }
             }
             this.oneTask = item;

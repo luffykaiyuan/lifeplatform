@@ -25,8 +25,10 @@ var vue1 = new Vue({
             taskVisible: false,
             flagBack: {},
             lookInfo: {},
+            myRight:{},
             rankStartName: '',
             rankEndName: '',
+            userName: '',
             rankDictType: [],
             rankDictPlace: [],
             taskData:[],
@@ -35,6 +37,8 @@ var vue1 = new Vue({
             taskPlaceData:[],
             sysInfoData:[],
             sysRightData:[],
+            typeInfo: '',
+            placeInfo: '',
         }
     },
     created: function () {
@@ -42,6 +46,8 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
+
+        this.userName = sessionStorage.getItem("userName");
         this.initTask();
         this.initUser();
         this.initTaskType();
@@ -58,13 +64,13 @@ var vue1 = new Vue({
             this.taskVisible = true;
             this.flagBack = row;
             for (let i = 0; i < this.taskTypeData.length; i++) {
-                if (this.taskTypeData[i].id === row.taskType){
-                    row.taskType = this.taskTypeData[i].dictName;
+                if (this.taskTypeData[i].id === parseInt(row.taskType)){
+                    this.typeInfo = this.taskTypeData[i].dictName;
                 }
             }
             for (let i = 0; i < this.taskPlaceData.length; i++) {
-                if (this.taskPlaceData[i].id === row.taskPlace){
-                    row.taskPlace = this.taskPlaceData[i].dictName;
+                if (this.taskPlaceData[i].id === parseInt(row.taskPlace)){
+                    this.placeInfo = this.taskPlaceData[i].dictName;
                 }
             }
             var self = this;
@@ -201,6 +207,12 @@ var vue1 = new Vue({
                         self.sysInfoData[i].adminRight = self.sysRightData[j].adminRight;
                         continue;
                     }
+                }
+            }
+            for (let i = 0; i < self.sysInfoData.length; i++) {
+                if (this.userName === self.sysInfoData[i].userName){
+                    self.myRight = self.sysInfoData[i];
+                    break;
                 }
             }
         },

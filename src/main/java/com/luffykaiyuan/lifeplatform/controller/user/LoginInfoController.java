@@ -74,6 +74,11 @@ public class LoginInfoController {
         loginInfoService.updateLoginInfo(loginInfoPo);
     }
 
+    @PostMapping("/deleteLoginInfo")
+    public void deleteLoginInfo(@RequestBody LoginInfoPo loginInfoPo){
+        loginInfoService.deleteLoginInfo(loginInfoPo);
+    }
+
     /** 
     * @Description: 管理员账号登录 
     * @Param: [sysInfoPo, session] 

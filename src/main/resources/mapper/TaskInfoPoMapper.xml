@@ -22,6 +22,18 @@
     end_username, end_name, add_time, delete_status
   </sql>
 
+  <select id="taskTodayNum" parameterType="java.lang.String" resultType="int">
+    select count(id)
+    from task_info
+    where add_time = #{addTime,jdbcType=VARCHAR}
+    and delete_status = '-1'
+  </select>
+  <select id="taskAllNum" resultType="int">
+    select count(id)
+    from task_info
+    where delete_status != '3'
+  </select>
+
   <select id="selectMyTask" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

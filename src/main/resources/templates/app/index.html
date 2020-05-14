@@ -20,7 +20,6 @@
     <title>任务发布中心</title>
 </head>
 <body>
-<!--<div id="main" style="width: 600px;height:400px;"></div>-->
 <div id="app" v-cloak>
     <div class="container">
         <div class="row clearfix">
@@ -37,19 +36,19 @@
         <el-col :span="3">
             <el-menu style="height: 915px" :default-active="contextPath" class="el-menu-demo" @select="handleSelect">
                 <el-menu-item index="index">首页</el-menu-item>
-                <el-submenu index="1">
+                <el-submenu index="1" v-if="myRight.taskRight === '1'">
                     <template slot="title">任务中心</template>
                     <el-menu-item index="taskBack" >待审核任务</el-menu-item>
                     <el-menu-item index="taskDoing">已审核任务</el-menu-item>
                 </el-submenu>
-                <el-menu-item index="userBack">人员中心</el-menu-item>
-                <el-submenu index="2">
+                <el-menu-item index="userBack" v-if="myRight.userRight === '1'">人员中心</el-menu-item>
+                <el-submenu index="2" v-if="myRight.dictRight === '1'">
                     <template slot="title">字典管理</template>
                     <el-menu-item index="typeBack">任务类别</el-menu-item>
                     <el-menu-item index="placeBack">任务地址</el-menu-item>
                 </el-submenu>
-                <el-menu-item index="messageBack">公告管理</el-menu-item>
-                <el-menu-item index="adminBack">管理员管理</el-menu-item>
+                <el-menu-item index="messageBack" v-if="myRight.messageRight === '1'">公告管理</el-menu-item>
+                <el-menu-item index="adminBack" v-if="myRight.adminRight === '1'">管理员管理</el-menu-item>
                 <el-menu-item index="quitLogin">退出登录</el-menu-item>
             </el-menu>
         </el-col>
@@ -59,25 +58,25 @@
                     <el-col :span="6">
                         <div class="grid-content" style="background-color: #409EFF">
                             <div style="padding: 15px; color: white;">今日新增任务</div>
-                            <div style="font-size: 70px; color: white; margin-left: 25%">4444</div>
+                            <div style="font-size: 70px; color: white; margin-left: 25%">{{taskToday}}</div>
                         </div>
                     </el-col>
                     <el-col :span="6">
                         <div class="grid-content" style="background-color: #409EFF">
                             <div style="padding: 15px; color: white;">今日新增会员</div>
-                            <div style="font-size: 70px; color: white; margin-left: 25%">3333</div>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <div class="grid-content" style="background-color: #409EFF">
-                            <div style="padding: 15px; color: white;">总会员</div>
-                            <div style="font-size: 70px; color: white; margin-left: 25%">2222</div>
+                            <div style="font-size: 70px; color: white; margin-left: 25%">{{userToday}}</div>
                         </div>
                     </el-col>
                     <el-col :span="6">
                         <div class="grid-content" style="background-color: #409EFF">
                             <div style="padding: 15px; color: white;">总任务</div>
-                            <div style="font-size: 70px; color: white; margin-left: 25%">111</div>
+                            <div style="font-size: 70px; color: white; margin-left: 25%">{{taskAll}}</div>
+                        </div>
+                    </el-col>
+                    <el-col :span="6">
+                        <div class="grid-content" style="background-color: #409EFF">
+                            <div style="padding: 15px; color: white;">总会员</div>
+                            <div style="font-size: 70px; color: white; margin-left: 25%">{{userAll}}</div>
                         </div>
                     </el-col>
                 </el-row>
@@ -87,26 +86,17 @@
             <el-row :gutter="25">
                 <el-col :span="8">
                     <el-card class="box-card" style="margin-top: 50px">
-                        <div class="grid-content" style="background-color: #409EFF">
-                            <div style="padding: 15px; color: white;">今日新增任务</div>
-                            <div style="font-size: 70px; color: white; margin-left: 25%">4444</div>
-                        </div>
+                        <div style="height:200px;width:300px;" ref="taskDoing" ></div>
                     </el-card>
                 </el-col>
                 <el-col :span="8">
                     <el-card class="box-card" style="margin-top: 50px">
-                        <div class="grid-content" style="background-color: #409EFF">
-                            <div style="padding: 15px; color: white;">今日新增任务</div>
-                            <div style="font-size: 70px; color: white; margin-left: 25%">4444</div>
-                        </div>
+                        <div style="height:200px;width:300px;" ref="taskDeal" ></div>
                     </el-card>
                 </el-col>
                 <el-col :span="8">
                     <el-card class="box-card" style="margin-top: 50px">
-                        <div class="grid-content" style="background-color: #409EFF">
-                            <div style="padding: 15px; color: white;">今日新增任务</div>
-                            <div style="font-size: 70px; color: white; margin-left: 25%">4444</div>
-                        </div>
+                        <div style="height:200px;width:300px;" ref="genderStatus" ></div>
                     </el-card>
                 </el-col>
             </el-row>
@@ -115,10 +105,7 @@
             <el-row :gutter="25">
                 <el-col :span="24">
                     <el-card class="box-card" style="margin-top: 50px">
-                        <div class="grid-content" style="background-color: #409EFF">
-                            <div style="padding: 15px; color: white;">今日新增任务</div>
-                            <div style="font-size: 70px; color: white; margin-left: 25%">4444</div>
-                        </div>
+                        <div style="height:280px;width:1200px;" ref="basicInfo" ></div>
                     </el-card>
                 </el-col>
             </el-row>
@@ -127,7 +114,6 @@
 
 </div>
 </body>
-<!--<script src="./js/echarts.min.js"></script>-->
-<script src="./js/index.js"></script>
+<script src="./js/echarts.min.js"></script>
 <script src="./js/app/indexVue.js"></script>
 </html>

@@ -4,6 +4,7 @@ import com.luffykaiyuan.lifeplatform.po.TaskInfoPo;
 import com.luffykaiyuan.lifeplatform.po.count.CountDict;
 import com.luffykaiyuan.lifeplatform.po.count.CountName;
 import com.luffykaiyuan.lifeplatform.service.TaskInfoService;
+import com.luffykaiyuan.lifeplatform.util.GetNowDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,16 @@ public class TaskInfoController {
 
     @Autowired
     TaskInfoService taskInfoService;
+
+    @GetMapping("/taskTodayNum")
+    public int taskTodayNum() {
+        return taskInfoService.taskTodayNum();
+    }
+
+    @GetMapping("/taskAllNum")
+    public int taskAllNum() {
+        return taskInfoService.taskAllNum();
+    }
 
     @GetMapping("/selectMyTask")
     public List<TaskInfoPo> selectMyTask(@RequestParam("startName") String startName){

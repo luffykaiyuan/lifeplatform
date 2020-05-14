@@ -36,19 +36,19 @@
         <el-col :span="3">
             <el-menu style="height: 915px" :default-active="contextPath" class="el-menu-demo" @select="handleSelect">
                 <el-menu-item index="index">首页</el-menu-item>
-                <el-submenu index="1">
+                <el-submenu index="1" v-if="myRight.taskRight === '1'">
                     <template slot="title">任务中心</template>
                     <el-menu-item index="taskBack" >待审核任务</el-menu-item>
                     <el-menu-item index="taskDoing">已审核任务</el-menu-item>
                 </el-submenu>
-                <el-menu-item index="userBack">人员中心</el-menu-item>
-                <el-submenu index="2">
+                <el-menu-item index="userBack" v-if="myRight.userRight === '1'">人员中心</el-menu-item>
+                <el-submenu index="2" v-if="myRight.dictRight === '1'">
                     <template slot="title">字典管理</template>
                     <el-menu-item index="typeBack">任务类别</el-menu-item>
                     <el-menu-item index="placeBack">任务地址</el-menu-item>
                 </el-submenu>
-                <el-menu-item index="messageBack">公告管理</el-menu-item>
-                <el-menu-item index="adminBack">管理员管理</el-menu-item>
+                <el-menu-item index="messageBack" v-if="myRight.messageRight === '1'">公告管理</el-menu-item>
+                <el-menu-item index="adminBack" v-if="myRight.adminRight === '1'">管理员管理</el-menu-item>
                 <el-menu-item index="quitLogin">退出登录</el-menu-item>
             </el-menu>
         </el-col>
@@ -92,24 +92,24 @@
     <el-dialog title="字典操作" :visible.sync="dictFormVisible">
         <el-form :model="dictForm">
             <el-row>
-                <el-col :span="10">
+                <el-col :span="8" :offset="2">
                     <el-form-item label="字典名称" :label-width="formLabelWidth">
                         <el-input v-model="dictForm.dictName" autocomplete="off"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="10" :offset="2">
+                <el-col :span="8" :offset="2">
                     <el-form-item label="字典类型" :label-width="formLabelWidth">
                         <el-select v-model="dictForm.dictType" placeholder="请选择字典类型">
                             <el-option label="任务类别" value="1"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="10">
+                <el-col :span="8" :offset="2">
                     <el-form-item label="字典顺序" :label-width="formLabelWidth">
                         <el-input-number v-model="dictForm.dictOrder" :min="1" :max="10"></el-input-number>
                     </el-form-item>
                 </el-col>
-                <el-col :span="10" :offset="2">
+                <el-col :span="8" :offset="2">
                     <el-form-item label="字典状态" :label-width="formLabelWidth">
                         <el-switch v-model="dictForm.deleteStatus" active-text="启用" inactive-text="关闭"
                                    active-value="1" inactive-value="0"></el-switch>

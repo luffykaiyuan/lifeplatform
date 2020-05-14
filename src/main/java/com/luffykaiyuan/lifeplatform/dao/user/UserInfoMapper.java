@@ -10,6 +10,10 @@ import java.util.List;
 @Repository
 public interface UserInfoMapper {
 
+    int userTodayNum(String addTime);
+
+    int userAllNum();
+
     int insertUserInfo(UserInfo userInfo);
 
     int updateUserInfo(UserInfo userInfo);

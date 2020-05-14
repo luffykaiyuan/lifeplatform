@@ -31,6 +31,15 @@ public class TaskInfoService {
         return "发布失败！";
     }
 
+    public int taskTodayNum() {
+        String addTime = GetNowDate.getStringDate();
+        return taskInfoPoMapper.taskTodayNum(addTime);
+    }
+
+    public int taskAllNum() {
+        return taskInfoPoMapper.taskAllNum();
+    }
+
     public int updateTask(TaskInfoPo taskInfoPo){
         return taskInfoPoMapper.updateTask(taskInfoPo);
     }

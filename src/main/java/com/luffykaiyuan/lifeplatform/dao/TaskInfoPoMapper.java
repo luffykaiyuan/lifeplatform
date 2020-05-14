@@ -12,6 +12,10 @@ import java.util.List;
 @Mapper
 public interface TaskInfoPoMapper {
 
+    int taskTodayNum(String addTime);
+
+    int taskAllNum();
+
     int insertTask(TaskInfoPo taskInfoPo);
 
     int updateTask(TaskInfoPo taskInfoPo);

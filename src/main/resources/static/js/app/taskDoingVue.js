@@ -23,6 +23,8 @@ var vue1 = new Vue({
             },
             pageSize: 10,
             currpage: 1,
+            myRight:[],
+            userName: '',
             oneTask: {},
             endInfo: {},
             startInfo: {},
@@ -45,6 +47,8 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
+        this.userName = sessionStorage.getItem("userName");
+
         this.initTask();
         this.initTaskType();
         this.initTaskPlace();
@@ -171,6 +175,12 @@ var vue1 = new Vue({
                         self.sysInfoData[i].adminRight = self.sysRightData[j].adminRight;
                         continue;
                     }
+                }
+            }
+            for (let i = 0; i < self.sysInfoData.length; i++) {
+                if (this.userName === self.sysInfoData[i].userName){
+                    self.myRight = self.sysInfoData[i];
+                    break;
                 }
             }
         },

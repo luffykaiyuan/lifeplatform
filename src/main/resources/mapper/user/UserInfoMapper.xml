@@ -16,6 +16,19 @@
   <sql id="Base_Column_List">
     id, login_id, img_id, nick_name, user_gender, phone, qq_number, wechat_number, add_time, delete_status
   </sql>
+
+  <select id="userTodayNum" parameterType="java.lang.String" resultType="int">
+    select count(id)
+    from user_info
+    where add_time = #{addTime,jdbcType=VARCHAR}
+    and delete_status = '1'
+  </select>
+  <select id="userAllNum" resultType="int">
+    select count(id)
+    from user_info
+    where delete_status = '1'
+  </select>
+
   <select id="selectUserInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -32,6 +45,7 @@
     select
     <include refid="Base_Column_List" />
     from user_info
+    where delete_status = '1'
   </select>
 
   <insert id="insertUserInfo" parameterType="com.luffykaiyuan.lifeplatform.po.user.UserInfo">

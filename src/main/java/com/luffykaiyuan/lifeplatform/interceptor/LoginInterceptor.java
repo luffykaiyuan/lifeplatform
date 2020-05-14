@@ -19,7 +19,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         session.setAttribute("preurl",request.getRequestURI());
         StringBuffer url = request.getRequestURL();
         String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length())
-                .append(request.getServletContext().getContextPath()).append("/login").toString();
+                .append(request.getServletContext().getContextPath()).append("/adminLogin").toString();
         response.sendRedirect(tempContextUrl);
         return false;
     }

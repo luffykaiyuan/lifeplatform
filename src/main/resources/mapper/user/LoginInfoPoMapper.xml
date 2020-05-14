@@ -95,4 +95,13 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <update id="deleteLoginInfo" parameterType="com.luffykaiyuan.lifeplatform.po.user.LoginInfoPo">
+    update login_info
+    <set>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where nick_name = #{nickName,jdbcType=VARCHAR}
+  </update>
 </mapper>

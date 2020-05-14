@@ -104,7 +104,9 @@ var vue1 = new Vue({
                     { max: 2000, message: '长度在 2000 个字符', trigger: 'blur' }
                 ],
             },
-            operateWidth: 200
+            operateWidth: 200,
+            typeInfo: '',
+            placeInfo: '',
         }
     },
     created: function () {
@@ -224,13 +226,14 @@ var vue1 = new Vue({
         lookTask(row){
             this.receiveTaskVisible = true;
             var self = this;
-            self.lookInfo.taskType = self.formatterType(row);
-            self.lookInfo.taskPlace = row.taskPlace;
+            self.typeInfo = self.formatterType(row);
+            self.placeInfo = self.formatterPlace(row);
             self.lookInfo.id = row.id;
             self.lookInfo.taskTime = row.taskTime;
             self.lookInfo.taskContent = row.taskContent;
             self.lookInfo.taskContent = row.taskContent;
-            var url = self.contextPath + self.urls.initUser + "?loginId=" + row.startUsername;
+            console.log(row);
+            var url = self.contextPath + self.urls.selectInfo + "?nickName=" + row.startName;
             axios.get(url)
                 .then(function (res) {
                     self.lookInfo.phone = res.data.phone;
@@ -241,16 +244,32 @@ var vue1 = new Vue({
         //接收任务
         receiveTask(){
             var self = this;
-            var url = self.contextPath + self.urls.receiveTask + "?id=" + self.lookInfo.id;
+            var url = self.contextPath + self.urls.selectInfo + "?nickName=" + self.userForm.nickName;
             axios.get(url)
                 .then(function (res) {
-                    self.receiveTaskVisible = false;
-                    self.$message({
-                        showClose: true,
-                        message: '接收成功，请尽快与发布人联系并完成任务！',
-                        type: 'success'
-                    });
-                    self.refreshTask(self.urls.initTaskSquare);
+                    if (res.data.phone && res.data.wechatNumber){
+                        var url = self.contextPath + self.urls.receiveTask + "?id=" + self.lookInfo.id;
+                        axios.get(url)
+                            .then(function (res) {
+                                self.receiveTaskVisible = false;
+                                self.$message({
+                                    showClose: true,
+                                    message: '接收成功，请尽快与发布人联系并完成任务！',
+                                    type: 'success'
+                                });
+                                self.refreshTask(self.urls.initTaskSquare);
+                            })
+                    }else {
+                        self.$confirm('请完善个人信息，方便与您取得联系?', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            window.location.href = self.contextPath + "/userInfo";
+                        }).catch(() => {
+                            return;
+                        });
+                    }
                 })
         },
         //刷新数据

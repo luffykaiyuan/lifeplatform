@@ -4,6 +4,7 @@ var vue1 = new Vue({
         return {
             contextPath:'',
             flag: '1',
+            id: '1',
             formLabelWidth: '120',
             urls:{
                 initSysInfo: '/sysInfo/selectAll',
@@ -16,6 +17,8 @@ var vue1 = new Vue({
             },
             sysInfoData:[],
             sysRightData:[],
+            myRight:[],
+            userName: '',
 
             adminFormVisible: false,
             adminSU: '',
@@ -36,6 +39,8 @@ var vue1 = new Vue({
         var contextPath = contextPath.split('/')[1];
         var contextPath = "/" + contextPath;
         this.contextPath = contextPath;
+
+        this.userName = sessionStorage.getItem("userName");
         this.initSys();
     },
     filters: {},
@@ -90,7 +95,7 @@ var vue1 = new Vue({
                     axios.post(url, row)
                         .then(function (res) {
                             self.$message.success('删除成功');
-                            self.initSys();
+                            location.href="adminBack";
                         })
                 })
                 .catch(_ => {});
@@ -125,10 +130,17 @@ var vue1 = new Vue({
                     }
                 }
             }
+            for (let i = 0; i < self.sysInfoData.length; i++) {
+                if (this.userName === self.sysInfoData[i].userName){
+                    self.myRight = self.sysInfoData[i];
+                    break;
+                }
+            }
         },
         changeTap(row){
             var self = this;
             row.sysId = row.id;
+            self.id = row.id;
             row.id = null;
             axios.post(self.contextPath + self.urls.updateSysRight, row,)
                 .then(function (res) {
@@ -136,6 +148,7 @@ var vue1 = new Vue({
                         message: '操作成功！',
                         type: 'success'
                     });
+                    row.id = self.id;
                 })
         },
         handleSelect(key, keyPath) {

@@ -14,6 +14,16 @@ public class UserInfoController {
     @Autowired
     UserInfoService userInfoService;
 
+    @GetMapping("/userTodayNum")
+    public int userTodayNum() {
+        return userInfoService.userTodayNum();
+    }
+
+    @GetMapping("/userAllNum")
+    public int userAllNum() {
+        return userInfoService.userAllNum();
+    }
+
     @PostMapping("/updateUserInfo")
     public int updateUserInfo(@RequestBody UserInfo userInfo){
         return userInfoService.updateUserInfo(userInfo);

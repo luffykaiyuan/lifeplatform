@@ -16,6 +16,15 @@ public class UserInfoService {
     @Autowired
     UserInfoMapper userInfoMapper;
 
+    public int userTodayNum() {
+        String addTime = GetNowDate.getStringDate();
+        return userInfoMapper.userTodayNum(addTime);
+    }
+
+    public int userAllNum() {
+        return userInfoMapper.userAllNum();
+    }
+
     public int updateUserInfo(UserInfo userInfo){
         return userInfoMapper.updateUserInfo(userInfo);
     }
