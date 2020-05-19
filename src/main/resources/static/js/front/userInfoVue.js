@@ -8,6 +8,7 @@ var vue1 = new Vue({
             urls:{
                 initUserInfo: '/userInfo/selectUserInfo',
                 updateUserInfo: '/userInfo/updateUserInfo',
+                deleteLoginInfo: '/user/deleteLoginInfo',
 
                 imgUpload: '',
                 selectFile: '/file/selectFile'
@@ -84,6 +85,21 @@ var vue1 = new Vue({
             var self = this;
             var url = self.contextPath + self.urls.updateUserInfo;
             axios.post(url, self.userForm)
+                .then(function (res) {
+                    self.$message({
+                        showClose: true,
+                        message: '修改成功！',
+                        type: 'success'
+                    });
+                })
+        },
+        changePass(){
+            var self = this;
+            var url = self.contextPath + self.urls.deleteLoginInfo;
+            var from = {};
+            from.nickName = self.userForm.nickName;
+            from.password = self.passwordForm.password;
+            axios.post(url, from)
                 .then(function (res) {
                     self.$message({
                         showClose: true,

@@ -71,9 +71,6 @@
                             <div class="panel-heading">
                                 <h3 class="panel-title">任务中心</h3>
                             </div>
-                            <div class="panel-body" style="margin-top: 20px">
-                                这是一个基本的面板
-                            </div>
                             <el-table class="table" :data="taskData.slice((currpage - 1) * pageSize, currpage * pageSize)" border style="width: 100%">
                                 <el-table-column fixed prop="startName" label="发起人昵称"></el-table-column>
                                 <el-table-column prop="taskTitle" label="任务标题"></el-table-column>

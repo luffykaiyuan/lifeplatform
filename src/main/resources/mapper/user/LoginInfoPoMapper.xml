@@ -98,6 +98,15 @@
   <update id="deleteLoginInfo" parameterType="com.luffykaiyuan.lifeplatform.po.user.LoginInfoPo">
     update login_info
     <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        add_time = #{addTime,jdbcType=VARCHAR},
+      </if>
       <if test="deleteStatus != null">
         delete_status = #{deleteStatus,jdbcType=VARCHAR},
       </if>
